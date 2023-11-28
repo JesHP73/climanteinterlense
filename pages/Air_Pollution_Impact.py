@@ -119,17 +119,21 @@ def air_pollution_impact(df):
 
     #user input areas
     # Sidebar filters
+    decade_options = ['ALL'] + df['decade'].unique().tolist()
     zone_options = ['All'] + df['zone'].unique().tolist()
     region_options = ['All'] + df['region'].unique().tolist()
     country_options = ['All'] + df['country'].unique().tolist()
     pollutant_options = ['All'] + list(WHO_STANDARDS.keys())
 
+    selected_decade = st.sidebar.multiselect('Select Decade', options=decade_options, default='All')
     selected_zone = st.sidebar.multiselect('Select Zone', options=zone_options, default='All')
     selected_region = st.sidebar.multiselect('Select Region', options=region_options, default='All')
     selected_country = st.sidebar.multiselect('Select Country', options=country_options, default='All')
     selected_pollutants = st.sidebar.multiselect('Select Pollutant(s)', options=pollutant_options, default='All')
 
     # Filter the DataFrame based on selections
+    if 'All' not in selected_decade:
+        df = df[df['decade'].isin(selected_decade)]
     if 'All' not in selected_zone:
         df = df[df['zone'].isin(selected_zone)]
     if 'All' not in selected_region:
