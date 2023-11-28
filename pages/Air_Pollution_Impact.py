@@ -24,16 +24,9 @@ def load_data():
         return pd.DataFrame()  # Return an empty DataFrame in case of an error.
         pass
 
-import matplotlib.pyplot as plt
-import seaborn as sns
 
-# Function to plot annual average pollutant levels and compare with WHO standards
 def plot_emissions(df, selected_pollutants):
     plt.figure(figsize=(10, 5))
-
-    # Determine the strictest WHO guidelines for plotting
-    strictest_AQG = min(guideline['AQG'] for guideline in WHO_STANDARDS.values())
-    strictest_RL = min(guideline['RL'] for guideline in WHO_STANDARDS.values())
 
     # Check if 'All' pollutants are selected
     if 'All' in selected_pollutants:
@@ -41,9 +34,10 @@ def plot_emissions(df, selected_pollutants):
         annual_mean_all = df.groupby('decade')['avg_air_pollutant_level'].mean().reset_index()
         sns.lineplot(x='decade', y='avg_air_pollutant_level', data=annual_mean_all, label='Average All Pollutants')
 
-        # Plot the strictest WHO guidelines
-        plt.axhline(y=strictest_AQG, color='teal', linestyle='--', label=f'Strictest WHO AQG', alpha=0.5)
-        plt.axhline(y=strictest_RL, color='orange', linestyle='--', label=f'Strictest WHO RL', alpha=0.5)
+        # Plot WHO guidelines for each pollutant
+        for pollutant, guidelines in WHO_STANDARDS.items():
+            plt.axhline(y=guidelines['AQG'], color='teal', linestyle='--', label=f'WHO AQG ({pollutant})', alpha=0.5)
+            plt.axhline(y=guidelines['RL'], color='orange', linestyle='--', label=f'WHO RL ({pollutant})', alpha=0.5)
 
     else:
         # Plot each selected pollutant
@@ -51,7 +45,6 @@ def plot_emissions(df, selected_pollutants):
             # Filter and calculate mean for the selected pollutant
             annual_data = df[df['air_pollutant'] == pollutant].groupby('decade')['avg_air_pollutant_level'].mean().reset_index()
             sns.lineplot(x='decade', y='avg_air_pollutant_level', data=annual_data, label=pollutant)
-            
             # Plot WHO guideline for the selected pollutant
             plt.axhline(y=WHO_STANDARDS[pollutant]['AQG'], color='teal', linestyle='--', label=f'WHO AQG ({pollutant})', alpha=0.5)
             plt.axhline(y=WHO_STANDARDS[pollutant]['RL'], color='orange', linestyle='--', label=f'WHO RL ({pollutant})', alpha=0.5)
@@ -60,12 +53,13 @@ def plot_emissions(df, selected_pollutants):
     plt.title('Annual Average Levels of Pollutants (compared to WHO guidelines)')
     plt.xlabel('Decade')
     plt.ylabel('Average Level (μg/m3)')
-    
+
     # Place the legend outside the plot
     plt.legend(loc='upper left', bbox_to_anchor=(1, 1))
     plt.tight_layout()
 
     return plt
+
 
     
 # to handle if 'air_pollutant' could contain values not present in WHO_STANDARDS, you might run into a KeyError.
