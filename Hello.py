@@ -1,14 +1,8 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
-
-
 import streamlit as st
 import pandas as pd
-import GNI_AQI_Analysis.py
-import Trends_Over_Time.py
-import Air_Pollution_Impact.py
 
 # Function to load data
 @st.cache
@@ -36,5 +30,4 @@ st.markdown(
     **👈 Select a page from the sidebar** to begin exploring the visualizations and insights.
     ### Want to learn more?  
     """
-    
 )
