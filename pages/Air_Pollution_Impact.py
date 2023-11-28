@@ -14,10 +14,6 @@ WHO_STANDARDS = {
     'CO': {'AQG': 4, 'RL': 10}  # Assuming the unit is mg/m3 for simplicity
 }
 
-
-# Now create a single column 'pollution_above_who' indicating if any pollutant is above its AQG
-df['pollution_above_who'] = df[[f'{pollutant}_above_AQG' for pollutant in WHO_STANDARDS]].any(axis=1)
-
 # Clean up the intermediate columns if they are no longer needed
 for pollutant in WHO_STANDARDS:
     del df[f'{pollutant}_above_AQG']
@@ -46,6 +42,17 @@ def plot_emissions(df, selected_pollutants):
 
     # Convert decades to string to avoid commas in the x-axis labels
     df['decade'] = df['decade'].astype(str)
+    
+    # Add a new column for each pollutant indicating if it's above the WHO standard
+    for pollutant, standards in WHO_STANDARDS.items():
+        # Create a mask for rows where the current pollutant matches
+        mask = df['air_pollutant'] == pollutant
+        # Directly compare where the mask is True
+        df.loc[mask, f'{pollutant}_above_AQG'] = df.loc[mask, 'avg_air_pollutant_level'] > standards['AQG']
+    
+    # Now create a single column 'pollution_above_who' indicating if any pollutant is above its AQG
+    pollutants_above_columns = [f'{pollutant}_above_AQG' for pollutant in WHO_STANDARDS]
+    df['pollution_above_who'] = df[pollutants_above_columns].any(axis=1, skipna=True)
 
     # This will hold the countries with the most pollution above WHO standard
     countries_above_who = None
