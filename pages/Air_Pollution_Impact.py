@@ -31,7 +31,6 @@ def load_data():
 
 
 def plot_emissions(df, selected_pollutants):
-    
     # Data Validation: Check if dataframe is empty
     if df.empty:
         st.error('No data available for the selected filters')
@@ -42,57 +41,59 @@ def plot_emissions(df, selected_pollutants):
 
     try:
         if 'All' in selected_pollutants:
-            # Calculate the mean across all pollutants for each decade
-            annual_mean_all = df.groupby('decade')['avg_air_pollutant_level'].mean().reset_index()
-            # Rename column for better labeling in the chart
-            annual_mean_all.rename({'avg_air_pollutant_level': 'Avg All Pollution Level'}, inplace=True)
-            st.line_chart(annual_mean_all.set_index('decade'))
+            # Group by decade and calculate the mean for each pollutant
+            annual_means = df.groupby(['decade', 'air_pollutant'])['avg_air_pollutant_level'].mean().reset_index()
+
+            # Pivot the data to have decades as rows and pollutants as columns
+            pivot_data = annual_means.pivot(index='decade', columns='air_pollutant', values='avg_air_pollutant_level')
+
+            # Rename columns for better labeling in the chart
+            pivot_data.columns = [f'Avg {col} Pollution Level' for col in pivot_data.columns]
+
+            # Check if pivot_data is empty after manipulation
+            if pivot_data.empty:
+                st.error('No data available to plot after processing.')
+                return
+
+            # Plot the data using st.line_chart
+            st.line_chart(pivot_data)
         else:
+            # Initialize an empty DataFrame for joined data
+            joined_data = pd.DataFrame(index=df['decade'].unique())
+
             # If specific pollutants are selected, filter and plot with WHO standards
             for pollutant in selected_pollutants:
                 aqg = WHO_STANDARDS[pollutant]['AQG']
                 rl = WHO_STANDARDS[pollutant]['RL']
-                # Add columns with the AQG and RL standard
-                df[f'{pollutant}_AQG'] = aqg
-                df[f'{pollutant}_RL'] = rl
-                
-            # Filter and drop duplicates before pivot
-            filtered_data = df[df['air_pollutant'].isin(selected_pollutants)].drop_duplicates(subset=['decade', 'air_pollutant'])
-            pivot_data = filtered_data.pivot(index='decade', columns='air_pollutant', values='avg_air_pollutant_level')
-            
-            # Rename columns for better labeling in the chart
-            for pollutant in selected_pollutants:
-                pivot_data.rename(columns={pollutant: f'Avg {pollutant} Pollution Level'}, inplace=True)
-            
-            # Define standards_columns here
-            standards_columns = []
-            for pollutant in selected_pollutants:
-                standards_columns.append(f'{pollutant}_AQG')
-                standards_columns.append(f'{pollutant}_RL')
-            
-            # Prepare the standards data with proper indexing
-            # Ensure 'decade' is set as the index and that there are no duplicates
-            standards_data = df.drop_duplicates(subset='decade').set_index('decade')
-            
-            # Add WHO standards for each selected pollutant to the standards_data DataFrame
-            for pollutant in selected_pollutants:
-                standards_data[f'{pollutant}_AQG'] = WHO_STANDARDS[pollutant]['AQG']
-                standards_data[f'{pollutant}_RL'] = WHO_STANDARDS[pollutant]['RL']
-            
-            # Join the pivot_data with the standards_data
-            # This ensures that each 'decade' has the corresponding WHO guideline values
-            joined_data = pivot_data.join(standards_data[[f'{pollutant}_AQG' for pollutant in selected_pollutants] +
-                                                         [f'{pollutant}_RL' for pollutant in selected_pollutants]])
-            
+
+                # Filter data for the current pollutant
+                pollutant_data = df[df['air_pollutant'] == pollutant]
+
+                # Calculate the average pollutant level per decade
+                avg_pollutant_data = pollutant_data.groupby('decade')['avg_air_pollutant_level'].mean().rename(f'Avg {pollutant} Pollution Level')
+
+                # Join the average data with the joined_data DataFrame
+                joined_data = joined_data.join(avg_pollutant_data, how='left')
+
+                # Add the AQG and RL values as constant columns to joined_data
+                joined_data[f'{pollutant}_AQG'] = aqg
+                joined_data[f'{pollutant}_RL'] = rl
+
+            # Check if joined_data is empty after processing
+            if joined_data.empty:
+                st.error('No data available to plot after processing.')
+                return
+
             # Plot the data using st.line_chart
             st.line_chart(joined_data)
-            
+
             # If only one pollutant is selected, add a caption for clarity
             if len(selected_pollutants) == 1:
                 st.caption(f'Line represents average levels of {selected_pollutants[0]} over time. '
                            f'WHO AQG and RL for {selected_pollutants[0]} are also shown.')
     except Exception as e:
         st.error(f"An error occurred while plotting: {e}")
+
 
         
 def display_pollutant_summary(pollutants):
