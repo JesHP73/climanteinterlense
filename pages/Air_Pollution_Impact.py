@@ -50,7 +50,7 @@ def plot_emissions(df, selected_pollutants):
             annual_mean_all = df.groupby('decade')['avg_air_pollutant_level'].mean().reset_index()
             if df['decade'].nunique() == 1:
                 # Use bar plot for a single decade
-                st.bar_chart(data=annual_mean_all, x='decade': 'Decade', y='avg_air_pollutant_level': ' Average All Polutants', color=None, width=0, height=0, use_container_width=True)
+                st.bar_chart(data=annual_mean_all, x='decade', y='avg_air_pollutant_level', color=None, width=0, height=0, use_container_width=True)
                 #sns.barplot(x='decade', y='avg_air_pollutant_level', data=annual_mean_all)
                 #plt.axhline(y='avg_air_pollutant_level', color='blue', label='Average All Airpollutants', alpha=0.5)
             else:
