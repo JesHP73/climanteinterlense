@@ -13,7 +13,7 @@ import pollution_impact
 # Function to load data
 @st.cache
 def load_data():
-    DATA_URL = 'https://raw.githubusercontent.com/JesHP73/IntersectionalClimateLense/82562b5a84f5af80373d79691b331ed0c33843ea/data_sets/socio_economical_agg_dataset.csv'
+    DATA_URL = 'https://github.com/JesHP73/climanteinterlense/blob/1bdbb328a91258a4f0021ec3392e95d7126ae9fb/dataset/socio_economical_agg_dataset.csv'
     data = pd.read_csv(DATA_URL)
     return data
 
