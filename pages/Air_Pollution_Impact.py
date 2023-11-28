@@ -45,6 +45,7 @@ def plot_emissions(df, pollutant):
     return plt
 
 # Page content function for Air Pollution Impact
+# Modified page content function with added multiselects and 'All' option
 def air_pollution_impact(df):
     if df.empty:
         st.error("No data available to display.")
@@ -53,17 +54,94 @@ def air_pollution_impact(df):
     st.title("Air Pollution Impact")
     st.write("Visualize the impact of air pollutants over time compared to WHO standards.")
 
-    # Sidebar filter to select pollutants
-    selected_pollutant = st.sidebar.selectbox('Select Pollutant', options=list(WHO_STANDARDS.keys()))
+    # Sidebar filters
+    zone_options = ['All'] + df['zone'].unique().tolist()
+    region_options = ['All'] + df['region'].unique().tolist()
+    country_options = ['All'] + df['country'].unique().tolist()
+    pollutant_options = ['All'] + list(WHO_STANDARDS.keys())
 
-    # Call the plotting function
-    fig = plot_emissions(df, selected_pollutant)
-    st.pyplot(fig)
+    selected_zone = st.sidebar.multiselect('Select Zone', options=zone_options, default='All')
+    selected_region = st.sidebar.multiselect('Select Region', options=region_options, default='All')
+    selected_country = st.sidebar.multiselect('Select Country', options=country_options, default='All')
+    selected_pollutants = st.sidebar.multiselect('Select Pollutant(s)', options=pollutant_options, default='All')
 
-    # Additional explanations about AQGs and RLs
-    st.markdown("### WHO Air Quality Guidelines (AQGs) and Reference Levels (RLs)")
-    st.write("AQGs provide guidance on air quality standards to protect public health.")
-    st.write("RLs are more lenient standards used for intermediate targets.")
+    # Filter the DataFrame based on selections
+    if 'All' not in selected_zone:
+        df = df[df['zone'].isin(selected_zone)]
+    if 'All' not in selected_region:
+        df = df[df['region'].isin(selected_region)]
+    if 'All' not in selected_country:
+        df = df[df['country'].isin(selected_country)]
+    if 'All' not in selected_pollutants:
+        df = df[df['air_pollutant'].isin(selected_pollutants)]
+
+    # Call the plotting function for each selected pollutant or all if 'All' is selected
+    if 'All' in selected_pollutants:
+        pollutants_to_plot = list(WHO_STANDARDS.keys())
+    else:
+        pollutants_to_plot = selected_pollutants
+
+    for pollutant in pollutants_to_plot:
+        fig = plot_emissions(df, pollutant)
+        st.pyplot(fig)
+
+# New function to display key facts
+def display_key_facts(df, pollutants, zones, regions, countries):
+    st.subheader("Key Facts")
+    
+    # Selection summaries for a non-expert audience
+    st.write(f"**Pollutants selected:** {'All' if 'All' in pollutants else ', '.join(pollutants)}")
+    st.write(f"**Zones selected:** {'All' if 'All' in zones else ', '.join(zones)}")
+    st.write(f"**Regions selected:** {'All' if 'All' in regions else ', '.join(regions)}")
+    st.write(f"**Countries selected:** {'All' if 'All' in countries else ', '.join(countries)}")
+
+    # Ensure there is data to display
+    if not df.empty:
+        # Mean pollutant levels
+        mean_pollutant_levels = df['avg_air_pollutant_level'].mean()
+        st.write(f"**Average pollutant level:** {mean_pollutant_levels:.2f} μg/m3 - This is the average level of pollutants in the air for the selected criteria.")
+
+        # Highest and Lowest Pollutant Levels
+        max_pollutant_level = df['avg_air_pollutant_level'].max()
+        min_pollutant_level = df['avg_air_pollutant_level'].min()
+        st.write(f"**Highest pollutant level:** {max_pollutant_level:.2f} μg/m3 - This represents the peak level of air pollution recorded in the selected data.")
+        st.write(f"**Lowest pollutant level:** {min_pollutant_level:.2f} μg/m3 - This is the lowest level of air pollution observed in the selected data.")
+
+        # Instances exceeding WHO standards
+        exceedances_aqg = df[df['avg_air_pollutant_level'] > df['air_pollutant'].apply(lambda x: WHO_STANDARDS[x]['AQG'])].shape[0]
+        exceedances_rl = df[df['avg_air_pollutant_level'] > df['air_pollutant'].apply(lambda x: WHO_STANDARDS[x]['RL'])].shape[0]
+        st.write(f"**Instances above WHO Air Quality Guidelines (AQG):** {exceedances_aqg} times - This number shows how often the pollution levels have exceeded safe limits set by WHO.")
+        st.write(f"**Instances above WHO Reference Levels (RL):** {exceedances_rl} times - This count indicates the frequency of pollution levels going beyond the recommended reference levels.")
+
+        # Zone, Region, and Country specific averages
+        if 'All' not in zones:
+            zone_stats = df.groupby('zone')['avg_air_pollutant_level'].mean()
+            st.write(f"**Average pollutant levels by zone:** {zone_stats.to_dict()} - Averages for each selected zone are shown here.")
+
+        if 'All' not in regions:
+            region_stats = df.groupby('region')['avg_air_pollutant_level'].mean()
+            st.write(f"**Average pollutant levels by region:** {region_stats.to_dict()} - These are the regional averages of air pollution.")
+
+        if 'All' not in countries:
+            country_stats = df.groupby('country')['avg_air_pollutant_level'].mean()
+            st.write(f"**Average pollutant levels by country:** {country_stats.to_dict()} - This presents the average pollution levels for each chosen country.")
+
+        # Population exposure to high levels of PM2.5 and PM10
+        population_exposed_aqg_pm25 = df[df['avg_air_pollutant_level'] > WHO_STANDARDS['PM2.5']['AQG']]['total_population'].sum()
+        st.write(f"**Population exposed above PM2.5 WHO AQG:** {population_exposed_aqg_pm25} - Indicates the total number of people living in areas where the PM2.5 levels are above the safe limit.")
+
+        population_exposed_aqg_pm10 = df[df['avg_air_pollutant_level'] > WHO_STANDARDS['PM10']['AQG']]['total_population'].sum()
+        st.write(f"**Population exposed above PM10 WHO AQG:** {population_exposed_aqg_pm10} - Reflects the total population exposed to PM10 levels that exceed WHO's air quality guidelines.")
+
+        # Correlation between GNI and pollutant levels
+        correlation_gni_pollution = df[['avg_GNI_PPP', 'avg_air_pollutant_level']].corr().iloc[0, 1]
+        st.write(f"**Correlation between GNI and pollutant levels:** {correlation_gni_pollution:.2f} - A measure of the relationship between a country's income levels and its air pollution. A higher value indicates a stronger relationship.")
+
+        # Additional explanations about AQGs and RLs
+        st.markdown("### WHO Air Quality Guidelines (AQGs) and Reference Levels (RLs)")
+        st.write("AQGs provide guidance on air quality standards to protect public health. RLs are more lenient standards used for intermediate targets.")
+    else:
+        st.error("No data available for the selected criteria.")
 
 # Load data
 df = load_data()
