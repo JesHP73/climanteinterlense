@@ -24,12 +24,7 @@ def load_data(url):
     return original_df
 
 original_df = load_data('https://github.com/JesHP73/climanteinterlense/blob/b17caae9e26c0c89b1f6ba8f5c9db3b9566bb701/dataset/socio_economical_agg_dataset.csv')
-df = original_df.copy(
-
-st.dataframe(df)
-st.button("Rerun")
-
-
+df = original_df.copy()
 
 # Main body of your Streamlit app
 def main():
