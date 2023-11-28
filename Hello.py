@@ -34,5 +34,7 @@ st.markdown(
     """
     This app examines the intersection of climate data with socio-economic factors.
     **👈 Select a page from the sidebar** to begin exploring the visualizations and insights.
-    ### Want to learn more?
+    ### Want to learn more?  
+    """
+    
 )
