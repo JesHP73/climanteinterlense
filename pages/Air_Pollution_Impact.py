@@ -25,7 +25,7 @@ def load_data():
         pass
 
 
-def plot_emissions(df, selected_pollutants):
+def plot_emissions(df, selected_pollutants,WHO_STANDARDS):
     plt.figure(figsize=(10, 5))
 
     # Check if 'All' pollutants are selected
