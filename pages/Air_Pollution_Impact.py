@@ -27,12 +27,9 @@ def load_data():
     except Exception as e:
         st.error(f"Error loading data: {e}")
         return pd.DataFrame() 
-# Load data
-original_data_df = load_data()
-df = original_data_df.copy
 
 def plot_emissions(df, selected_pollutants):
-    df = original_data_df.copy
+    df = original_data_df.copy()
     # Data Validation: Check if dataframe is empty
     if df.empty:
         st.error('No data available for the selected filters')
@@ -139,6 +136,9 @@ def display_key_facts(df, pollutants, zones, regions, countries):
 
 # Main body of your Streamlit app
 def main():
+    # Load data
+    original_data_df = load_data()
+    df = original_data_df.copy()
     
     # Call the page content function
     air_pollution_impact(df)
