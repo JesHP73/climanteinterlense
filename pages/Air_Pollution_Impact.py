@@ -56,18 +56,20 @@ def plot_emissions(df, selected_pollutants):
                 df[f'{pollutant}_AQG'] = aqg
                 df[f'{pollutant}_RL'] = rl
                 
-             # Filter and drop duplicates before pivot
+            # Filter and drop duplicates before pivot
             filtered_data = df[df['air_pollutant'].isin(selected_pollutants)].drop_duplicates(subset=['decade', 'air_pollutant'])
             pivot_data = filtered_data.pivot(index='decade', columns='air_pollutant', values='avg_air_pollutant_level')
             
             # Rename columns for better labeling in the chart
             for pollutant in selected_pollutants:
                 pivot_data.rename(columns={pollutant: f'Avg {pollutant} Pollution Level'}, inplace=True)
-
+            
+            # Prepare the standards data
+            standards_data = df.set_index('decade')[standards_columns].drop_duplicates()
+            
             # Join with the AQG and RL standards
-            standards_columns = [f'{pollutant}_AQG' for pollutant in selected_pollutants] + [f'{pollutant}_RL' for pollutant in selected_pollutants]
-            joined_data = pivot_data.join(df[standards_columns].drop_duplicates('decade').set_index('decade'))
-
+            joined_data = pivot_data.join(standards_data)
+            
             st.line_chart(joined_data)
             
             # If only one pollutant is selected, add a caption for clarity
