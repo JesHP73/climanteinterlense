@@ -4,7 +4,7 @@
 import streamlit as st
 import pandas as pd
 
-# Set up your main page configuration
+# This should be the first Streamlit command
 st.set_page_config(
     page_title="Intersectional Climate Trends",
     page_icon="🌎"
