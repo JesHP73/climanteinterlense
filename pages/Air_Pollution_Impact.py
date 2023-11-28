@@ -52,7 +52,8 @@ def plot_emissions(df, selected_pollutants):
 
     return plt
 
-
+fig = plot_emissions(df, selected_pollutants)
+st.pyplot(fig)
 
 def display_key_facts(df, pollutants, zones, regions, countries):
     st.subheader("Key Facts")
