@@ -20,20 +20,8 @@ def get_standard(pollutant, standard_type):
 # Function to load data
 @st.cache_data  # 👈 Add the caching decorator
 def load_data(url):
-    original_df = pd.read_csv(url)
+    original_df = pd.read_csv('https://github.com/JesHP73/climanteinterlense/blob/b17caae9e26c0c89b1f6ba8f5c9db3b9566bb701/dataset/socio_economical_agg_dataset.csv')
     return original_df
-
-original_df = load_data('https://github.com/JesHP73/climanteinterlense/blob/b17caae9e26c0c89b1f6ba8f5c9db3b9566bb701/dataset/socio_economical_agg_dataset.csv')
-df = original_df.copy()
-
-# Main body of your Streamlit app
-def main():
-    # Load data
-    original_data_df = get_database_session()
-    df = original_data_df.copy()
-    
-    # Call the page content function
-    air_pollution_impact(df)
 
 
 def plot_emissions(df, selected_pollutants):
@@ -140,6 +128,16 @@ def display_key_facts(df, pollutants, zones, regions, countries):
         st.info("The guidelines and reference levels from WHO are designed to keep air quality at a level that's safe for public health. When pollution levels go above these numbers, it can lead to health concerns for the population, especially vulnerable groups like children and the elderly.")
     else:
         st.error("No data available for the selected criteria.")
+
+
+# Main body of your Streamlit app
+def main():
+    # Load data
+    original_data_df = load_data()
+    df = original_data_df.copy()
+    
+    # Call the page content function
+    air_pollution_impact(df)
     
 
 # Page content function for Air Pollution Impact
