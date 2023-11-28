@@ -4,6 +4,7 @@ import pandas as pd
 #import matplotlib.pyplot as plt
 import numpy as np
 
+
 # WHO standards for pollutants
 WHO_STANDARDS = {
     'PM10': {'AQG': 15, 'RL': 45},
