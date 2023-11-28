@@ -44,46 +44,6 @@ def plot_emissions(df, pollutant):
 
     return plt
 
-# Page content function for Air Pollution Impact
-# Modified page content function with added multiselects and 'All' option
-def air_pollution_impact(df):
-    if df.empty:
-        st.error("No data available to display.")
-        return
-
-    st.title("Air Pollution Impact")
-    st.write("Visualize the impact of air pollutants over time compared to WHO standards.")
-
-    # Sidebar filters
-    zone_options = ['All'] + df['zone'].unique().tolist()
-    region_options = ['All'] + df['region'].unique().tolist()
-    country_options = ['All'] + df['country'].unique().tolist()
-    pollutant_options = ['All'] + list(WHO_STANDARDS.keys())
-
-    selected_zone = st.sidebar.multiselect('Select Zone', options=zone_options, default='All')
-    selected_region = st.sidebar.multiselect('Select Region', options=region_options, default='All')
-    selected_country = st.sidebar.multiselect('Select Country', options=country_options, default='All')
-    selected_pollutants = st.sidebar.multiselect('Select Pollutant(s)', options=pollutant_options, default='All')
-
-    # Filter the DataFrame based on selections
-    if 'All' not in selected_zone:
-        df = df[df['zone'].isin(selected_zone)]
-    if 'All' not in selected_region:
-        df = df[df['region'].isin(selected_region)]
-    if 'All' not in selected_country:
-        df = df[df['country'].isin(selected_country)]
-    if 'All' not in selected_pollutants:
-        df = df[df['air_pollutant'].isin(selected_pollutants)]
-
-    # Call the plotting function for each selected pollutant or all if 'All' is selected
-    if 'All' in selected_pollutants:
-        pollutants_to_plot = list(WHO_STANDARDS.keys())
-    else:
-        pollutants_to_plot = selected_pollutants
-
-    for pollutant in pollutants_to_plot:
-        fig = plot_emissions(df, pollutant)
-        st.pyplot(fig)
 
 # New function to display key facts
 def display_key_facts(df, pollutants, zones, regions, countries):
@@ -143,8 +103,62 @@ def display_key_facts(df, pollutants, zones, regions, countries):
     else:
         st.error("No data available for the selected criteria.")
 
+# Main body of your Streamlit app
+def main():
+    # Load data
+    df = load_data()
+
+# Page content function for Air Pollution Impact
+# Modified page content function with added multiselects and 'All' option
+def air_pollution_impact(df):
+    if df.empty:
+        st.error("No data available to display.")
+        return
+
+    st.title("Air Pollution Impact")
+    st.write("Visualize the impact of air pollutants over time compared to WHO standards.")
+
+    # Sidebar filters
+    zone_options = ['All'] + df['zone'].unique().tolist()
+    region_options = ['All'] + df['region'].unique().tolist()
+    country_options = ['All'] + df['country'].unique().tolist()
+    pollutant_options = ['All'] + list(WHO_STANDARDS.keys())
+
+    selected_zone = st.sidebar.multiselect('Select Zone', options=zone_options, default='All')
+    selected_region = st.sidebar.multiselect('Select Region', options=region_options, default='All')
+    selected_country = st.sidebar.multiselect('Select Country', options=country_options, default='All')
+    selected_pollutants = st.sidebar.multiselect('Select Pollutant(s)', options=pollutant_options, default='All')
+
+    # Filter the DataFrame based on selections
+    if 'All' not in selected_zone:
+        df = df[df['zone'].isin(selected_zone)]
+    if 'All' not in selected_region:
+        df = df[df['region'].isin(selected_region)]
+    if 'All' not in selected_country:
+        df = df[df['country'].isin(selected_country)]
+    if 'All' not in selected_pollutants:
+        df = df[df['air_pollutant'].isin(selected_pollutants)]
+
+    # Call the plotting function for each selected pollutant or all if 'All' is selected
+    if 'All' in selected_pollutants:
+        pollutants_to_plot = list(WHO_STANDARDS.keys())
+    else:
+        pollutants_to_plot = selected_pollutants
+
+    for pollutant in pollutants_to_plot:
+        fig = plot_emissions(df, pollutant)
+        st.pyplot(fig)
+
+        # After plotting, call the function to display key facts
+        display_key_facts(df, selected_pollutants, selected_zone, selected_region, selected_country)
+
+
 # Load data
 df = load_data()
 
 # Call page content function
 air_pollution_impact(df);
+
+# Call the main function to run the app
+if __name__ == "__main__":
+    main()
