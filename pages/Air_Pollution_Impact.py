@@ -73,16 +73,16 @@ def plot_emissions(df, selected_pollutants):
                 plt.axhline(y=get_standard(pollutant, 'RL'), color='orange',
                 plt.axhline(y=get_standard(pollutant, 'RL'), color='orange', linestyle='--', label=f'WHO RL ({pollutant})', alpha=0.5)
 
-    # Set plot titles and labels
-    plt.title('Annual Average Levels of Pollutants (compared to WHO guidelines)')
-    plt.xlabel('Decade')
-    plt.ylabel('Average Level (μg/m3)')
-
-    # Place the legend outside the plot
-    plt.legend(loc='upper left', bbox_to_anchor=(1, 1))
-    plt.tight_layout()
-
-    return plt
+        # Set plot titles and labels
+        plt.title('Annual Average Levels of Pollutants (compared to WHO guidelines)')
+        plt.xlabel('Decade')
+        plt.ylabel('Average Level (μg/m3)')
+    
+        # Place the legend outside the plot
+        plt.legend(loc='upper left', bbox_to_anchor=(1, 1))
+        plt.tight_layout()
+    
+        return plt
                
 
 def display_key_facts(df, pollutants, zones, regions, countries):
