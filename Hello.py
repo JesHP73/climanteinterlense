@@ -20,9 +20,10 @@ def load_data():
 # Load data
 df = load_data()
 
+# Set up your main page configuration
 st.set_page_config(
     page_title="Intersectional Climate Trends",
-    page_icon="🌎",
+    page_icon="🌎"
 )
 
 st.write("# Welcome to the Intersectional Climate Trends App 🌎")
@@ -34,7 +35,4 @@ st.markdown(
     This app examines the intersection of climate data with socio-economic factors.
     **👈 Select a page from the sidebar** to begin exploring the visualizations and insights.
     ### Want to learn more?
-    - Check out [our GitHub repository](https://github.com/yourusername/your-repo-name)
-    """
 )
-
