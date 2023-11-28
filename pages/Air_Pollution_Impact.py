@@ -13,6 +13,10 @@ WHO_STANDARDS = {
     'CO': {'AQG': 4, 'RL': 10}  # Assuming the unit is mg/m3 for simplicity
 }
 
+# Function to get the standard value for a given pollutant and standard type
+def get_standard(pollutant, standard_type):
+    return WHO_STANDARDS.get(pollutant, {}).get(standard_type, None)
+
 # Function to load data
 @st.cache
 def load_data():
