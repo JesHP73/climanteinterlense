@@ -74,8 +74,10 @@ def plot_emissions(df, selected_pollutants):
                 #sns.lineplot(x='decade', y='avg_air_pollutant_level', data=annual_data, label=pollutant)
                 
                 # Plot WHO guideline lines for the selected pollutant using get_standard
-                plt.axhline(y=get_standard(pollutant, 'AQG'), color='teal', linestyle='--', label=f'WHO AQG ({pollutant})', alpha=0.5)
-                plt.axhline(y=get_standard(pollutant, 'RL'), color='orange', linestyle='--', label=f'WHO RL ({pollutant})', alpha=0.5)
+                #plt.axhline(y=get_standard(pollutant, 'AQG'), color='teal', linestyle='--', label=f'WHO AQG ({pollutant})', alpha=0.5)
+                #plt.axhline(y=get_standard(pollutant, 'RL'), color='orange', linestyle='--', label=f'WHO RL ({pollutant})', alpha=0.5)
+                st.line_chart(data=annual_data, x='decade', y=get_standard(pollutant, 'RL'), color=None, width=0, height=0, use_container_width=True)
+                st.line_chart(data=annual_data, x='decade', y=get_standard(pollutant, 'AQG'), color=None, width=0, height=0, use_container_width=True)
 
         # Set plot titles and labels
         plt.title('Annual Average Levels of Pollutants (compared to WHO guidelines)')
