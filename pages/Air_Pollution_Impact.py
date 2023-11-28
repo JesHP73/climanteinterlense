@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
+import numpy as np
 
 # WHO standards for pollutants
 WHO_STANDARDS = {
@@ -23,6 +24,10 @@ def load_data():
         st.error(f"Error loading data: {e}")
         return pd.DataFrame()  # Return an empty DataFrame in case of an error.
         pass
+
+# to handle if 'air_pollutant' could contain values not present in WHO_STANDARDS, you might run into a KeyError.
+def get_standard(pollutant, standard_type):
+    return WHO_STANDARDS.get(pollutant, {}).get(standard_type, float('nan'))
 
 
 def plot_emissions(df, selected_pollutants):
@@ -61,10 +66,6 @@ def plot_emissions(df, selected_pollutants):
 
     return plt
 
-   
-# to handle if 'air_pollutant' could contain values not present in WHO_STANDARDS, you might run into a KeyError.
-def get_standard(pollutant, standard_type):
-    return WHO_STANDARDS.get(pollutant, {}).get(standard_type, float('nan'))
 
 
 def display_key_facts(df, pollutants, zones, regions, countries):
