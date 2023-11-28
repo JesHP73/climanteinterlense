@@ -60,8 +60,9 @@ def plot_emissions(df, selected_pollutants):
             avg_RL = np.mean([get_standard(pollutant, 'RL') for pollutant in WHO_STANDARDS])
             plt.axhline(y=avg_AQG, color='teal', linestyle='--', label='Average WHO AQG', alpha=0.5)
             plt.axhline(y=avg_RL, color='orange', linestyle='--', label='Average WHO RL', alpha=0.5)
-
-    else:
+        
+        
+        else:
            # Plot each selected pollutant and its WHO guidelines
            for pollutant in selected_pollutants:
                 # Filter and calculate mean for the selected pollutant
