@@ -33,19 +33,20 @@ def plot_emissions(df, selected_pollutants):
         # Calculate the mean across all pollutants for each decade
         annual_mean_all = df.groupby('decade')['avg_air_pollutant_level'].mean().reset_index()
         sns.lineplot(x='decade', y='avg_air_pollutant_level', data=annual_mean_all, label='Average All Pollutants')
-
-        # Plot WHO guidelines for each pollutant
-        for pollutant, guidelines in WHO_STANDARDS.items():
-            plt.axhline(y=guidelines['AQG'], color='teal', linestyle='--', label=f'WHO AQG ({pollutant})', alpha=0.5)
-            plt.axhline(y=guidelines['RL'], color='orange', linestyle='--', label=f'WHO RL ({pollutant})', alpha=0.5)
-
+        
+        # Plot the average WHO guidelines for all pollutants
+        avg_AQG = np.mean([guideline['AQG'] for guideline in WHO_STANDARDS.values()])
+        avg_RL = np.mean([guideline['RL'] for guideline in WHO_STANDARDS.values()])
+        plt.axhline(y=avg_AQG, color='teal', linestyle='--', label='Average WHO AQG', alpha=0.5)
+        plt.axhline(y=avg_RL, color='orange', linestyle='--', label='Average WHO RL', alpha=0.5)
+    
     else:
-        # Plot each selected pollutant
+        # Plot each selected pollutant and its WHO guidelines
         for pollutant in selected_pollutants:
             # Filter and calculate mean for the selected pollutant
             annual_data = df[df['air_pollutant'] == pollutant].groupby('decade')['avg_air_pollutant_level'].mean().reset_index()
             sns.lineplot(x='decade', y='avg_air_pollutant_level', data=annual_data, label=pollutant)
-            # Plot WHO guideline for the selected pollutant
+            # Plot WHO guideline lines for the selected pollutant
             plt.axhline(y=WHO_STANDARDS[pollutant]['AQG'], color='teal', linestyle='--', label=f'WHO AQG ({pollutant})', alpha=0.5)
             plt.axhline(y=WHO_STANDARDS[pollutant]['RL'], color='orange', linestyle='--', label=f'WHO RL ({pollutant})', alpha=0.5)
 
@@ -59,6 +60,7 @@ def plot_emissions(df, selected_pollutants):
     plt.tight_layout()
 
     return plt
+
 
 
     
