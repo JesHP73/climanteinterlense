@@ -69,6 +69,7 @@ def plot_emissions(df, selected_pollutants):
         st.error(f"An error occurred while plotting: {e}")
 
 
+
 def display_pollutant_summary(pollutants):
     return 'All' if 'All' in pollutants else ', '.join(pollutants)
 
