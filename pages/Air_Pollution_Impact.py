@@ -41,22 +41,20 @@ def plot_emissions(df, selected_pollutants):
 
     try:
         if 'All' in selected_pollutants:
-            # Group by decade and calculate the mean for each pollutant
-            annual_means = df.groupby(['decade', 'air_pollutant'])['avg_air_pollutant_level'].mean().reset_index()
+            # Calculate the mean across all pollutants for each decade
+            overall_mean = df.groupby('decade')['avg_air_pollutant_level'].mean()
 
-            # Pivot the data to have decades as rows and pollutants as columns
-            pivot_data = annual_means.pivot(index='decade', columns='air_pollutant', values='avg_air_pollutant_level')
+            # Assuming AQG and RL are constants, use a representative value for all pollutants
+            aqg = sum([WHO_STANDARDS[pollutant]['AQG'] for pollutant in WHO_STANDARDS]) / len(WHO_STANDARDS)
+            rl = sum([WHO_STANDARDS[pollutant]['RL'] for pollutant in WHO_STANDARDS]) / len(WHO_STANDARDS)
 
-            # Rename columns for better labeling in the chart
-            pivot_data.columns = [f'Avg {col} Pollution Level' for col in pivot_data.columns]
-
-            # Check if pivot_data is empty after manipulation
-            if pivot_data.empty:
-                st.error('No data available to plot after processing.')
-                return
+            # Create a DataFrame for plotting
+            plot_data = overall_mean.to_frame(name='Average Pollution Level')
+            plot_data['WHO AQG'] = aqg
+            plot_data['WHO RL'] = rl
 
             # Plot the data using st.line_chart
-            st.line_chart(pivot_data)
+            st.line_chart(plot_data)
         else:
             # Initialize an empty DataFrame for joined data
             joined_data = pd.DataFrame(index=df['decade'].unique())
