@@ -14,6 +14,18 @@ WHO_STANDARDS = {
     'CO': {'AQG': 4, 'RL': 10}  # Assuming the unit is mg/m3 for simplicity
 }
 
+# Add a new column for each pollutant indicating if it's above the WHO standard
+for pollutant, standards in WHO_STANDARDS.items():
+    df[f'{pollutant}_above_AQG'] = df.apply(
+        lambda x: x['avg_air_pollutant_level'] > standards['AQG'] if x['air_pollutant'] == pollutant else None, axis=1)
+
+# Now create a single column 'pollution_above_who' indicating if any pollutant is above its AQG
+df['pollution_above_who'] = df[[f'{pollutant}_above_AQG' for pollutant in WHO_STANDARDS]].any(axis=1)
+
+# Clean up the intermediate columns if they are no longer needed
+for pollutant in WHO_STANDARDS:
+    del df[f'{pollutant}_above_AQG']
+
 # Function to get the standard value for a given pollutant and standard type
 def get_standard(pollutant, standard_type):
     return WHO_STANDARDS.get(pollutant, {}).get(standard_type, None)
@@ -39,6 +51,9 @@ def plot_emissions(df, selected_pollutants):
     # Convert decades to string to avoid commas in the x-axis labels
     df['decade'] = df['decade'].astype(str)
 
+    # This will hold the countries with the most pollution above WHO standard
+    countries_above_who = None
+
     try:
         if 'All' in selected_pollutants:
             # Calculate the mean across all pollutants for each decade
@@ -55,6 +70,7 @@ def plot_emissions(df, selected_pollutants):
 
             # Plot the data using st.line_chart
             st.line_chart(plot_data)
+
         else:
             # Initialize an empty DataFrame for joined data
             joined_data = pd.DataFrame(index=df['decade'].unique())
@@ -84,6 +100,11 @@ def plot_emissions(df, selected_pollutants):
 
             # Plot the data using st.line_chart
             st.line_chart(joined_data)
+
+            countries_above_who = df[df['pollution_above_who']].groupby('country').size().sort_values(ascending=False)
+            if not countries_above_who.empty:
+                most_polluted_country = countries_above_who.idxmax()
+                st.warning(f"The country with the most pollution above WHO standard is: {most_polluted_country}")
 
             # If only one pollutant is selected, add a caption for clarity
             if len(selected_pollutants) == 1:
