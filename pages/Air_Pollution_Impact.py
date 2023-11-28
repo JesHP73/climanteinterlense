@@ -122,11 +122,11 @@ def display_key_facts(df, pollutants, zones, regions, countries):
         #with st.expander("Air Pollution Metrics"):
             #display_pollution_metrics(df)
 
-        with st.expander("WHO Standards and Exceedances"):
-            display_standard_exceedances(df)
+        #with st.expander("WHO Standards and Exceedances"):
+            #display_standard_exceedances(df)
 
-        with st.expander("Population Exposure and Economic Correlation"):
-            display_population_exposure_and_economic_correlation(df)
+        #with st.expander("Population Exposure and Economic Correlation"):
+            #display_population_exposure_and_economic_correlation(df)
 
         # Additional explanations about AQGs and RLs
         st.markdown("### Understanding the Numbers")
