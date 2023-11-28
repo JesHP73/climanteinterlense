@@ -182,9 +182,9 @@ def air_pollution_impact(df):
         conditions.append(df['air_pollutant'].isin(selected_pollutants))
     
     if conditions:
-        df_filtered = df[np.logical_and.reduce(conditions)]
+        df_filtered = df[np.logical_and.reduce(conditions)].copy()
     else:
-        df_filtered = df
+        df_filtered = df.copy()
 
         # Example of correct indentation
     if not df_filtered.empty:
