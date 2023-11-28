@@ -26,7 +26,7 @@ def load_data():
 # Function to plot annual emissions and compare with WHO standards
 def plot_emissions(df, pollutant):
     # Aggregate your data to get annual averages for the selected pollutant
-    annual_data = df[df['pollutant'] == pollutant].groupby('year')['emission'].mean().reset_index()
+    annual_data = df[df['air_pollutant'] == pollutant].groupby('decade')['emission'].mean().reset_index()
 
     # Start plotting
     plt.figure(figsize=(10, 5))
