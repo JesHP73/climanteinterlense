@@ -143,13 +143,11 @@ def air_pollution_impact(df):
     if not df_filtered.empty:
         plot_emissions(df_filtered, selected_pollutants)
         display_key_facts(df_filtered, selected_pollutants, selected_zone, selected_region, selected_country)
-else:
+    else:
     st.error("No data available for the selected criteria.")
 
     # Call the plotting function and show the plot
-    fig = plot_emissions(df, selected_pollutants)
-    st.pyplot(fig)
-
+    plot_emissions(df_filtered, selected_pollutants)
 
     # Call the function to display key facts with current DataFrame and selections
     display_key_facts(df, selected_pollutants, selected_zone, selected_region, selected_country)
