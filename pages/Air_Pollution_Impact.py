@@ -68,8 +68,7 @@ def plot_emissions(df, selected_pollutants):
     except Exception as e:
         st.error(f"An error occurred while plotting: {e}")
 
-
-
+        
 def display_pollutant_summary(pollutants):
     return 'All' if 'All' in pollutants else ', '.join(pollutants)
 
@@ -88,8 +87,32 @@ def display_key_facts(df, pollutants, zones, regions, countries):
     st.write(f"**Pollutants being analyzed:** {display_pollutant_summary(pollutants)}")
     st.write(f"**Geographical focus:** {display_geographical_focus(zones, regions, countries)}")
 
-    # Check if there is data to display
     if not df.empty:
+        # Simplified metrics
+        avg_pollutant_level = round(df['avg_air_pollutant_level'].mean())
+        max_pollutant_level = round(df['avg_air_pollutant_level'].max())
+        min_pollutant_level = round(df['avg_air_pollutant_level'].min())
+        st.metric(label="Average level of air pollution", value=f"{avg_pollutant_level} μg/m3")
+        st.metric(label="Highest recorded air pollution level", value=f"{max_pollutant_level} μg/m3")
+        st.metric(label="Lowest recorded air pollution level", value=f"{min_pollutant_level} μg/m3")
+
+        # Instances exceeding WHO standards
+        exceedances_aqg = df[df['avg_air_pollutant_level'] > df['air_pollutant'].apply(lambda x: get_standard(x, 'AQG'))].shape[0]
+        exceedances_rl = df[df['avg_air_pollutant_level'] > df['air_pollutant'].apply(lambda x: get_standard(x, 'RL'))].shape[0]
+
+        st.write(f"**Air quality concerns:** Air pollution levels exceeded safe limits set by WHO {exceedances_aqg} times.")
+        st.write(f"**Reference level concerns:** Pollution levels went beyond the recommended reference levels {exceedances_rl} times.")
+
+        # Population exposure, rounded and simplified
+        population_exposed_aqg_pm25 = round(df[df['avg_air_pollutant_level'] > WHO_STANDARDS['PM2.5']['AQG']]['total_population'].sum())
+        population_exposed_aqg_pm10 = round(df[df['avg_air_pollutant_level'] > WHO_STANDARDS['PM10']['AQG']]['total_population'].sum())
+        st.write(f"**People affected by PM2.5:** Approximately {population_exposed_aqg_pm25:,} people live in areas with PM2.5 above WHO's safe limit.")
+        st.write(f"**People affected by PM10:** Around {population_exposed_aqg_pm10:,} people are exposed to PM10 levels exceeding the guidelines.")
+
+        # Correlation between GNI and pollutant levels, rounded and simplified
+        correlation_gni_pollution = round(df[['avg_GNI_PPP', 'avg_air_pollutant_level']].corr().iloc[0, 1], 2)
+        st.write(f"**Economic correlation:** There's a {correlation_gni_pollution} correlation between a country's income levels and its air pollution, suggesting that higher income might be associated with better air quality.")
+
         with st.expander("Air Pollution Metrics"):
             display_pollution_metrics(df)
 
