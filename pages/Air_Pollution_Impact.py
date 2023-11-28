@@ -157,13 +157,13 @@ def air_pollution_impact(df):
     else:
         df_filtered = df
 
-    # Update plotting and key facts display with filtered DataFrame
+        # Example of correct indentation
     if not df_filtered.empty:
         plot_emissions(df_filtered, selected_pollutants)
         display_key_facts(df_filtered, selected_pollutants, selected_zone, selected_region, selected_country)
     else:
-    st.error("No data available for the selected criteria.")
-
+        st.error("No data available for the selected criteria.")
+    
     # Call the plotting function and show the plot
     plot_emissions(df_filtered, selected_pollutants)
 
