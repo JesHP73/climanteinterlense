@@ -6,9 +6,9 @@
 
 import streamlit as st
 import pandas as pd
-import gni_aqi_analysis
-import trends_over_time
-import pollution_impact
+import 1_📊_GNI_AQI_Analysis.py
+import 2_⏳_Trends_Over_Time.py
+import 3_🌍_Air_Pollution_Impact.py
 
 # Function to load data
 @st.cache
