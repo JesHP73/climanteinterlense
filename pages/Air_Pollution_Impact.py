@@ -51,6 +51,7 @@ def plot_emissions(df, selected_pollutants):
             if df['decade'].nunique() == 1:
                 # Use bar plot for a single decade
                 sns.barplot(x='decade', y='avg_air_pollutant_level', data=annual_mean_all)
+                plt.axhline(y='avg_air_pollutant_level', color='blue', label='Average All Airpollutants', alpha=0.5)
             else:
                 # Use line plot for multiple decades
                 sns.lineplot(x='decade', y='avg_air_pollutant_level', data=annual_mean_all, label='Average All Pollutants')
