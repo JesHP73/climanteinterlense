@@ -29,7 +29,7 @@ def load_data():
         return pd.DataFrame() 
 
 def plot_emissions(df, selected_pollutants):
-    df = original_data_df.copy()
+    #df = original_data_df.copy()
     # Data Validation: Check if dataframe is empty
     if df.empty:
         st.error('No data available for the selected filters')
