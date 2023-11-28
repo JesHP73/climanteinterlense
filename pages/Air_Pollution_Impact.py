@@ -28,10 +28,11 @@ def load_data():
         st.error(f"Error loading data: {e}")
         return pd.DataFrame() 
 # Load data
-df = load_data().copy()
- 
-def plot_emissions(df, selected_pollutants):
+original_data_df = load_data()
+df = original_data_df.copy
 
+def plot_emissions(df, selected_pollutants):
+    df = original_data_df.copy
     # Data Validation: Check if dataframe is empty
     if df.empty:
         st.error('No data available for the selected filters')
@@ -87,6 +88,7 @@ def display_geographical_focus(zones, regions, countries):
         return ', '.join(countries)
 
 def display_key_facts(df, pollutants, zones, regions, countries):
+    df = original_data_df.copy
     st.subheader("Key Facts")
 
     # Simplified Selection summaries for a non-expert audience
