@@ -38,7 +38,7 @@ def plot_emissions(df, selected_pollutants):
         return
 
     # Convert decades to string to avoid commas in the x-axis labels
-    df['decade'] = df['decade'].astype(str)
+    #df['decade'] = df['decade'].astype(str)
 
     try:
         if 'All' in selected_pollutants:
