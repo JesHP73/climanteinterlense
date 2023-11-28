@@ -46,8 +46,8 @@ def plot_emissions(df, selected_pollutants):
             annual_mean_all = df.groupby('decade')['avg_air_pollutant_level'].mean().reset_index()
             st.line_chart(annual_mean_all.set_index('decade'))
         else:
-            filtered_data = df[df['pollutant'].isin(selected_pollutants)]
-            pivot_data = filtered_data.pivot(index='decade', columns='pollutant', values='avg_air_pollutant_level')
+            filtered_data = df[df['air_pollutant'].isin(selected_pollutants)]
+            pivot_data = filtered_data.pivot(index='decade', columns='air_pollutant', values='avg_air_pollutant_level')
             st.line_chart(pivot_data)
     except Exception as e:
         st.write(f"An error occurred: {e}")
