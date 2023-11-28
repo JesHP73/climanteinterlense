@@ -14,10 +14,6 @@ WHO_STANDARDS = {
     'CO': {'AQG': 4, 'RL': 10}  # Assuming the unit is mg/m3 for simplicity
 }
 
-# Clean up the intermediate columns if they are no longer needed
-for pollutant in WHO_STANDARDS:
-    del df[f'{pollutant}_above_AQG']
-
 # Function to get the standard value for a given pollutant and standard type
 def get_standard(pollutant, standard_type):
     return WHO_STANDARDS.get(pollutant, {}).get(standard_type, None)
