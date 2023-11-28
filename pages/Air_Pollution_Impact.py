@@ -64,6 +64,12 @@ def plot_emissions(df, selected_pollutants):
             for pollutant in selected_pollutants:
                 pivot_data.rename(columns={pollutant: f'Avg {pollutant} Pollution Level'}, inplace=True)
             
+            # Define standards_columns here
+            standards_columns = []
+            for pollutant in selected_pollutants:
+                standards_columns.append(f'{pollutant}_AQG')
+                standards_columns.append(f'{pollutant}_RL')
+            
             # Prepare the standards data
             standards_data = df.set_index('decade')[standards_columns].drop_duplicates()
             
