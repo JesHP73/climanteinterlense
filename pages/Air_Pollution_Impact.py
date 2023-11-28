@@ -29,23 +29,19 @@ def load_data():
 def plot_emissions(df, selected_pollutants):
     plt.figure(figsize=(10, 5))
     
-    # Aggregate your data to get annual averages for the selected pollutant
-    if 'All' in selected_pollutants:
-        # If 'All' is selected, loop through each pollutant and plot on the same figure
-        for pollutant in WHO_STANDARDS.keys():
-            # Filter and calculate mean for each pollutant
-            annual_data = df[df['air_pollutant'] == pollutant].groupby('decade')['avg_air_pollutant_level'].mean().reset_index()
-            sns.lineplot(x='decade', y='avg_air_pollutant_level', data=annual_data, label=pollutant)
-    else:
-        # If specific pollutants are selected, plot each one separately
-        for pollutant in selected_pollutants:
-            # Filter and calculate mean for the selected pollutant
-            annual_data = df[df['air_pollutant'] == pollutant].groupby('decade')['avg_air_pollutant_level'].mean().reset_index()
-            sns.lineplot(x='decade', y='avg_air_pollutant_level', data=annual_data, label=pollutant)
-     
-    # WHO guidelines
-    plt.axhline(y=WHO_STANDARDS[pollutant]['AQG'], color='teal', linestyle='--', label='WHO AQG')
-    plt.axhline(y=WHO_STANDARDS[pollutant]['RL'], color='teal', linestyle='--', label='WHO RL')
+    # Check if 'All' pollutants are selected or specific pollutants
+    pollutants_to_plot = WHO_STANDARDS.keys() if 'All' in selected_pollutants else selected_pollutants
+    
+    for pollutant in pollutants_to_plot:
+        # Filter and calculate mean for the selected pollutant
+        annual_data = df[df['air_pollutant'] == pollutant].groupby('decade')['avg_air_pollutant_level'].mean().reset_index()
+        sns.lineplot(x='decade', y='avg_air_pollutant_level', data=annual_data, label=pollutant)
+
+    # WHO guidelines - plot these once only
+    # Use any pollutant key to get the guideline values since they are the same for this example
+    first_pollutant = next(iter(WHO_STANDARDS))
+    plt.axhline(y=WHO_STANDARDS[first_pollutant]['AQG'], color='teal', linestyle='--', label='WHO AQG')
+    plt.axhline(y=WHO_STANDARDS[first_pollutant]['RL'], color='teal', linestyle='--', label='WHO RL')
 
     # Set plot titles and labels
     plt.title('Annual Average Levels of Pollutants (compared to WHO guidelines)')
@@ -58,6 +54,9 @@ def plot_emissions(df, selected_pollutants):
 
     return plt
     
+# to handle if 'air_pollutant' could contain values not present in WHO_STANDARDS, you might run into a KeyError.
+def get_standard(pollutant, standard_type):
+    return WHO_STANDARDS.get(pollutant, {}).get(standard_type, float('nan'))
 
 
 def display_key_facts(df, pollutants, zones, regions, countries):
@@ -78,8 +77,9 @@ def display_key_facts(df, pollutants, zones, regions, countries):
         st.metric(label="Lowest recorded air pollution level", value=f"{min_pollutant_level} μg/m3")
 
         # Instances exceeding WHO standards
-        exceedances_aqg = df[df['avg_air_pollutant_level'] > df['air_pollutant'].apply(lambda x: WHO_STANDARDS[x]['AQG'])].shape[0]
-        exceedances_rl = df[df['avg_air_pollutant_level'] > df['air_pollutant'].apply(lambda x: WHO_STANDARDS[x]['RL'])].shape[0]
+        exceedances_aqg = df[df['avg_air_pollutant_level'] > df['air_pollutant'].apply(lambda x: get_standard(x, 'AQG'))].shape[0]
+        exceedances_rl = df[df['avg_air_pollutant_level'] > df['air_pollutant'].apply(lambda x: get_standard(x, 'RL'))].shape[0]
+
         st.write(f"**Air quality concerns:** Air pollution levels exceeded safe limits set by WHO {exceedances_aqg} times.")
         st.write(f"**Reference level concerns:** Pollution levels went beyond the recommended reference levels {exceedances_rl} times.")
 
@@ -101,14 +101,16 @@ def display_key_facts(df, pollutants, zones, regions, countries):
         st.error("No data available for the selected criteria.")
         
 
-
 # Main body of your Streamlit app
 def main():
+   
     # Load data
     df = load_data()
+    
+    # Call the page content function
+    air_pollution_impact(df)
 
 # Page content function for Air Pollution Impact
-# Modified page content function with added multiselects and 'All' option
 def air_pollution_impact(df):
     if df.empty:
         st.error("No data available to display.")
@@ -117,13 +119,13 @@ def air_pollution_impact(df):
     st.title("Air Pollution Impact")
     st.write("Visualize the impact of air pollutants over time compared to WHO standards.")
 
-    #user input areas
+    # User input areas
     # Sidebar filters
-    decade_options = ['ALL'] + df['decade'].unique().tolist()
-    zone_options = ['All'] + df['zone'].unique().tolist()
-    region_options = ['All'] + df['region'].unique().tolist()
-    country_options = ['All'] + df['country'].unique().tolist()
-    pollutant_options = ['All'] + list(WHO_STANDARDS.keys())
+    decade_options = ['All'] + sorted(df['decade'].unique().tolist())
+    zone_options = ['All'] + sorted(df['zone'].unique().tolist())
+    region_options = ['All'] + sorted(df['region'].unique().tolist())
+    country_options = ['All'] + sorted(df['country'].unique().tolist())
+    pollutant_options = ['All'] + sorted(WHO_STANDARDS.keys())
 
     selected_decade = st.sidebar.multiselect('Select Decade', options=decade_options, default='All')
     selected_zone = st.sidebar.multiselect('Select Zone', options=zone_options, default='All')
@@ -132,38 +134,24 @@ def air_pollution_impact(df):
     selected_pollutants = st.sidebar.multiselect('Select Pollutant(s)', options=pollutant_options, default='All')
 
     # Filter the DataFrame based on selections
-    if 'All' not in selected_decade:
+    if selected_decade != ['All']:
         df = df[df['decade'].isin(selected_decade)]
-    if 'All' not in selected_zone:
+    if selected_zone != ['All']:
         df = df[df['zone'].isin(selected_zone)]
-    if 'All' not in selected_region:
+    if selected_region != ['All']:
         df = df[df['region'].isin(selected_region)]
-    if 'All' not in selected_country:
+    if selected_country != ['All']:
         df = df[df['country'].isin(selected_country)]
-    if 'All' not in selected_pollutants:
+    if selected_pollutants != ['All']:
         df = df[df['air_pollutant'].isin(selected_pollutants)]
 
-    # Call the plotting function for each selected pollutant or all if 'All' is selected
-    if 'All' in selected_pollutants:
-        pollutants_to_plot = list(WHO_STANDARDS.keys())
-    else:
-        pollutants_to_plot = selected_pollutants
-
-    for pollutant in pollutants_to_plot:
-    #Call the plotting function and show the plot
-       fig = plot_emissions(df, selected_pollutants)
-       st.pyplot(fig)
+    # Call the plotting function and show the plot
+    fig = plot_emissions(df, selected_pollutants)
+    st.pyplot(fig)
 
     # Call the function to display key facts with current DataFrame and selections
     display_key_facts(df, selected_pollutants, selected_zone, selected_region, selected_country)
 
-
-# Load data
-df = load_data()
-
-# Call page content function
-air_pollution_impact(df);
-
-# Call the main function to run the app
+# This ensures the app runs when the script is executed
 if __name__ == "__main__":
-    main()
+    main() 
