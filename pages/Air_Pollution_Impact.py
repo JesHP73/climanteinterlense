@@ -23,23 +23,23 @@ def load_data():
         st.error(f"Error loading data: {e}")
         return pd.DataFrame()  # Return an empty DataFrame in case of an error.
 
-# Function to plot annual emissions and compare with WHO standards
+# Function to plot annual average pollutant levels and compare with WHO standards
 def plot_emissions(df, pollutant):
     # Aggregate your data to get annual averages for the selected pollutant
-    annual_data = df[df['air_pollutant'] == pollutant].groupby('decade')['emission'].mean().reset_index()
+    annual_data = df[df['air_pollutant'] == pollutant].groupby('decade')['avg_air_pollutant_level'].mean().reset_index()
 
     # Start plotting
     plt.figure(figsize=(10, 5))
-    ax = sns.lineplot(x='year', y='emission', data=annual_data)
+    ax = sns.lineplot(x='decade', y='avg_air_pollutant_level', data=annual_data)
 
     # WHO guidelines
     plt.axhline(y=WHO_STANDARDS[pollutant]['AQG'], color='green', linestyle='--', label='WHO AQG')
     plt.axhline(y=WHO_STANDARDS[pollutant]['RL'], color='red', linestyle='--', label='WHO RL')
 
     # Enhance the plot
-    plt.title(f'Annual Average Emissions of {pollutant} (compared to WHO guidelines)')
-    plt.xlabel('Year')
-    plt.ylabel('Emission Level (μg/m3)')
+    plt.title(f'Annual Average Levels of {pollutant} (compared to WHO guidelines)')
+    plt.xlabel('Decade')
+    plt.ylabel('Average Level (μg/m3)')
     plt.legend()
 
     return plt
@@ -69,4 +69,4 @@ def air_pollution_impact(df):
 df = load_data()
 
 # Call page content function
-air_pollution_impact(df)
+air_pollution_impact(df);
