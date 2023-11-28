@@ -70,12 +70,21 @@ def plot_emissions(df, selected_pollutants):
                 standards_columns.append(f'{pollutant}_AQG')
                 standards_columns.append(f'{pollutant}_RL')
             
-            # Prepare the standards data
-            standards_data = df.set_index('decade')[standards_columns].drop_duplicates()
+            # Prepare the standards data with proper indexing
+            # Ensure 'decade' is set as the index and that there are no duplicates
+            standards_data = df.drop_duplicates(subset='decade').set_index('decade')
             
-            # Join with the AQG and RL standards
-            joined_data = pivot_data.join(standards_data)
+            # Add WHO standards for each selected pollutant to the standards_data DataFrame
+            for pollutant in selected_pollutants:
+                standards_data[f'{pollutant}_AQG'] = WHO_STANDARDS[pollutant]['AQG']
+                standards_data[f'{pollutant}_RL'] = WHO_STANDARDS[pollutant]['RL']
             
+            # Join the pivot_data with the standards_data
+            # This ensures that each 'decade' has the corresponding WHO guideline values
+            joined_data = pivot_data.join(standards_data[[f'{pollutant}_AQG' for pollutant in selected_pollutants] +
+                                                         [f'{pollutant}_RL' for pollutant in selected_pollutants]])
+            
+            # Plot the data using st.line_chart
             st.line_chart(joined_data)
             
             # If only one pollutant is selected, add a caption for clarity
