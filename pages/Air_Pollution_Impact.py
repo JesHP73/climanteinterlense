@@ -30,78 +30,63 @@ def plot_emissions(df, pollutant):
 
     # Start plotting
     plt.figure(figsize=(10, 5))
-    ax = sns.lineplot(x='decade', y='avg_air_pollutant_level', data=annual_data)
+    # Label the blue line as 'Average Level'
+    sns.lineplot(x='decade', y='avg_air_pollutant_level', data=annual_data, label='Average Level', color='blue')
 
     # WHO guidelines
-    plt.axhline(y=WHO_STANDARDS[pollutant]['AQG'], color='green', linestyle='--', label='WHO AQG')
-    plt.axhline(y=WHO_STANDARDS[pollutant]['RL'], color='red', linestyle='--', label='WHO RL')
+    plt.axhline(y=WHO_STANDARDS[pollutant]['AQG'], color='green', linestyle='--', label='WHO AQG (safe limit)')
+    plt.axhline(y=WHO_STANDARDS[pollutant]['RL'], color='red', linestyle='--', label='WHO RL (target limit)')
 
     # Enhance the plot
     plt.title(f'Annual Average Levels of {pollutant} (compared to WHO guidelines)')
     plt.xlabel('Decade')
     plt.ylabel('Average Level (μg/m3)')
-    plt.legend()
+    # Place the legend outside the plot
+    plt.legend(loc='upper left', bbox_to_anchor=(1, 1))
 
     return plt
 
 
-# New function to display key facts
 def display_key_facts(df, pollutants, zones, regions, countries):
     st.subheader("Key Facts")
-    
-    # Selection summaries for a non-expert audience
-    st.write(f"**Pollutants selected:** {'All' if 'All' in pollutants else ', '.join(pollutants)}")
-    st.write(f"**Zones selected:** {'All' if 'All' in zones else ', '.join(zones)}")
-    st.write(f"**Regions selected:** {'All' if 'All' in regions else ', '.join(regions)}")
-    st.write(f"**Countries selected:** {'All' if 'All' in countries else ', '.join(countries)}")
 
-    # Ensure there is data to display
+    # Simplified Selection summaries for a non-expert audience
+    st.write(f"**Pollutants being analyzed:** {'All' if 'All' in pollutants else ', '.join(pollutants)}")
+    st.write(f"**Geographical focus:** {', '.join(zones if 'All' not in zones else regions if 'All' not in regions else countries)}")
+
+    # Check if there is data to display
     if not df.empty:
-        # Mean pollutant levels
-        mean_pollutant_levels = df['avg_air_pollutant_level'].mean()
-        st.write(f"**Average pollutant level:** {mean_pollutant_levels:.2f} μg/m3 - This is the average level of pollutants in the air for the selected criteria.")
-
-        # Highest and Lowest Pollutant Levels
-        max_pollutant_level = df['avg_air_pollutant_level'].max()
-        min_pollutant_level = df['avg_air_pollutant_level'].min()
-        st.write(f"**Highest pollutant level:** {max_pollutant_level:.2f} μg/m3 - This represents the peak level of air pollution recorded in the selected data.")
-        st.write(f"**Lowest pollutant level:** {min_pollutant_level:.2f} μg/m3 - This is the lowest level of air pollution observed in the selected data.")
+        # Simplified metrics
+        avg_pollutant_level = round(df['avg_air_pollutant_level'].mean())
+        max_pollutant_level = round(df['avg_air_pollutant_level'].max())
+        min_pollutant_level = round(df['avg_air_pollutant_level'].min())
+        st.metric(label="Average level of air pollution", value=f"{avg_pollutant_level} μg/m3")
+        st.metric(label="Highest recorded air pollution level", value=f"{max_pollutant_level} μg/m3")
+        st.metric(label="Lowest recorded air pollution level", value=f"{min_pollutant_level} μg/m3")
 
         # Instances exceeding WHO standards
         exceedances_aqg = df[df['avg_air_pollutant_level'] > df['air_pollutant'].apply(lambda x: WHO_STANDARDS[x]['AQG'])].shape[0]
         exceedances_rl = df[df['avg_air_pollutant_level'] > df['air_pollutant'].apply(lambda x: WHO_STANDARDS[x]['RL'])].shape[0]
-        st.write(f"**Instances above WHO Air Quality Guidelines (AQG):** {exceedances_aqg} times - This number shows how often the pollution levels have exceeded safe limits set by WHO.")
-        st.write(f"**Instances above WHO Reference Levels (RL):** {exceedances_rl} times - This count indicates the frequency of pollution levels going beyond the recommended reference levels.")
+        st.write(f"**Air quality concerns:** Air pollution levels exceeded safe limits set by WHO {exceedances_aqg} times.")
+        st.write(f"**Reference level concerns:** Pollution levels went beyond the recommended reference levels {exceedances_rl} times.")
 
-        # Zone, Region, and Country specific averages
-        if 'All' not in zones:
-            zone_stats = df.groupby('zone')['avg_air_pollutant_level'].mean()
-            st.write(f"**Average pollutant levels by zone:** {zone_stats.to_dict()} - Averages for each selected zone are shown here.")
+        # Population exposure, rounded and simplified
+        population_exposed_aqg_pm25 = round(df[df['avg_air_pollutant_level'] > WHO_STANDARDS['PM2.5']['AQG']]['total_population'].sum())
+        population_exposed_aqg_pm10 = round(df[df['avg_air_pollutant_level'] > WHO_STANDARDS['PM10']['AQG']]['total_population'].sum())
+        st.write(f"**People affected by PM2.5:** Approximately {population_exposed_aqg_pm25:,} people live in areas with PM2.5 above WHO's safe limit.")
+        st.write(f"**People affected by PM10:** Around {population_exposed_aqg_pm10:,} people are exposed to PM10 levels exceeding the guidelines.")
 
-        if 'All' not in regions:
-            region_stats = df.groupby('region')['avg_air_pollutant_level'].mean()
-            st.write(f"**Average pollutant levels by region:** {region_stats.to_dict()} - These are the regional averages of air pollution.")
-
-        if 'All' not in countries:
-            country_stats = df.groupby('country')['avg_air_pollutant_level'].mean()
-            st.write(f"**Average pollutant levels by country:** {country_stats.to_dict()} - This presents the average pollution levels for each chosen country.")
-
-        # Population exposure to high levels of PM2.5 and PM10
-        population_exposed_aqg_pm25 = df[df['avg_air_pollutant_level'] > WHO_STANDARDS['PM2.5']['AQG']]['total_population'].sum()
-        st.write(f"**Population exposed above PM2.5 WHO AQG:** {population_exposed_aqg_pm25} - Indicates the total number of people living in areas where the PM2.5 levels are above the safe limit.")
-
-        population_exposed_aqg_pm10 = df[df['avg_air_pollutant_level'] > WHO_STANDARDS['PM10']['AQG']]['total_population'].sum()
-        st.write(f"**Population exposed above PM10 WHO AQG:** {population_exposed_aqg_pm10} - Reflects the total population exposed to PM10 levels that exceed WHO's air quality guidelines.")
-
-        # Correlation between GNI and pollutant levels
-        correlation_gni_pollution = df[['avg_GNI_PPP', 'avg_air_pollutant_level']].corr().iloc[0, 1]
-        st.write(f"**Correlation between GNI and pollutant levels:** {correlation_gni_pollution:.2f} - A measure of the relationship between a country's income levels and its air pollution. A higher value indicates a stronger relationship.")
+        # Correlation between GNI and pollutant levels, rounded and simplified
+        correlation_gni_pollution = round(df[['avg_GNI_PPP', 'avg_air_pollutant_level']].corr().iloc[0, 1], 2)
+        st.write(f"**Economic correlation:** There's a {correlation_gni_pollution} correlation between a country's income levels and its air pollution, suggesting that higher income might be associated with better air quality.")
 
         # Additional explanations about AQGs and RLs
-        st.markdown("### WHO Air Quality Guidelines (AQGs) and Reference Levels (RLs)")
-        st.write("AQGs provide guidance on air quality standards to protect public health. RLs are more lenient standards used for intermediate targets.")
+        st.markdown("### Understanding the Numbers")
+        st.info("The guidelines and reference levels from WHO are designed to keep air quality at a level that's safe for public health. When pollution levels go above these numbers, it can lead to health concerns for the population, especially vulnerable groups like children and the elderly.")
+
     else:
         st.error("No data available for the selected criteria.")
+
 
 # Main body of your Streamlit app
 def main():
