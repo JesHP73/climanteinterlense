@@ -150,7 +150,7 @@ def air_pollution_impact(df):
     plot_emissions(df_filtered, selected_pollutants)
 
     # Call the function to display key facts with current DataFrame and selections
-    display_key_facts(df, selected_pollutants, selected_zone, selected_region, selected_country)
+    display_key_facts(df_filtered, selected_pollutants, selected_zone, selected_region, selected_country)
 
 # This ensures the app runs when the script is executed
 if __name__ == "__main__":
