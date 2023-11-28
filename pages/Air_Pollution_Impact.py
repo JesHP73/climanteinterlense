@@ -67,9 +67,6 @@ def plot_emissions(df, selected_pollutants):
 
     return plt
 
-    return plt
-
-
     
 # to handle if 'air_pollutant' could contain values not present in WHO_STANDARDS, you might run into a KeyError.
 def get_standard(pollutant, standard_type):
