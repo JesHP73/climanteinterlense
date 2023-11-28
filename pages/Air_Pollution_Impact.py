@@ -18,20 +18,23 @@ def get_standard(pollutant, standard_type):
     return WHO_STANDARDS.get(pollutant, {}).get(standard_type, None)
 
 # Function to load data
-@st.cache
-def load_data():
-    try:
-        DATA_URL = 'https://raw.githubusercontent.com/JesHP73/climanteinterlense/main/dataset/socio_economical_agg_dataset.csv'
-        data = pd.read_csv(DATA_URL)
-        return data  # Return the loaded data
-    except Exception as e:
-        st.error(f"Error loading data: {e}")
-        return pd.DataFrame() 
+@st.cache_data  # 👈 Add the caching decorator
+def load_data(url):
+    original_df = pd.read_csv(url)
+    return original_df
+
+original_df = load_data('https://github.com/JesHP73/climanteinterlense/blob/b17caae9e26c0c89b1f6ba8f5c9db3b9566bb701/dataset/socio_economical_agg_dataset.csv')
+df = original_df.copy(
+
+st.dataframe(df)
+st.button("Rerun")
+
+
 
 # Main body of your Streamlit app
 def main():
     # Load data
-    original_data_df = load_data()
+    original_data_df = get_database_session()
     df = original_data_df.copy()
     
     # Call the page content function
