@@ -144,9 +144,9 @@ def air_pollution_impact(df):
         fig = plot_emissions(df, selected_pollutanst)
         st.pyplot(fig)
 
-        # After plotting, call the function to display key facts
-        # Call the function to display key facts with current DataFrame and selections
-        display_key_facts(df, selected_pollutants, selected_zone, selected_region, selected_country)
+# After plotting, call the function to display key facts
+# Call the function to display key facts with current DataFrame and selections
+display_key_facts(df, selected_pollutants, selected_zone, selected_region, selected_country)
 
 
 # Load data
