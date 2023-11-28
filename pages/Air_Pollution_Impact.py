@@ -25,33 +25,50 @@ def load_data():
         return pd.DataFrame()  # Return an empty DataFrame in case of an error.
         pass
 
-# to handle if 'air_pollutant' could contain values not present in WHO_STANDARDS, you might run into a KeyError.
-def get_standard(pollutant, standard_type):
-    return WHO_STANDARDS.get(pollutant, {}).get(standard_type, float('nan'))
-
 def plot_emissions(df, selected_pollutants):
     # Data Validation: Check if dataframe is empty
     if df.empty:
-        st.write('No data available for the selected filters')
+        st.error('No data available for the selected filters')
         return
 
-    # Check if required columns are present
-    if 'decade' not in df.columns or 'avg_air_pollutant_level' not in df.columns:
-        st.write('Required columns not found in the data')
-        return
+    # Convert decades to string to avoid commas in the x-axis labels
+    df['decade'] = df['decade'].astype(str)
 
     try:
-        # Check if 'All' pollutants are selected
         if 'All' in selected_pollutants:
+            # Calculate the mean across all pollutants for each decade
             annual_mean_all = df.groupby('decade')['avg_air_pollutant_level'].mean().reset_index()
+            # Rename column for better labeling in the chart
+            annual_mean_all.rename(columns={'avg_air_pollutant_level': 'Avg All Pollution Level'}, inplace=True)
             st.line_chart(annual_mean_all.set_index('decade'))
         else:
+            # If specific pollutants are selected, filter and plot with WHO standards
+            for pollutant in selected_pollutants:
+                aqg = WHO_STANDARDS[pollutant]['AQG']
+                rl = WHO_STANDARDS[pollutant]['RL']
+                # Add columns with the AQG and RL standard
+                df[f'{pollutant}_AQG'] = aqg
+                df[f'{pollutant}_RL'] = rl
+
+            # Pivot data for selected pollutants
             filtered_data = df[df['air_pollutant'].isin(selected_pollutants)]
             pivot_data = filtered_data.pivot(index='decade', columns='air_pollutant', values='avg_air_pollutant_level')
-            st.line_chart(pivot_data)
+
+            # Rename columns for better labeling in the chart
+            for pollutant in selected_pollutants:
+                pivot_data.rename(columns={pollutant: f'Avg {pollutant} Pollution Level'}, inplace=True)
+
+            st.line_chart(pivot_data.join(df[[f'{pollutant}_AQG' for pollutant in selected_pollutants] + 
+                                            [f'{pollutant}_RL' for pollutant in selected_pollutants]]).set_index('decade'))
+            
+            # If only one pollutant is selected, add a caption for clarity
+            if len(selected_pollutants) == 1:
+                st.caption(f'Line represents average levels of {selected_pollutants[0]} over time. '
+                           f'WHO AQG and RL for {selected_pollutants[0]} are also shown.')
     except Exception as e:
-        st.write(f"An error occurred: {e}")
-           
+        st.error(f"An error occurred while plotting: {e}")
+
+
 def display_pollutant_summary(pollutants):
     return 'All' if 'All' in pollutants else ', '.join(pollutants)
 
