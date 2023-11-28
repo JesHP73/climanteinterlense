@@ -43,7 +43,7 @@ def plot_emissions(df, selected_pollutants):
     try:
         if 'All' in selected_pollutants:
             # Calculate the mean across all pollutants for each decade
-            annual_mean_all = df.groupby('decade')['avg_air_pollutant_level'].mean().reset_index()
+            annual_mean_all = df.groupby('decade')['avg_air_pollutant_level'].mean()#.reset_index()
             # Rename column for better labeling in the chart
             annual_mean_all.rename(columns={'avg_air_pollutant_level': 'Avg All Pollution Level'}, inplace=True)
             st.line_chart(annual_mean_all.set_index('decade'))
