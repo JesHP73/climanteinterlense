@@ -69,7 +69,10 @@ def plot_emissions(df, selected_pollutants):
             for pollutant in selected_pollutants:
                 # Filter and calculate mean for the selected pollutant
                 annual_data = df[df['air_pollutant'] == pollutant].groupby('decade')['avg_air_pollutant_level'].mean().reset_index()
-                sns.lineplot(x='decade', y='avg_air_pollutant_level', data=annual_data, label=pollutant)
+                st.line_chart(data=annual_data, x='decade', y='avg_air_pollutant_level', color=None, width=0, height=0, use_container_width=True)
+                
+                #sns.lineplot(x='decade', y='avg_air_pollutant_level', data=annual_data, label=pollutant)
+                
                 # Plot WHO guideline lines for the selected pollutant using get_standard
                 plt.axhline(y=get_standard(pollutant, 'AQG'), color='teal', linestyle='--', label=f'WHO AQG ({pollutant})', alpha=0.5)
                 plt.axhline(y=get_standard(pollutant, 'RL'), color='orange', linestyle='--', label=f'WHO RL ({pollutant})', alpha=0.5)
