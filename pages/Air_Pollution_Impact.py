@@ -29,6 +29,7 @@ def load_data():
 def plot_emissions(df, selected_pollutants):
     plt.figure(figsize=(10, 5))
     
+    # Aggregate your data to get annual averages for the selected pollutant
     if 'All' in selected_pollutants:
         # If 'All' is selected, loop through each pollutant and plot on the same figure
         for pollutant in WHO_STANDARDS.keys():
@@ -41,6 +42,10 @@ def plot_emissions(df, selected_pollutants):
             # Filter and calculate mean for the selected pollutant
             annual_data = df[df['air_pollutant'] == pollutant].groupby('decade')['avg_air_pollutant_level'].mean().reset_index()
             sns.lineplot(x='decade', y='avg_air_pollutant_level', data=annual_data, label=pollutant)
+     
+    # WHO guidelines
+    plt.axhline(y=WHO_STANDARDS[pollutant]['AQG'], color='green', linestyle='--', label='WHO AQG')
+    plt.axhline(y=WHO_STANDARDS[pollutant]['RL'], color='red', linestyle='--', label='WHO RL')
 
     # Set plot titles and labels
     plt.title('Annual Average Levels of Pollutants (compared to WHO guidelines)')
