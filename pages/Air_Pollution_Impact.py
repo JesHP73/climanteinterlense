@@ -29,30 +29,30 @@ def load_data():
 def get_standard(pollutant, standard_type):
     return WHO_STANDARDS.get(pollutant, {}).get(standard_type, float('nan'))
 
-
+# Function to plot annual average pollutant levels and compare with WHO standards
 def plot_emissions(df, selected_pollutants):
     plt.figure(figsize=(10, 5))
 
-    # Data Validation: Check if DataFrame is empty
+    # Data Validation: Check if dataframe is empty
     if df.empty:
-        plt.text(0.5, 0.5, 'No data available for the selected filters', ha='center', va='center')
+        plt.text(0.5, 0.5, 'No data available for the selected filters', ha='center', va='center', fontsize=12)
         return plt
 
-    # Check required columns
+    # Check if required columns are present
     if 'decade' not in df.columns or 'avg_air_pollutant_level' not in df.columns:
-        plt.text(0.5, 0.5, 'Required columns not found in the data', ha='center', va='center')
+        plt.text(0.5, 0.5, 'Required columns not found in the data', ha='center', va='center', fontsize=12)
         return plt
 
     try:
         # Check if 'All' pollutants are selected
         if 'All' in selected_pollutants:
-            # Handle single decade data
+            # Calculate the mean across all pollutants for each decade
+            annual_mean_all = df.groupby('decade')['avg_air_pollutant_level'].mean().reset_index()
             if df['decade'].nunique() == 1:
-                sns.barplot(x='decade', y='avg_air_pollutant_level', data=df)
-                plt.text(x=df['decade'].iloc[0], y=df['avg_air_pollutant_level'].iloc[0], s=f"{df['avg_air_pollutant_level'].iloc[0]}")
+                # Use bar plot for a single decade
+                sns.barplot(x='decade', y='avg_air_pollutant_level', data=annual_mean_all)
             else:
-                # Calculate the mean across all pollutants for each decade
-                annual_mean_all = df.groupby('decade')['avg_air_pollutant_level'].mean().reset_index()
+                # Use line plot for multiple decades
                 sns.lineplot(x='decade', y='avg_air_pollutant_level', data=annual_mean_all, label='Average All Pollutants')
 
             # Plot the average WHO guidelines for all pollutants
@@ -60,29 +60,32 @@ def plot_emissions(df, selected_pollutants):
             avg_RL = np.mean([get_standard(pollutant, 'RL') for pollutant in WHO_STANDARDS])
             plt.axhline(y=avg_AQG, color='teal', linestyle='--', label='Average WHO AQG', alpha=0.5)
             plt.axhline(y=avg_RL, color='orange', linestyle='--', label='Average WHO RL', alpha=0.5)
-        
-        
+
         else:
-           # Plot each selected pollutant and its WHO guidelines
-           for pollutant in selected_pollutants:
+            # Plot each selected pollutant and its WHO guidelines
+            for pollutant in selected_pollutants:
                 # Filter and calculate mean for the selected pollutant
                 annual_data = df[df['air_pollutant'] == pollutant].groupby('decade')['avg_air_pollutant_level'].mean().reset_index()
                 sns.lineplot(x='decade', y='avg_air_pollutant_level', data=annual_data, label=pollutant)
                 # Plot WHO guideline lines for the selected pollutant using get_standard
                 plt.axhline(y=get_standard(pollutant, 'AQG'), color='teal', linestyle='--', label=f'WHO AQG ({pollutant})', alpha=0.5)
-                plt.axhline(y=get_standard(pollutant, 'RL'), color='orange',
                 plt.axhline(y=get_standard(pollutant, 'RL'), color='orange', linestyle='--', label=f'WHO RL ({pollutant})', alpha=0.5)
 
         # Set plot titles and labels
         plt.title('Annual Average Levels of Pollutants (compared to WHO guidelines)')
         plt.xlabel('Decade')
         plt.ylabel('Average Level (μg/m3)')
-    
+
         # Place the legend outside the plot
         plt.legend(loc='upper left', bbox_to_anchor=(1, 1))
         plt.tight_layout()
-    
-        return plt
+
+    except Exception as e:
+        # Handle any errors that occur during plotting
+        plt.text(0.5, 0.5, f'Error while plotting: {e}', ha='center', va='center', fontsize=12)
+
+    return plt
+
                
 
 def display_key_facts(df, pollutants, zones, regions, countries):
