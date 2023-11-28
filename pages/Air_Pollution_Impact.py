@@ -29,115 +29,64 @@ def load_data():
 def get_standard(pollutant, standard_type):
     return WHO_STANDARDS.get(pollutant, {}).get(standard_type, float('nan'))
 
-# Function to plot annual average pollutant levels and compare with WHO standards
 def plot_emissions(df, selected_pollutants):
-    plt.figure(figsize=(10, 5))
-
     # Data Validation: Check if dataframe is empty
     if df.empty:
-        plt.text(0.5, 0.5, 'No data available for the selected filters', ha='center', va='center', fontsize=12)
-        return plt
+        st.write('No data available for the selected filters')
+        return
 
     # Check if required columns are present
     if 'decade' not in df.columns or 'avg_air_pollutant_level' not in df.columns:
-        plt.text(0.5, 0.5, 'Required columns not found in the data', ha='center', va='center', fontsize=12)
-        return plt
+        st.write('Required columns not found in the data')
+        return
 
     try:
         # Check if 'All' pollutants are selected
         if 'All' in selected_pollutants:
-            # Calculate the mean across all pollutants for each decade
             annual_mean_all = df.groupby('decade')['avg_air_pollutant_level'].mean().reset_index()
-            if df['decade'].nunique() == 1:
-                # Use bar plot for a single decade
-                st.line_chart(data=annual_mean_all, x='decade', y='avg_air_pollutant_level', color=None, width=0, height=0, use_container_width=True)
-                
-                #sns.lineplot(x='decade', y='avg_air_pollutant_level', data=annual_mean_all)
-                plt.axhline(y='avg_air_pollutant_level', color='blue', label='Average All Airpollutants', alpha=0.5)
-            else:
-                # Use line plot for multiple decades
-                #sns.lineplot(x='decade', y='avg_air_pollutant_level', data=annual_mean_all, label='Average All Pollutants')
-                st.line_chart(data=annual_mean_all, x='decade', y='avg_air_pollutant_level', color=None, width=0, height=0, use_container_width=True)
-
-            # Plot the average WHO guidelines for all pollutants
-            avg_AQG = np.mean([get_standard(pollutant, 'AQG') for pollutant in WHO_STANDARDS])
-            avg_RL = np.mean([get_standard(pollutant, 'RL') for pollutant in WHO_STANDARDS])
-            plt.axhline(y=avg_AQG, color='teal', linestyle='--', label='Average WHO AQG', alpha=0.5)
-            plt.axhline(y=avg_RL, color='orange', linestyle='--', label='Average WHO RL', alpha=0.5)
-
+            st.line_chart(annual_mean_all.set_index('decade'))
         else:
-            # Plot each selected pollutant and its WHO guidelines
-            for pollutant in selected_pollutants:
-                # Filter and calculate mean for the selected pollutant
-                annual_data = df[df['air_pollutant'] == pollutant].groupby('decade')['avg_air_pollutant_level'].mean().reset_index()
-                st.line_chart(data=annual_data, x='decade', y='avg_air_pollutant_level', color=None, width=0, height=0, use_container_width=True)
-                
-                #sns.lineplot(x='decade', y='avg_air_pollutant_level', data=annual_data, label=pollutant)
-                
-                # Plot WHO guideline lines for the selected pollutant using get_standard
-                #plt.axhline(y=get_standard(pollutant, 'AQG'), color='teal', linestyle='--', label=f'WHO AQG ({pollutant})', alpha=0.5)
-                #plt.axhline(y=get_standard(pollutant, 'RL'), color='orange', linestyle='--', label=f'WHO RL ({pollutant})', alpha=0.5)
-                st.line_chart(data=annual_data, x='decade', y=get_standard(pollutant, 'RL'), color=None, width=0, height=0, use_container_width=True)
-                st.line_chart(data=annual_data, x='decade', y=get_standard(pollutant, 'AQG'), color=None, width=0, height=0, use_container_width=True)
-
-        # Set plot titles and labels
-        plt.title('Annual Average Levels of Pollutants (compared to WHO guidelines)')
-        plt.xlabel('Decade')
-        plt.ylabel('Average Level (μg/m3)')
-
-        # Place the legend outside the plot
-        plt.legend(loc='upper left', bbox_to_anchor=(1, 1))
-        plt.tight_layout()
-
+            filtered_data = df[df['pollutant'].isin(selected_pollutants)]
+            pivot_data = filtered_data.pivot(index='decade', columns='pollutant', values='avg_air_pollutant_level')
+            st.line_chart(pivot_data)
     except Exception as e:
-        # Handle any errors that occur during plotting
-        plt.text(0.5, 0.5, f'Error while plotting: {e}', ha='center', va='center', fontsize=12)
+        st.write(f"An error occurred: {e}")
+           
+def display_pollutant_summary(pollutants):
+    return 'All' if 'All' in pollutants else ', '.join(pollutants)
 
-    return plt
-
-               
+def display_geographical_focus(zones, regions, countries):
+    if 'All' not in zones:
+        return ', '.join(zones)
+    elif 'All' not in regions:
+        return ', '.join(regions)
+    else:
+        return ', '.join(countries)
 
 def display_key_facts(df, pollutants, zones, regions, countries):
     st.subheader("Key Facts")
 
     # Simplified Selection summaries for a non-expert audience
-    st.write(f"**Pollutants being analyzed:** {'All' if 'All' in pollutants else ', '.join(pollutants)}")
-    st.write(f"**Geographical focus:** {', '.join(zones if 'All' not in zones else regions if 'All' not in regions else countries)}")
+    st.write(f"**Pollutants being analyzed:** {display_pollutant_summary(pollutants)}")
+    st.write(f"**Geographical focus:** {display_geographical_focus(zones, regions, countries)}")
 
     # Check if there is data to display
     if not df.empty:
-        # Simplified metrics
-        avg_pollutant_level = round(df['avg_air_pollutant_level'].mean())
-        max_pollutant_level = round(df['avg_air_pollutant_level'].max())
-        min_pollutant_level = round(df['avg_air_pollutant_level'].min())
-        st.metric(label="Average level of air pollution", value=f"{avg_pollutant_level} μg/m3")
-        st.metric(label="Highest recorded air pollution level", value=f"{max_pollutant_level} μg/m3")
-        st.metric(label="Lowest recorded air pollution level", value=f"{min_pollutant_level} μg/m3")
+        with st.expander("Air Pollution Metrics"):
+            display_pollution_metrics(df)
 
-        # Instances exceeding WHO standards
-        exceedances_aqg = df[df['avg_air_pollutant_level'] > df['air_pollutant'].apply(lambda x: get_standard(x, 'AQG'))].shape[0]
-        exceedances_rl = df[df['avg_air_pollutant_level'] > df['air_pollutant'].apply(lambda x: get_standard(x, 'RL'))].shape[0]
+        with st.expander("WHO Standards and Exceedances"):
+            display_standard_exceedances(df)
 
-        st.write(f"**Air quality concerns:** Air pollution levels exceeded safe limits set by WHO {exceedances_aqg} times.")
-        st.write(f"**Reference level concerns:** Pollution levels went beyond the recommended reference levels {exceedances_rl} times.")
-
-        # Population exposure, rounded and simplified
-        population_exposed_aqg_pm25 = round(df[df['avg_air_pollutant_level'] > WHO_STANDARDS['PM2.5']['AQG']]['total_population'].sum())
-        population_exposed_aqg_pm10 = round(df[df['avg_air_pollutant_level'] > WHO_STANDARDS['PM10']['AQG']]['total_population'].sum())
-        st.write(f"**People affected by PM2.5:** Approximately {population_exposed_aqg_pm25:,} people live in areas with PM2.5 above WHO's safe limit.")
-        st.write(f"**People affected by PM10:** Around {population_exposed_aqg_pm10:,} people are exposed to PM10 levels exceeding the guidelines.")
-
-        # Correlation between GNI and pollutant levels, rounded and simplified
-        correlation_gni_pollution = round(df[['avg_GNI_PPP', 'avg_air_pollutant_level']].corr().iloc[0, 1], 2)
-        st.write(f"**Economic correlation:** There's a {correlation_gni_pollution} correlation between a country's income levels and its air pollution, suggesting that higher income might be associated with better air quality.")
+        with st.expander("Population Exposure and Economic Correlation"):
+            display_population_exposure_and_economic_correlation(df)
 
         # Additional explanations about AQGs and RLs
         st.markdown("### Understanding the Numbers")
         st.info("The guidelines and reference levels from WHO are designed to keep air quality at a level that's safe for public health. When pollution levels go above these numbers, it can lead to health concerns for the population, especially vulnerable groups like children and the elderly.")
-
     else:
         st.error("No data available for the selected criteria.")
-        
+    
 
 # Main body of your Streamlit app
 def main():
@@ -171,17 +120,31 @@ def air_pollution_impact(df):
     selected_country = st.sidebar.multiselect('Select Country', options=country_options, default=['All'])
     selected_pollutants = st.sidebar.multiselect('Select Pollutant(s)', options=pollutant_options, default=['All'])
 
-    # Filter the DataFrame based on selections
+    
+    # Efficient combined filtering
+    conditions = []
     if 'All' not in selected_decade:
-        df = df[df['decade'].isin(selected_decade)]
+        conditions.append(df['decade'].isin(selected_decade))
     if 'All' not in selected_zone:
-        df = df[df['zone'].isin(selected_zone)]
+        conditions.append(df['zone'].isin(selected_zone))
     if 'All' not in selected_region:
-        df = df[df['region'].isin(selected_region)]
+        conditions.append(df['region'].isin(selected_region))
     if 'All' not in selected_country:
-        df = df[df['country'].isin(selected_country)]
+        conditions.append(df['country'].isin(selected_country))
     if 'All' not in selected_pollutants:
-        df = df[df['air_pollutant'].isin(selected_pollutants)]
+        conditions.append(df['air_pollutant'].isin(selected_pollutants))
+    
+    if conditions:
+        df_filtered = df[np.logical_and.reduce(conditions)]
+    else:
+        df_filtered = df
+
+    # Update plotting and key facts display with filtered DataFrame
+    if not df_filtered.empty:
+        plot_emissions(df_filtered, selected_pollutants)
+        display_key_facts(df_filtered, selected_pollutants, selected_zone, selected_region, selected_country)
+else:
+    st.error("No data available for the selected criteria.")
 
     # Call the plotting function and show the plot
     fig = plot_emissions(df, selected_pollutants)
