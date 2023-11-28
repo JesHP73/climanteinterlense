@@ -20,8 +20,13 @@ def get_standard(pollutant, standard_type):
 # Function to load data
 @st.cache_data  # 👈 Add the caching decorator
 def load_data():
-    original_df = pd.read_csv('https://github.com/JesHP73/climanteinterlense/blob/b17caae9e26c0c89b1f6ba8f5c9db3b9566bb701/dataset/socio_economical_agg_dataset.csv')
-    return original_df
+     try:
+        URL = 'https://raw.githubusercontent.com/JesHP73/climanteinterlense/main/dataset/socio_economical_agg_dataset.csv'
+        data = pd.read_csv(URL)
+        return data
+    except Exception as e:
+        st.error(f"Error loading data: {e}")
+        return pd.DataFrame()  # Return an empty DataFrame in case of error
 
 
 def plot_emissions(df, selected_pollutants):
@@ -133,8 +138,8 @@ def display_key_facts(df, pollutants, zones, regions, countries):
 # Main body of your Streamlit app
 def main():
     # Load data
-    original_data_df = load_data()
-    df = original_data_df.copy()
+    original_data = load_data()
+    df = original_data.copy()
     
     # Call the page content function
     air_pollution_impact(df)
