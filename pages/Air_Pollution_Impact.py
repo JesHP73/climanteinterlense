@@ -52,8 +52,6 @@ def plot_emissions(df, selected_pollutants):
 
     return plt
 
-fig = plot_emissions(df, selected_pollutants)
-st.pyplot(fig)
 
 def display_key_facts(df, pollutants, zones, regions, countries):
     st.subheader("Key Facts")
@@ -139,7 +137,7 @@ def air_pollution_impact(df):
         pollutants_to_plot = selected_pollutants
 
     for pollutant in pollutants_to_plot:
-        fig = plot_emissions(df, pollutant)
+        fig = plot_emissions(df, selected_pollutanst)
         st.pyplot(fig)
 
         # After plotting, call the function to display key facts
