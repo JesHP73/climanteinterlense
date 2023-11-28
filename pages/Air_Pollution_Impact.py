@@ -119,8 +119,8 @@ def display_key_facts(df, pollutants, zones, regions, countries):
         correlation_gni_pollution = round(df[['avg_GNI_PPP', 'avg_air_pollutant_level']].corr().iloc[0, 1], 2)
         st.write(f"**Economic correlation:** There's a {correlation_gni_pollution} correlation between a country's income levels and its air pollution, suggesting that higher income might be associated with better air quality.")
 
-        with st.expander("Air Pollution Metrics"):
-            display_pollution_metrics(df)
+        #with st.expander("Air Pollution Metrics"):
+            #display_pollution_metrics(df)
 
         with st.expander("WHO Standards and Exceedances"):
             display_standard_exceedances(df)
