@@ -56,7 +56,8 @@ def plot_emissions(df, selected_pollutants):
                 plt.axhline(y='avg_air_pollutant_level', color='blue', label='Average All Airpollutants', alpha=0.5)
             else:
                 # Use line plot for multiple decades
-                sns.lineplot(x='decade', y='avg_air_pollutant_level', data=annual_mean_all, label='Average All Pollutants')
+                #sns.lineplot(x='decade', y='avg_air_pollutant_level', data=annual_mean_all, label='Average All Pollutants')
+                st.line_chart(data=annual_mean_all, x='decade', y='avg_air_pollutant_level', color=None, width=0, height=0, use_container_width=True)
 
             # Plot the average WHO guidelines for all pollutants
             avg_AQG = np.mean([get_standard(pollutant, 'AQG') for pollutant in WHO_STANDARDS])
