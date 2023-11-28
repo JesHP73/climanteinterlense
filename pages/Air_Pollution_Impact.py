@@ -55,9 +55,9 @@ def plot_emissions(df, selected_pollutants):
                 # Add columns with the AQG and RL standard
                 df[f'{pollutant}_AQG'] = aqg
                 df[f'{pollutant}_RL'] = rl
-
+                
             # Pivot data for selected pollutants
-            filtered_data = df[df['air_pollutant'].isin(selected_pollutants)]
+            filtered_data = df[df['air_pollutant'].isin(selected_pollutants)].drop_duplicates(subset=['decade', 'air_pollutant'])
             pivot_data = filtered_data.pivot(index='decade', columns='air_pollutant', values='avg_air_pollutant_level')
 
             # Rename columns for better labeling in the chart
