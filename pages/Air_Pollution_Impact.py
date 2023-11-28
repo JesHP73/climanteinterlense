@@ -60,10 +60,7 @@ def plot_emissions(df, selected_pollutants):
     plt.tight_layout()
 
     return plt
-
-
-
-    
+   
 # to handle if 'air_pollutant' could contain values not present in WHO_STANDARDS, you might run into a KeyError.
 def get_standard(pollutant, standard_type):
     return WHO_STANDARDS.get(pollutant, {}).get(standard_type, float('nan'))
