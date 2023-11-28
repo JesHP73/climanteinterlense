@@ -23,12 +23,11 @@ def load_data():
     try:
         DATA_URL = 'https://raw.githubusercontent.com/JesHP73/climanteinterlense/main/dataset/socio_economical_agg_dataset.csv'
         data = pd.read_csv(DATA_URL)
-        return data
+        return data  # Return the loaded data
     except Exception as e:
         st.error(f"Error loading data: {e}")
-        return pd.DataFrame()  # Return an empty DataFrame in case of an error.
-        pass
-
+        return pd.DataFrame() 
+ 
 def plot_emissions(df, selected_pollutants):
     # Data Validation: Check if dataframe is empty
     if df.empty:
@@ -137,10 +136,11 @@ def display_key_facts(df, pollutants, zones, regions, countries):
 def main():
    
     # Load data
-    df = load_data()
+    df = load_data().copy()
     
     # Call the page content function
     air_pollution_impact(df)
+
 
 # Page content function for Air Pollution Impact
 def air_pollution_impact(df):
@@ -199,5 +199,11 @@ def air_pollution_impact(df):
 
 # This ensures the app runs when the script is executed
 if __name__ == "__main__":
+    # Adding a button to clear the cache
+    if st.sidebar.button('Clear Cache'):
+        st.legacy_caching.clear_cache()
+        st.success('Cache cleared!')
+
     main()
+
 
