@@ -28,8 +28,18 @@ def load_data():
         st.error(f"Error loading data: {e}")
         return pd.DataFrame() 
 
+# Main body of your Streamlit app
+def main():
+    # Load data
+    original_data_df = load_data()
+    df = original_data_df.copy()
+    
+    # Call the page content function
+    air_pollution_impact(df)
+
+
 def plot_emissions(df, selected_pollutants):
-    #df = original_data_df.copy()
+    
     # Data Validation: Check if dataframe is empty
     if df.empty:
         st.error('No data available for the selected filters')
@@ -85,7 +95,7 @@ def display_geographical_focus(zones, regions, countries):
         return ', '.join(countries)
 
 def display_key_facts(df, pollutants, zones, regions, countries):
-    #df = original_data_df.copy
+    
     st.subheader("Key Facts")
 
     # Simplified Selection summaries for a non-expert audience
@@ -133,16 +143,6 @@ def display_key_facts(df, pollutants, zones, regions, countries):
     else:
         st.error("No data available for the selected criteria.")
     
-
-# Main body of your Streamlit app
-def main():
-    # Load data
-    original_data_df = load_data()
-    df = original_data_df.copy()
-    
-    # Call the page content function
-    air_pollution_impact(df)
-
 
 # Page content function for Air Pollution Impact
 def air_pollution_impact(df):
