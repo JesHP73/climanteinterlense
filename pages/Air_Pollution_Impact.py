@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
 import streamlit as st
 import pandas as pd
 import seaborn as sns
@@ -18,20 +15,36 @@ WHO_STANDARDS = {
 # Function to load data
 @st.cache
 def load_data():
-    try:
-        DATA_URL = 'https://raw.githubusercontent.com/JesHP73/climanteinterlense/main/dataset/socio_economical_agg_dataset.csv'
-        data = pd.read_csv(DATA_URL)
-        # Assuming the dataset has columns 'year', 'pollutant' and 'emission'
-        return data
-    except Exception as e:
-        st.error(f"Error loading data: {e}")
-        return pd.DataFrame()  # Return an empty DataFrame in case of error
+    # Your data loading logic here
+    # ...
 
-# Function to plot emissions data with WHO standards
-def plot_emissions(df, pollutant):
-    # Aggregate data to get annual averages for the selected pollutant
-    annual_data = df[df['pollutant'] == pollutant].groupby('year')['emission'].mean().reset_index()
-    
-    # Start plotting
-    fig, ax = plt.subplots(figsize=(10, 5))
-    sns.lineplot(data=annual_data, x='year', y='emission', ax=ax, marker='o
+# Page content function for Air Pollution Impact
+def air_pollution_impact(df):
+    if df.empty:
+        st.error("No data available to display.")
+        return
+
+    st.title("Air Pollution Impact")
+    st.write("Visualize the impact of air pollutants over time compared to WHO standards.")
+
+    # Sidebar filter to select pollutants
+    selected_pollutant = st.sidebar.selectbox('Select Pollutant', options=list(WHO_STANDARDS.keys()))
+
+    # Data aggregation and plotting function
+    def plot_pollution_data(pollutant):
+        # Aggregate data and plot logic here
+        # ...
+
+    # Call the plotting function
+    plot_pollution_data(selected_pollutant)
+
+    # Additional explanations about AQGs and RLs
+    st.markdown("### WHO Air Quality Guidelines (AQGs) and Reference Levels (RLs)")
+    st.write("AQGs provide guidance on air quality standards to protect public health.")
+    st.write("RLs are more lenient standards used for intermediate targets.")
+
+# Load data
+df = load_data()
+
+# Call page content function
+air_pollution_impact(df)
