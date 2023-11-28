@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 # Function to load data
 @st.cache
 def load_data():
-    DATA_URL = 'https://your_data_source_here.csv'
+    DATA_URL = 'https://github.com/JesHP73/climanteinterlense/blob/1bdbb328a91258a4f0021ec3392e95d7126ae9fb/dataset/socio_economical_agg_dataset.csv'
     data = pd.read_csv(DATA_URL)
     return data
 
