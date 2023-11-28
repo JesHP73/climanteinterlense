@@ -85,7 +85,7 @@ def display_geographical_focus(zones, regions, countries):
         return ', '.join(countries)
 
 def display_key_facts(df, pollutants, zones, regions, countries):
-    df = original_data_df.copy
+    #df = original_data_df.copy
     st.subheader("Key Facts")
 
     # Simplified Selection summaries for a non-expert audience
