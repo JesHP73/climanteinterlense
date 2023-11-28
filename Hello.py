@@ -4,6 +4,12 @@
 import streamlit as st
 import pandas as pd
 
+# Set up your main page configuration
+st.set_page_config(
+    page_title="Intersectional Climate Trends",
+    page_icon="🌎"
+)
+
 # Function to load data
 @st.cache
 def load_data():
@@ -13,12 +19,6 @@ def load_data():
 
 # Load data
 df = load_data()
-
-# Set up your main page configuration
-st.set_page_config(
-    page_title="Intersectional Climate Trends",
-    page_icon="🌎"
-)
 
 st.write("# Welcome to the Intersectional Climate Trends App 🌎")
 
