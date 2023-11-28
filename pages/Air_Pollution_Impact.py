@@ -19,7 +19,7 @@ def get_standard(pollutant, standard_type):
 
 # Function to load data
 @st.cache_data  # 👈 Add the caching decorator
-def load_data(url):
+def load_data():
     original_df = pd.read_csv('https://github.com/JesHP73/climanteinterlense/blob/b17caae9e26c0c89b1f6ba8f5c9db3b9566bb701/dataset/socio_economical_agg_dataset.csv')
     return original_df
 
