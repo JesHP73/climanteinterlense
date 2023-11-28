@@ -24,25 +24,27 @@ def load_data():
         return pd.DataFrame()  # Return an empty DataFrame in case of an error.
         pass
 
-
 # Function to plot annual average pollutant levels and compare with WHO standards
 def plot_emissions(df, selected_pollutants):
     plt.figure(figsize=(10, 5))
-    
-    # Check if 'All' pollutants are selected or specific pollutants
-    pollutants_to_plot = WHO_STANDARDS.keys() if 'All' in selected_pollutants else selected_pollutants
-    
-    for pollutant in pollutants_to_plot:
-        # Filter and calculate mean for the selected pollutant
-        annual_data = df[df['air_pollutant'] == pollutant].groupby('decade')['avg_air_pollutant_level'].mean().reset_index()
-        sns.lineplot(x='decade', y='avg_air_pollutant_level', data=annual_data, label=pollutant)
 
-    # WHO guidelines - plot these once only
-    # Use any pollutant key to get the guideline values since they are the same for this example
-    first_pollutant = next(iter(WHO_STANDARDS))
-    plt.axhline(y=WHO_STANDARDS[first_pollutant]['AQG'], color='teal', linestyle='--', label='WHO AQG')
-    plt.axhline(y=WHO_STANDARDS[first_pollutant]['RL'], color='teal', linestyle='--', label='WHO RL')
+    # Check if 'All' pollutants are selected
+    if 'All' in selected_pollutants:
+        # Calculate the mean across all pollutants for each decade
+        annual_mean_all = df.groupby('decade')['avg_air_pollutant_level'].mean().reset_index()
+        sns.lineplot(x='decade', y='avg_air_pollutant_level', data=annual_mean_all, label='Average All Pollutants')
+    else:
+        # Plot each selected pollutant
+        for pollutant in selected_pollutants:
+            # Filter and calculate mean for the selected pollutant
+            annual_data = df[df['air_pollutant'] == pollutant].groupby('decade')['avg_air_pollutant_level'].mean().reset_index()
+            sns.lineplot(x='decade', y='avg_air_pollutant_level', data=annual_data, label=pollutant)
 
+    # Plot WHO guidelines
+    for pollutant, guidelines in WHO_STANDARDS.items():
+        plt.axhline(y=guidelines['AQG'], color='teal', linestyle='--', label=f'WHO AQG ({pollutant})', alpha=0.5)
+        plt.axhline(y=guidelines['RL'], color='orange', linestyle='--', label=f'WHO RL ({pollutant})', alpha=0.5)
+    
     # Set plot titles and labels
     plt.title('Annual Average Levels of Pollutants (compared to WHO guidelines)')
     plt.xlabel('Decade')
@@ -53,6 +55,7 @@ def plot_emissions(df, selected_pollutants):
     plt.tight_layout()
 
     return plt
+
     
 # to handle if 'air_pollutant' could contain values not present in WHO_STANDARDS, you might run into a KeyError.
 def get_standard(pollutant, standard_type):
@@ -127,22 +130,22 @@ def air_pollution_impact(df):
     country_options = ['All'] + sorted(df['country'].unique().tolist())
     pollutant_options = ['All'] + sorted(WHO_STANDARDS.keys())
 
-    selected_decade = st.sidebar.multiselect('Select Decade', options=decade_options, default='All')
-    selected_zone = st.sidebar.multiselect('Select Zone', options=zone_options, default='All')
-    selected_region = st.sidebar.multiselect('Select Region', options=region_options, default='All')
-    selected_country = st.sidebar.multiselect('Select Country', options=country_options, default='All')
-    selected_pollutants = st.sidebar.multiselect('Select Pollutant(s)', options=pollutant_options, default='All')
+    selected_decade = st.sidebar.multiselect('Select Decade', options=decade_options, default=['All'])
+    selected_zone = st.sidebar.multiselect('Select Zone', options=zone_options, default=['All'])
+    selected_region = st.sidebar.multiselect('Select Region', options=region_options, default=['All'])
+    selected_country = st.sidebar.multiselect('Select Country', options=country_options, default=['All'])
+    selected_pollutants = st.sidebar.multiselect('Select Pollutant(s)', options=pollutant_options, default=['All'])
 
     # Filter the DataFrame based on selections
-    if selected_decade != ['All']:
+    if 'All' not in selected_decade:
         df = df[df['decade'].isin(selected_decade)]
-    if selected_zone != ['All']:
+    if 'All' not in selected_zone:
         df = df[df['zone'].isin(selected_zone)]
-    if selected_region != ['All']:
+    if 'All' not in selected_region:
         df = df[df['region'].isin(selected_region)]
-    if selected_country != ['All']:
+    if 'All' not in selected_country:
         df = df[df['country'].isin(selected_country)]
-    if selected_pollutants != ['All']:
+    if 'All' not in selected_pollutants:
         df = df[df['air_pollutant'].isin(selected_pollutants)]
 
     # Call the plotting function and show the plot
@@ -154,4 +157,5 @@ def air_pollution_impact(df):
 
 # This ensures the app runs when the script is executed
 if __name__ == "__main__":
-    main() 
+    main()
+
