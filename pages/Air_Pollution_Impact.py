@@ -153,7 +153,7 @@ def air_pollution_impact(df):
         df = df[df['air_pollutant'].isin(selected_pollutants)]
 
     # Call the plotting function and show the plot
-    fig = plot_emissions(df, selected_pollutants)
+    fig = plot_emissions(df, selected_pollutants, WHO_STANDARDS)
     st.pyplot(fig)
 
     # Call the function to display key facts with current DataFrame and selections
