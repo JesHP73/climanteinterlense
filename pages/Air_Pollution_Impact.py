@@ -14,10 +14,6 @@ WHO_STANDARDS = {
     'CO': {'AQG': 4, 'RL': 10}  # Assuming the unit is mg/m3 for simplicity
 }
 
-# Add a new column for each pollutant indicating if it's above the WHO standard
-for pollutant, standards in WHO_STANDARDS.items():
-    df[f'{pollutant}_above_AQG'] = df.apply(
-        lambda x: x['avg_air_pollutant_level'] > standards['AQG'] if x['air_pollutant'] == pollutant else None, axis=1)
 
 # Now create a single column 'pollution_above_who' indicating if any pollutant is above its AQG
 df['pollution_above_who'] = df[[f'{pollutant}_above_AQG' for pollutant in WHO_STANDARDS]].any(axis=1)
