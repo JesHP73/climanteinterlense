@@ -25,7 +25,7 @@ def load_data():
         pass
 
 
-def plot_emissions(df, selected_pollutants,WHO_STANDARDS):
+def plot_emissions(df, selected_pollutants):
     plt.figure(figsize=(10, 5))
 
     # Check if 'All' pollutants are selected
@@ -35,8 +35,8 @@ def plot_emissions(df, selected_pollutants,WHO_STANDARDS):
         sns.lineplot(x='decade', y='avg_air_pollutant_level', data=annual_mean_all, label='Average All Pollutants')
         
         # Plot the average WHO guidelines for all pollutants
-        avg_AQG = np.mean([guideline['AQG'] for guideline in WHO_STANDARDS.values()])
-        avg_RL = np.mean([guideline['RL'] for guideline in WHO_STANDARDS.values()])
+        avg_AQG = np.mean([get_standard(pollutant, 'AQG') for pollutant in WHO_STANDARDS])
+        avg_RL = np.mean([get_standard(pollutant, 'RL') for pollutant in WHO_STANDARDS])
         plt.axhline(y=avg_AQG, color='teal', linestyle='--', label='Average WHO AQG', alpha=0.5)
         plt.axhline(y=avg_RL, color='orange', linestyle='--', label='Average WHO RL', alpha=0.5)
     
@@ -46,9 +46,9 @@ def plot_emissions(df, selected_pollutants,WHO_STANDARDS):
             # Filter and calculate mean for the selected pollutant
             annual_data = df[df['air_pollutant'] == pollutant].groupby('decade')['avg_air_pollutant_level'].mean().reset_index()
             sns.lineplot(x='decade', y='avg_air_pollutant_level', data=annual_data, label=pollutant)
-            # Plot WHO guideline lines for the selected pollutant
-            plt.axhline(y=WHO_STANDARDS[pollutant]['AQG'], color='teal', linestyle='--', label=f'WHO AQG ({pollutant})', alpha=0.5)
-            plt.axhline(y=WHO_STANDARDS[pollutant]['RL'], color='orange', linestyle='--', label=f'WHO RL ({pollutant})', alpha=0.5)
+            # Plot WHO guideline lines for the selected pollutant using get_standard
+            plt.axhline(y=get_standard(pollutant, 'AQG'), color='teal', linestyle='--', label=f'WHO AQG ({pollutant})', alpha=0.5)
+            plt.axhline(y=get_standard(pollutant, 'RL'), color='orange', linestyle='--', label=f'WHO RL ({pollutant})', alpha=0.5)
 
     # Set plot titles and labels
     plt.title('Annual Average Levels of Pollutants (compared to WHO guidelines)')
@@ -60,6 +60,7 @@ def plot_emissions(df, selected_pollutants,WHO_STANDARDS):
     plt.tight_layout()
 
     return plt
+
    
 # to handle if 'air_pollutant' could contain values not present in WHO_STANDARDS, you might run into a KeyError.
 def get_standard(pollutant, standard_type):
@@ -153,8 +154,9 @@ def air_pollution_impact(df):
         df = df[df['air_pollutant'].isin(selected_pollutants)]
 
     # Call the plotting function and show the plot
-    fig = plot_emissions(df, selected_pollutants, WHO_STANDARDS)
+    fig = plot_emissions(df, selected_pollutants)
     st.pyplot(fig)
+
 
     # Call the function to display key facts with current DataFrame and selections
     display_key_facts(df, selected_pollutants, selected_zone, selected_region, selected_country)
