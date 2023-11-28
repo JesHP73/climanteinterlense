@@ -52,7 +52,7 @@ def plot_emissions(df, selected_pollutants):
     plt.tight_layout()
 
     return plt
-    pass
+    
 
 
 def display_key_facts(df, pollutants, zones, regions, countries):
@@ -94,7 +94,7 @@ def display_key_facts(df, pollutants, zones, regions, countries):
 
     else:
         st.error("No data available for the selected criteria.")
-        pass
+        
 
 
 # Main body of your Streamlit app
