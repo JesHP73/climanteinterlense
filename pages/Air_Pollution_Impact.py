@@ -23,28 +23,35 @@ def load_data():
         st.error(f"Error loading data: {e}")
         return pd.DataFrame()  # Return an empty DataFrame in case of an error.
 
+
 # Function to plot annual average pollutant levels and compare with WHO standards
-def plot_emissions(df, pollutant):
-    # Aggregate your data to get annual averages for the selected pollutant
-    annual_data = df[df['air_pollutant'] == pollutant].groupby('decade')['avg_air_pollutant_level'].mean().reset_index()
-
-    # Start plotting
+def plot_emissions(df, selected_pollutants):
     plt.figure(figsize=(10, 5))
-    # Label the blue line as 'Average Level'
-    sns.lineplot(x='decade', y='avg_air_pollutant_level', data=annual_data, label='Average Level', color='blue')
+    
+    if 'All' in selected_pollutants:
+        # If 'All' is selected, loop through each pollutant and plot on the same figure
+        for pollutant in WHO_STANDARDS.keys():
+            # Filter and calculate mean for each pollutant
+            annual_data = df[df['air_pollutant'] == pollutant].groupby('decade')['avg_air_pollutant_level'].mean().reset_index()
+            sns.lineplot(x='decade', y='avg_air_pollutant_level', data=annual_data, label=pollutant)
+    else:
+        # If specific pollutants are selected, plot each one separately
+        for pollutant in selected_pollutants:
+            # Filter and calculate mean for the selected pollutant
+            annual_data = df[df['air_pollutant'] == pollutant].groupby('decade')['avg_air_pollutant_level'].mean().reset_index()
+            sns.lineplot(x='decade', y='avg_air_pollutant_level', data=annual_data, label=pollutant)
 
-    # WHO guidelines
-    plt.axhline(y=WHO_STANDARDS[pollutant]['AQG'], color='green', linestyle='--', label='WHO AQG (safe limit)')
-    plt.axhline(y=WHO_STANDARDS[pollutant]['RL'], color='red', linestyle='--', label='WHO RL (target limit)')
-
-    # Enhance the plot
-    plt.title(f'Annual Average Levels of {pollutant} (compared to WHO guidelines)')
+    # Set plot titles and labels
+    plt.title('Annual Average Levels of Pollutants (compared to WHO guidelines)')
     plt.xlabel('Decade')
     plt.ylabel('Average Level (μg/m3)')
+    
     # Place the legend outside the plot
     plt.legend(loc='upper left', bbox_to_anchor=(1, 1))
+    plt.tight_layout()
 
     return plt
+
 
 
 def display_key_facts(df, pollutants, zones, regions, countries):
