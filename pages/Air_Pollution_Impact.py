@@ -22,6 +22,7 @@ def load_data():
     except Exception as e:
         st.error(f"Error loading data: {e}")
         return pd.DataFrame()  # Return an empty DataFrame in case of an error.
+        pass
 
 
 # Function to plot annual average pollutant levels and compare with WHO standards
@@ -51,6 +52,7 @@ def plot_emissions(df, selected_pollutants):
     plt.tight_layout()
 
     return plt
+    pass
 
 
 def display_key_facts(df, pollutants, zones, regions, countries):
@@ -92,6 +94,7 @@ def display_key_facts(df, pollutants, zones, regions, countries):
 
     else:
         st.error("No data available for the selected criteria.")
+        pass
 
 
 # Main body of your Streamlit app
@@ -109,6 +112,7 @@ def air_pollution_impact(df):
     st.title("Air Pollution Impact")
     st.write("Visualize the impact of air pollutants over time compared to WHO standards.")
 
+    #user input areas
     # Sidebar filters
     zone_options = ['All'] + df['zone'].unique().tolist()
     region_options = ['All'] + df['region'].unique().tolist()
@@ -141,6 +145,7 @@ def air_pollution_impact(df):
         st.pyplot(fig)
 
         # After plotting, call the function to display key facts
+        # Call the function to display key facts with current DataFrame and selections
         display_key_facts(df, selected_pollutants, selected_zone, selected_region, selected_country)
 
 
