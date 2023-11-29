@@ -45,79 +45,48 @@ def plot_emissions(df, selected_pollutants):
         st.error('No data available for the selected filters')
         return
 
-    # Convert decades to string to avoid commas in the x-axis labels
-    df['decade'] = df['decade'].astype(str)
-    
-    # Add a new column for each pollutant indicating if it's above the WHO standard
-    for pollutant, standards in WHO_STANDARDS.items():
-        # Create a mask for rows where the current pollutant matches
-        mask = df['air_pollutant'] == pollutant
-        # Directly compare where the mask is True
-        df.loc[mask, f'{pollutant}_above_AQG'] = df.loc[mask, 'avg_air_pollutant_level'] > standards['AQG']
-    
-    # Now create a single column 'pollution_above_who' indicating if any pollutant is above its AQG
-    pollutants_above_columns = [f'{pollutant}_above_AQG' for pollutant in WHO_STANDARDS]
-    df['pollution_above_who'] = df[pollutants_above_columns].any(axis=1, skipna=True)
-
-    # This will hold the countries with the most pollution above WHO standard
-    countries_above_who = None
-
     try:
+        # Initialize list for histogram data and group labels
+        hist_data = []
+        group_labels = []
+
+        # If 'All' pollutants are selected, include all pollutants in the plot
         if 'All' in selected_pollutants:
-            # Calculate the mean across all pollutants for each decade
-            overall_mean = df.groupby('decade')['avg_air_pollutant_level'].mean()
-
-            # Assuming AQG and RL are constants, use a representative value for all pollutants
-            aqg = sum([WHO_STANDARDS[pollutant]['AQG'] for pollutant in WHO_STANDARDS]) / len(WHO_STANDARDS)
-            rl = sum([WHO_STANDARDS[pollutant]['RL'] for pollutant in WHO_STANDARDS]) / len(WHO_STANDARDS)
-
-            # Create a DataFrame for plotting
-            plot_data = overall_mean.to_frame(name='Average Pollution Level')
-            plot_data['WHO AQG'] = aqg
-            plot_data['WHO RL'] = rl
-
-            # Plot the data using st.line_chart
-            st.line_chart(plot_data)
+            for pollutant in WHO_STANDARDS:
+                # Filter data for the current pollutant
+                pollutant_data = df[df['air_pollutant'] == pollutant]['avg_air_pollutant_level'].dropna()
+                if not pollutant_data.empty:
+                    hist_data.append(pollutant_data)
+                    group_labels.append(pollutant)
 
         else:
-            # Initialize an empty DataFrame for joined data
-            joined_data = pd.DataFrame(index=df['decade'].unique())
-
-            # If specific pollutants are selected, filter and plot with WHO standards
+            # Include only selected pollutants in the plot
             for pollutant in selected_pollutants:
-                aqg = WHO_STANDARDS[pollutant]['AQG']
-                rl = WHO_STANDARDS[pollutant]['RL']
+                pollutant_data = df[df['air_pollutant'] == pollutant]['avg_air_pollutant_level'].dropna()
+                if not pollutant_data.empty:
+                    hist_data.append(pollutant_data)
+                    group_labels.append(pollutant)
 
-                # Filter data for the current pollutant
-                pollutant_data = df[df['air_pollutant'] == pollutant]
+        # Create distribution plot
+        fig = ff.create_distplot(hist_data, group_labels, show_hist=False, show_rug=False)
 
-                # Calculate the average pollutant level per decade
-                avg_pollutant_data = pollutant_data.groupby('decade')['avg_air_pollutant_level'].mean().rename(f'Avg {pollutant} Pollution Level')
-                                                                                                               
-                # Join the average data with the joined_data DataFrame
-                joined_data = joined_data.join(avg_pollutant_data, how='left')
+        # Add WHO AQG and RL lines for each selected pollutant
+        for pollutant in selected_pollutants:
+            aqg = WHO_STANDARDS[pollutant]['AQG']
+            rl = WHO_STANDARDS[pollutant]['RL']
+            fig.add_vline(x=aqg, line_dash="dash", line_color="green", annotation_text=f"{pollutant} AQG")
+            fig.add_vline(x=rl, line_dash="dash", line_color="red", annotation_text=f"{pollutant} RL")
 
-                # Add the AQG and RL values as constant columns to joined_data
-                joined_data[f'{pollutant}_AQG'] = aqg
-                joined_data[f'{pollutant}_RL'] = rl
+        # Update layout for a cleaner look
+        fig.update_layout(
+            xaxis_title='Pollutant Level (μg/m3)',
+            yaxis_title='Density',
+            title='Distribution of Air Pollutant Levels'
+        )
 
-            # Check if joined_data is empty after processing
-            if joined_data.empty:
-                st.error('No data available to plot after processing.')
-                return
+        # Display the plot in Streamlit
+        st.plotly_chart(fig, use_container_width=True)
 
-            # Plot the data using st.line_chart
-            st.line_chart(joined_data)
-
-            countries_above_who = df[df['pollution_above_who']].groupby('country').size().sort_values(ascending=False)
-            if not countries_above_who.empty:
-                most_polluted_country = countries_above_who.idxmax()
-                st.warning(f"The country with the most pollution above WHO standard is: {most_polluted_country}")
-
-            # If only one pollutant is selected, add a caption for clarity
-            if len(selected_pollutants) == 1:
-                st.caption(f'Line represents average levels of {selected_pollutants[0]} over time. '
-                           f'WHO AQG and RL for {selected_pollutants[0]} are also shown.')
     except Exception as e:
         st.error(f"An error occurred while plotting: {e}")
 
