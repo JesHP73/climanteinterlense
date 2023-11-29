@@ -161,23 +161,26 @@ def main():
         st.error("No data available for the selected criteria.")
         return
 
-    # Main Content - Three Columns
+   # Main Content - Three Columns
     col1, col2, col3 = st.columns(3)
     
     with col1:
-        st.header("Avg.AQI")
-        avg_pollutant_level = round(df['avg_air_pollutant_level'].mean())
-        col1.metric("{avg_pollutant_level} μg/m3")
-        
+        st.header("Avg. AQI")
+        avg_pollutant_level = round(filtered_data['avg_air_pollutant_level'].mean(), 2)
+        col1.metric("Average AQI", f"{avg_pollutant_level} μg/m3")
     
     with col2:
         st.header("Point 2: Regional Impact")
         # Show how selected region is affected
+        # Include relevant content or visualizations for regional impact here
     
     with col3:
-        st.header("higher income vs Air Quality")
-        correlation_gni_pollution = round(df[['avg_GNI_PPP', 'avg_air_pollutant_level']].corr().iloc[0, 1], 2)
-        col3.metric("**Economic correlation:**",(correlation_gni_pollution))
+        st.header("Higher Income vs Air Quality")
+        if 'avg_GNI_PPP' in filtered_data.columns and 'avg_air_pollutant_level' in filtered_data.columns:
+            correlation_gni_pollution = round(filtered_data[['avg_GNI_PPP', 'avg_air_pollutant_level']].corr().iloc[0, 1], 2)
+            col3.metric("Economic Correlation", correlation_gni_pollution)
+        else:
+            col3.write("Data not available for correlation analysis.")
 
     # Additional explanations about AQGs and RLs
     st.markdown("### Understanding the Numbers")
