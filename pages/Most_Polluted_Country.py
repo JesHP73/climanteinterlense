@@ -20,8 +20,7 @@ def load_data():
 def main():
      original_mapping = load_data()
      df = original_mapping.copy()
-     token='sk.eyJ1IjoiamVzd2JzIiwiYSI6ImNscGswZzJsMTA1YnYyanF2Y2liNDZ0bjgifQ.rgJ4q6jeVsotKmyGXxabdQ'
-     return st.map(df)
+     return st.map(df, token='sk.eyJ1IjoiamVzd2JzIiwiYSI6ImNscGswZzJsMTA1YnYyanF2Y2liNDZ0bjgifQ.rgJ4q6jeVsotKmyGXxabdQ' )
 
 
 # This ensures the app runs when the script is executed
