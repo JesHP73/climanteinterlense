@@ -4,7 +4,7 @@ import pandas as pd
 #import matplotlib.pyplot as plt
 import numpy as np
 import plotly.figure_factory as ff
-import spacy_streamlit
+import scipy
 
 
 # WHO standards for pollutants
