@@ -37,11 +37,6 @@ def show_gni_aqi_analysis(df):
     selected_country = st.sidebar.multiselect('Select Country', options=df['country'].unique(), default=df['country'].unique())
     selected_decade = st.sidebar.multiselect('Select Decade', options=df['decade'].unique(), default=df['decade'].unique())
 
-    selected_region = st.sidebar.multiselect('Select Region', options=region_options, default=['All'])
-    selected_country = st.sidebar.multiselect('Select Country', options=country_options, default=['All'])
-    selected_decade = st.sidebar.multiselect('Select Decade', options=decade_options, default=['All'])
-    
-
     # Data filtering based on sidebar selection
     if not selected_region:
         filtered_data = df
@@ -58,7 +53,7 @@ def show_gni_aqi_analysis(df):
             filtered_data,
             x="avg_GNI_Atlas",
             y="avg_AQI_Index",
-            size="total_population",  
+            size="total_population",  # Replace with an appropriate column if necessary
             color="region",
             hover_name="country",
             log_x=True, 
@@ -70,7 +65,7 @@ def show_gni_aqi_analysis(df):
             st.plotly_chart(fig, theme="streamlit", use_container_width=True)
     else:
         st.write("No data to display. Please adjust the filter options.")
-        
 
 # Call page content function
 show_gni_aqi_analysis(df)
+
