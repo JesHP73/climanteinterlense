@@ -124,6 +124,9 @@ def plot_emissions(df, selected_pollutants):
     
 def main():
     # Load data
+    original_data = load_data()
+    df = original_data.copy()
+    
     if df.empty:
         st.error("No data available to display.")
         return
