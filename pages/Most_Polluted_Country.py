@@ -5,6 +5,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 
+[mapbox]
 token='sk.eyJ1IjoiamVzd2JzIiwiYSI6ImNscGswZzJsMTA1YnYyanF2Y2liNDZ0bjgifQ.rgJ4q6jeVsotKmyGXxabdQ'
 
 # Function to load data
