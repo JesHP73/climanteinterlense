@@ -41,29 +41,7 @@ def show_gni_aqi_analysis(df):
             (df['country'].isin(selected_country)) &
             (df['decade'].isin(selected_decade))
         ]
-
-    # Plotting with Plotly
-    if not filtered_data.empty:
-        fig = px.scatter(
-            filtered_data,
-            x="avg_GNI_Atlas",
-            y="avg_AQI_Index",
-            size="total_population", 
-            color="region",
-            hover_name="country",
-            log_x=True, 
-            size_max=60
-        )
-
-        st.plotly_chart(fig, use_container_width=True)
-    else:
-        st.write("No data to display. Please adjust the filter options.")
-
-def gni_impact(df):
-    if df.empty:
-        st.error("No data available to display.")
-        return
-    
+        
     # User input areas
     region_options = ['All'] + sorted(df['region'].unique().tolist())
     country_options = ['All'] + sorted(df['country'].unique().tolist())
@@ -89,7 +67,23 @@ def gni_impact(df):
     else:
         st.error("No data available for the selected criteria.")
 
+    
+    # Plotting with Plotly
+    if not filtered_data.empty:
+        fig = px.scatter(
+            filtered_data,
+            x="avg_GNI_Atlas",
+            y="avg_AQI_Index",
+            size="total_population", 
+            color="region",
+            hover_name="country",
+            log_x=True, 
+            size_max=60
+        )
 
+        st.plotly_chart(fig, use_container_width=True)
+    else:
+        st.write("No data to display. Please adjust the filter options.")
 
 # Call page content function
 show_gni_aqi_analysis(df)
