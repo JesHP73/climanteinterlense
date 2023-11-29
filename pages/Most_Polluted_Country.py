@@ -46,5 +46,8 @@ df = pd.DataFrame(data)
 df.rename(columns={'latitude': 'lat', 'longitude': 'lon'}, inplace=True)
 
 # Display the DataFrame on a map using Streamlit
-st.map(df)
+st.map(df,
+    latitude='lat',
+    longitude='lon',
+    size='avg_air_pollutant_level')
 
