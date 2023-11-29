@@ -24,7 +24,7 @@ def load_data():
      try:
         URL = 'https://raw.githubusercontent.com/JesHP73/climanteinterlense/main/dataset/socio_economical_agg_dataset.csv'
         data = pd.read_csv(URL)
-        return data
+        return data = pickle.load(data, fix_imports=True, encoding='ASCII', errors='strict', buffers=None)
      except Exception as e:
          st.error(f"Error loading data: {e}")
          return pd.DataFrame()  # Return an empty DataFrame in case of error
@@ -84,7 +84,7 @@ def plot_emissions(df, selected_pollutants):
 
                 # Calculate the average pollutant level per decade
                 avg_pollutant_data = pollutant_data.groupby('decade')['avg_air_pollutant_level'].mean().rename(f'Avg {pollutant} Pollution Level')
-
+                                                                                                               
                 # Join the average data with the joined_data DataFrame
                 joined_data = joined_data.join(avg_pollutant_data, how='left')
 
@@ -146,18 +146,22 @@ def display_key_facts(df, pollutants, zones, regions, countries):
         exceedances_aqg = df[df['avg_air_pollutant_level'] > df['air_pollutant'].apply(lambda x: get_standard(x, 'AQG'))].shape[0]
         exceedances_rl = df[df['avg_air_pollutant_level'] > df['air_pollutant'].apply(lambda x: get_standard(x, 'RL'))].shape[0]
 
-        st.write(f"**Air quality concerns:** Air pollution levels exceeded safe limits set by WHO {exceedances_aqg} times.")
-        st.write(f"**Reference level concerns:** Pollution levels went beyond the recommended reference levels {exceedances_rl} times.")
+        st.metric(label='How many times the limits has been exceed', value=f"({exceedances_aqg}, {exceedances_rl})
+                
+    
+
 
         # Population exposure, rounded and simplified
         population_exposed_aqg_pm25 = round(df[df['avg_air_pollutant_level'] > WHO_STANDARDS['PM2.5']['AQG']]['total_population'].sum())
         population_exposed_aqg_pm10 = round(df[df['avg_air_pollutant_level'] > WHO_STANDARDS['PM10']['AQG']]['total_population'].sum())
-        st.write(f"**People affected by PM2.5:** Approximately {population_exposed_aqg_pm25:,} people live in areas with PM2.5 above WHO's safe limit.")
-        st.write(f"**People affected by PM10:** Around {population_exposed_aqg_pm10:,} people are exposed to PM10 levels exceeding the guidelines.")
+                  
+                  
+        st.metric(label=f"**People**", value=f"{population_exposed_aqg_pm25:,} people live in areas with PM2.5 is above WHO's safe limit.")
+        st.metric(label=f"**Approximately**", value=f"{population_exposed_aqg_pm10:,} people are exposed to PM10 levels exceeding the guidelines.")
 
         # Correlation between GNI and pollutant levels, rounded and simplified
         correlation_gni_pollution = round(df[['avg_GNI_PPP', 'avg_air_pollutant_level']].corr().iloc[0, 1], 2)
-        st.write(f"**Economic correlation:** There's a {correlation_gni_pollution} correlation between a country's income levels and its air pollution, suggesting that higher income might be associated with better air quality.")
+        st.metric(f"**Economic correlation:** There's a {correlation_gni_pollution} correlation between a country's income levels and its air pollution, suggesting that higher income might be associated with better air quality.")
 
         #with st.expander("Air Pollution Metrics"):
             #display_pollution_metrics(df)
