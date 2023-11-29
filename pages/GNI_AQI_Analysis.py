@@ -24,6 +24,8 @@ df_original = load_data()
 # Create a copy of the DataFrame for manipulation
 df = df_original.copy()
 
+import numpy as np
+
 def show_gni_aqi_analysis(df):
     if df.empty:
         st.error("No data available to display.")
@@ -38,9 +40,9 @@ def show_gni_aqi_analysis(df):
     decade_options = ['All'] + sorted(df['decade'].unique().tolist())
      
     # Sidebar filters
-    selected_region = st.sidebar.multiselect('Select Region', options=region_options, default='All')
-    selected_country = st.sidebar.multiselect('Select Country', options=country_options, default='All')
-    selected_decade = st.sidebar.multiselect('Select Decade', options=decade_options, default='All')
+    selected_region = st.sidebar.multiselect('Select Region', options=region_options, default=['All'])
+    selected_country = st.sidebar.multiselect('Select Country', options=country_options, default=['All'])
+    selected_decade = st.sidebar.multiselect('Select Decade', options=decade_options, default=['All'])
 
     # Efficient combined filtering
     conditions = []
@@ -54,7 +56,7 @@ def show_gni_aqi_analysis(df):
     if conditions:
         filtered_data = df[np.logical_and.reduce(conditions)]
     else:
-        filtered_data = df
+        filtered_data = df.copy()
 
     # Check if there is data to display after filtering
     if filtered_data.empty:
@@ -66,7 +68,7 @@ def show_gni_aqi_analysis(df):
         filtered_data,
         x="avg_GNI_Atlas",
         y="avg_AQI_Index",
-        size="total_population", 
+        size="total_population",  # Ensure this column exists
         color="region",
         hover_name="country",
         log_x=True, 
@@ -77,3 +79,4 @@ def show_gni_aqi_analysis(df):
 
 # Call page content function
 show_gni_aqi_analysis(df)
+
