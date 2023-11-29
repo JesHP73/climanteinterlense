@@ -166,8 +166,8 @@ def main():
     
     with col1:
         st.header("Avg. AQI")
-        avg_pollutant_level = round(filtered_data['avg_air_pollutant_level'].mean(), 2)
-        col1.metric("Average AQI", f"{avg_pollutant_level} μg/m3")
+        avg_aqi = filtered_data['avg_AQI_Index'].mean()
+        col1.metric("Average AQI", f"{avg_aqi:.2f} μg/m3")
     
     with col2:
         st.header("Point 2: Regional Impact")
@@ -176,15 +176,22 @@ def main():
     
     with col3:
         st.header("Higher Income vs Air Quality")
+    
+        # Check if columns exist
         if 'avg_GNI_PPP' in filtered_data.columns and 'avg_air_pollutant_level' in filtered_data.columns:
-            correlation_gni_pollution = round(filtered_data[['avg_GNI_PPP', 'avg_air_pollutant_level']].corr().iloc[0, 1], 2)
-            col3.metric("Economic Correlation", correlation_gni_pollution)
+            # Calculate correlation
+            correlation_gni_pollution = filtered_data[['avg_GNI_PPP', 'avg_air_pollutant_level']].corr().iloc[0, 1]
+            col3.metric("Economic Correlation", f"{correlation_gni_pollution:.2f}")
+            # Explanatory note about correlation
+            col3.caption("A positive value indicates that higher income correlates with higher air pollution levels, and vice versa.")
+    else:
+        col3.write("Data not available for correlation analysis.")
         else:
             col3.write("Data not available for correlation analysis.")
 
     # Additional explanations about AQGs and RLs
     st.markdown("### Understanding the Numbers")
-    st.write("correlation between a country's income levels and its air pollution,suggesting that higher income might be associated with better air quality.")
+    #st.write("correlation between a country's income levels and its air pollution,suggesting that higher income might be associated with better air quality.")
 
 
     # Call the plotting function and show the plot
