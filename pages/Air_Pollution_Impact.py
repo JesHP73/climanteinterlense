@@ -167,7 +167,7 @@ def main():
     with col1:
         st.header("Avg.AQI")
         avg_pollutant_level = round(df['avg_air_pollutant_level'].mean())
-        col1.metric(f"{avg_pollutant_level} μg/m3")
+        col1.metric("{avg_pollutant_level} μg/m3")
         
     
     with col2:
