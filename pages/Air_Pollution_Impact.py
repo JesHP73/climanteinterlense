@@ -146,7 +146,7 @@ def display_key_facts(df, pollutants, zones, regions, countries):
         exceedances_aqg = df[df['avg_air_pollutant_level'] > df['air_pollutant'].apply(lambda x: get_standard(x, 'AQG'))].shape[0]
         exceedances_rl = df[df['avg_air_pollutant_level'] > df['air_pollutant'].apply(lambda x: get_standard(x, 'RL'))].shape[0]
 
-        st.metric(label='How many times the limits has been exceed', value=f"({exceedances_aqg})
+        st.metric(label='How many times the limits has been exceed it', value=(exceedances_aqg)
                 
     
 
