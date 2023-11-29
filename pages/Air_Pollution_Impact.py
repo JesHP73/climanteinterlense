@@ -98,7 +98,7 @@ def plot_emissions(df, selected_pollutants):
                 return
 
             # Plot the data using st.line_chart
-            st.line_chart(joined_data)
+            st.line_chart(joined_data, width=14, height=10)
 
             countries_above_who = df[df['pollution_above_who']].groupby('country').size().sort_values(ascending=False)
             if not countries_above_who.empty:
