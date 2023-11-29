@@ -60,48 +60,34 @@ def show_gni_aqi_analysis(df):
         st.write("No data to display. Please adjust the filter options.")
 
 def gni_impact(df):
-    
     if df.empty:
         st.error("No data available to display.")
         return
     
     # User input areas
-    
     region_options = ['All'] + sorted(df['region'].unique().tolist())
     country_options = ['All'] + sorted(df['country'].unique().tolist())
     decade_options = ['All'] + sorted(df['decade'].unique().tolist())
      
     # Sidebar filters
-    
     selected_region = st.sidebar.multiselect('Select Region', options=region_options, default='All')
     selected_country = st.sidebar.multiselect('Select Country', options=country_options, default='All')
     selected_decade = st.sidebar.multiselect('Select Decade', options=decade_options, default='All')
 
-
     # Efficient combined filtering
     conditions = []
-    if 'All' not in selected_decade:
-        conditions.append(df['decade'].isin(selected_decade))
-    if 'All' not in selected_zone:
-        conditions.append(df['zone'].isin(selected_zone))
     if 'All' not in selected_region:
         conditions.append(df['region'].isin(selected_region))
     if 'All' not in selected_country:
         conditions.append(df['country'].isin(selected_country))
-    if 'All' not in selected_pollutants:
-        conditions.append(df['air_pollutant'].isin(selected_pollutants))
-    
+    if 'All' not in selected_decade:
+        conditions.append(df['decade'].isin(selected_decade))
     if conditions:
         df_filtered = df[np.logical_and.reduce(conditions)].copy()
-    else:
-        df_filtered = df.copy()
-
-        # Example of correct indentation
-    if not df_filtered.empty:
-        plot_emissions(df_filtered, selected_pollutants)
-        display_key_facts(df_filtered, selected_pollutants, selected_zone, selected_region, selected_country)
+        # Further processing with df_filtered
     else:
         st.error("No data available for the selected criteria.")
+
 
 
 # Call page content function
