@@ -20,7 +20,12 @@ def main():
     original_mapping = load_data()
     df = original_mapping.copy()
 
-st.map(df, size=20, color='#0044ff')
+st.map(df,
+    latitude='latitude',
+    longitude='longitude',
+    size='avg_AQI_Index',
+    color=' ig_label')
+
 
 # This ensures the app runs when the script is executed
 if __name__ == "__main__":
