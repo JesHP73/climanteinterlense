@@ -59,7 +59,7 @@ def show_gni_aqi_analysis(df):
             size_max=60
         )
 
-        tab1 = st.tabs(["Streamlit theme (default)")
+        tab1 = st.tabs(["Streamlit theme (default)"])
         with tab1:
             st.plotly_chart(fig, theme="streamlit", use_container_width=True)
     else:
