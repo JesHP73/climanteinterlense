@@ -18,7 +18,9 @@ def load_data():
 def main():
      original_mapping = load_data()
      df = original_mapping.copy()
-     return st.map(df, latitude='latitude', longitude='longitude', size='avg_AQI_Index', color=' ig_label')
+     #(df, latitude='latitude', longitude='longitude', size='avg_AQI_Index', color=' ig_label')
+     
+     return st.map(df)
 
 
 # This ensures the app runs when the script is executed
