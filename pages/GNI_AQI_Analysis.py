@@ -84,7 +84,8 @@ def gni_impact(df):
         conditions.append(df['decade'].isin(selected_decade))
     if conditions:
         df_filtered = df[np.logical_and.reduce(conditions)].copy()
-        # Further processing with df_filtered
+    if not df_filtered.empty:
+        show_gni_aqi_analysis(df_filtered)
     else:
         st.error("No data available for the selected criteria.")
 
