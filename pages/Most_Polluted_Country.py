@@ -20,7 +20,7 @@ def load_data():
 def main():
      original_mapping = load_data()
      df = original_mapping.copy()
-     return st.map(df, latitude='latitude', longitude='longitude')
+     return st.map(df)
 
 
 # This ensures the app runs when the script is executed
