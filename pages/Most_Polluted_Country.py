@@ -16,18 +16,12 @@ def load_data():
 
 # Main body of your Streamlit app
 def main():
-    # Load data
-    original_mapping = load_data()
-    df = original_mapping.copy()
-     
-     st.map(df,
-         latitude='latitude',
-         longitude='longitude',
-         size='avg_AQI_Index',
-         color=' ig_label')
+     original_mapping = load_data()
+     df = original_mapping.copy()
+     st.map(df, latitude='latitude', longitude='longitude', size='avg_AQI_Index', color=' ig_label')
+     return 
 
 
 # This ensures the app runs when the script is executed
 if __name__ == "__main__":
-  
-    main()
+     main()
