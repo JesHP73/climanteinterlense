@@ -49,5 +49,5 @@ df.rename(columns={'latitude': 'lat', 'longitude': 'lon'}, inplace=True)
 st.map(df,
     latitude='lat',
     longitude='lon',
-    size='avg_air_pollutant_level')
+    color='avg_air_pollutant_level')
 
