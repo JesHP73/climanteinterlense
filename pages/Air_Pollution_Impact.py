@@ -24,7 +24,7 @@ def load_data():
      try:
         URL = 'https://raw.githubusercontent.com/JesHP73/climanteinterlense/main/dataset/socio_economical_agg_dataset.csv'
         data = pd.read_csv(URL)
-        return data = pickle.load(data, fix_imports=True, encoding='ASCII', errors='strict', buffers=None)
+        return data #= pickle.load(data, fix_imports=True, encoding='ASCII', errors='strict', buffers=None)
      except Exception as e:
          st.error(f"Error loading data: {e}")
          return pd.DataFrame()  # Return an empty DataFrame in case of error
