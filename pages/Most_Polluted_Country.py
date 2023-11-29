@@ -5,9 +5,8 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 
-
 # Function to load data
-@st.cache_data  # 👈 Add the caching decorator
+#@st.cache_data  # 👈 Add the caching decorator
 def load_data():
      try:
         URL = 'https://github.com/JesHP73/climanteinterlense/blob/7119b0a7a9d50d703a3f2f2e0a5ada59a377ea50/dataset/mapping.csv'
