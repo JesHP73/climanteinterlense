@@ -125,64 +125,60 @@ def display_geographical_focus(zones, regions, countries):
     else:
         return ', '.join(countries)
 
-def display_key_facts(df, pollutants, zones, regions, countries):
-    
-    st.subheader("Key Facts")
 
-    if not df.empty:
-        # User Interface
-        st.title("Understanding Air Pollution and Its Impact")
-        st.write("This page provides a simple overview of key aspects of air pollution and its impact on climate change.")
+def display_key_facts(df):
+    if df.empty:
+        st.error("No data available to display.")
+        return
+
+    st.title("Understanding Air Pollution and Its Impact")
+    st.write("This page provides a simple overview of key aspects of air pollution and its impact on climate change.")
     
-        # Filters
-        decade_options = ['All'] + sorted(df['decade'].unique().tolist())
-        region_options = ['All'] + sorted(df['region'].unique().tolist())
-        country_options = ['All'] + sorted(df['country'].unique().tolist())
-        pollutant_options = ['All'] + sorted(WHO_STANDARDS.keys())
+    # Filters
+    region_options = ['All'] + sorted(df['region'].unique().tolist())
+    country_options = ['All'] + sorted(df['country'].unique().tolist())
+    pollutant_options = ['All'] + sorted(WHO_STANDARDS.keys())
     
-        selected_decade = st.sidebar.multiselect('Select Decade', options=decade_options, default=['All'])
-        selected_region = st.sidebar.multiselect('Select Region', options=region_options, default=['All'])
-        selected_country = st.sidebar.multiselect('Select Country', options=country_options, default=['All'])
-        selected_pollutants = st.sidebar.multiselect('Select Pollutant(s)', options=pollutant_options, default=['All'])
+    selected_region = st.sidebar.multiselect('Select Region', options=region_options, default=['All'])
+    selected_country = st.sidebar.multiselect('Select Country', options=country_options, default=['All'])
+    selected_pollutants = st.sidebar.multiselect('Select Pollutant(s)', options=pollutant_options, default=['All'])
     
-        # Efficient combined filtering
-        conditions = []
-        if 'All' not in selected_decade:
-            conditions.append(df['decade'].isin(selected_decade))
-        if 'All' not in selected_region:
-            conditions.append(df['region'].isin(selected_region))
-        if 'All' not in selected_country:
-            conditions.append(df['country'].isin(selected_country))
-        if 'All' not in selected_pollutants:
-            conditions.append(df['air_pollutant'].isin(selected_pollutants))
-        if conditions:
-            df_filtered = df[np.logical_and.reduce(conditions)].copy()
-        else:
-            df_filtered = df.copy()
-        
-        # Apply filters to data
-        filtered_data = apply_filters(df, selected_region, selected_country, selected_pollutant, selected_decade)
-        
-        # Main Content - Three Columns
-        col1, col2, col3 = st.columns(3)
-        
-        with col1:
-            st.header("Point 1: Basic Fact")
-            # Simple visualization or fact about climate change/air pollution
-        
-        with col2:
-            st.header("Point 2: Regional Impact")
-            # Show how selected region is affected
-        
-        with col3:
-            st.header("Point 3: Pollutant Effect")
-            # Display simple info about the selected pollutant
+    # Efficient combined filtering
+    conditions = []
+    if 'All' not in selected_region:
+        conditions.append(df['region'].isin(selected_region))
+    if 'All' not in selected_country:
+        conditions.append(df['country'].isin(selected_country))
+    if 'All' not in selected_pollutants:
+        conditions.append(df['air_pollutant'].isin(selected_pollutants))
     
-            # Additional explanations about AQGs and RLs
-            st.markdown("### Understanding the Numbers")
-            st.info("The guidelines and reference levels from WHO are designed to keep air quality at a level that's safe for public health. When pollution levels go above these numbers, it can lead to health concerns for the population, especially vulnerable groups like children and the elderly.")
-        else:
-            st.error("No data available for the selected criteria.")
+    if conditions:
+        filtered_data = df[np.logical_and.reduce(conditions)]
+    else:
+        filtered_data = df
+
+    if filtered_data.empty:
+        st.error("No data available for the selected criteria.")
+        return
+
+    # Main Content - Three Columns
+    col1, col2, col3 = st.columns(3)
+    
+    with col1:
+        st.header("Point 1: Basic Fact")
+        # Simple visualization or fact about climate change/air pollution
+    
+    with col2:
+        st.header("Point 2: Regional Impact")
+        # Show how selected region is affected
+    
+    with col3:
+        st.header("Point 3: Pollutant Effect")
+        # Display simple info about the selected pollutant
+
+    # Additional explanations about AQGs and RLs
+    st.markdown("### Understanding the Numbers")
+    st.info("The guidelines and reference levels from WHO are designed to keep air quality at a level that's safe for public health. When pollution levels go above these numbers, it can lead to health concerns for the population, especially vulnerable groups like children and the elderly.")
 
 
 # Main body of your Streamlit app
