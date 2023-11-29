@@ -18,6 +18,12 @@ def load_data():
         st.error(f"Error loading data: {e}")
         return pd.DataFrame()  # Return an empty DataFrame in case of error
 
+# Load data
+df_original = load_data()
+
+# Create a copy of the DataFrame for manipulation
+df = df_original.copy()
+
 def show_gni_aqi_analysis(df):
     if df.empty:
         st.error("No data available to display.")
@@ -64,11 +70,7 @@ def show_gni_aqi_analysis(df):
             st.plotly_chart(fig, theme="streamlit", use_container_width=True)
     else:
         st.write("No data to display. Please adjust the filter options.")
-
-
-# Load data
-original_data = load_data()
-df = original_data.copy()
+        
 
 # Call page content function
 show_gni_aqi_analysis(df)
