@@ -20,6 +20,7 @@ def load_data():
 def main():
      original_mapping = load_data()
      df = original_mapping.copy()
+     token='pk.eyJ1IjoiamVzd2JzIiwiYSI6ImNscGswNGJyYjA1N3IyaXMyM2pyNDJyc2MifQ.7o4kwZPMtuuV3gnUjrdVGA'
      return st.map(df)
 
 
