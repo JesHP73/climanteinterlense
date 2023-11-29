@@ -74,8 +74,9 @@ def gni_impact(df):
     # Sidebar filters
     
     selected_region = st.sidebar.multiselect('Select Region', options=region_options, default='All')
-    selected_country = st.sidebar.multiselect('Select Country', options=country_options), default='All')
-    selected_decade = st.sidebar.multiselect('Select Decade', options=decade_options), default='All')
+    selected_country = st.sidebar.multiselect('Select Country', options=country_options, default='All')
+    selected_decade = st.sidebar.multiselect('Select Decade', options=decade_options, default='All')
+
 
     # Efficient combined filtering
     conditions = []
