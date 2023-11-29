@@ -135,7 +135,7 @@ def display_key_facts(df, pollutants, zones, regions, countries):
 
     if not df.empty:
         # Simplified metrics
-        col1, col2, col3, col4 = st.columns(4)
+        col1, col2, col3 = st.columns(3)
         avg_pollutant_level = round(df['avg_air_pollutant_level'].mean())
         max_pollutant_level = round(df['avg_air_pollutant_level'].max())
         min_pollutant_level = round(df['avg_air_pollutant_level'].min())
@@ -153,14 +153,14 @@ def display_key_facts(df, pollutants, zones, regions, countries):
         population_exposed_aqg_pm25 = round(df[df['avg_air_pollutant_level'] > WHO_STANDARDS['PM2.5']['AQG']]['total_population'].sum())
         population_exposed_aqg_pm10 = round(df[df['avg_air_pollutant_level'] > WHO_STANDARDS['PM10']['AQG']]['total_population'].sum())
                           
-        col3.metric(f"**#of People**", value=(population_exposed_aqg_pm25), delta=5, delta_color='inverse')
+        #metric(f"**#of People**", value=(population_exposed_aqg_pm25), delta=5, delta_color='inverse')
         st.write('that has been expose to PM2.5')
         st.metric(label=f"**Approximately**", value=(population_exposed_aqg_pm10))
         st.write('that has been exposed to PM10')
 
         # Correlation between GNI and pollutant levels, rounded and simplified
         correlation_gni_pollution = round(df[['avg_GNI_PPP', 'avg_air_pollutant_level']].corr().iloc[0, 1], 2)
-        col4.metric("**Economic correlation:**",(correlation_gni_pollution))
+        col3.metric("**Economic correlation:**",(correlation_gni_pollution))
         st.write("correlation between a country's income levels and its air pollution,suggesting that higher income might be associated with better air quality.")
 
         #with st.expander("Air Pollution Metrics"):
