@@ -165,24 +165,29 @@ def main():
     col1, col2, col3 = st.columns(3)
     
     with col1:
-        st.header("Point 1: Basic Fact")
-        # Simple visualization or fact about climate change/air pollution
+        st.header("Avg.AQI")
+        avg_pollutant_level = round(df['avg_air_pollutant_level'].mean())
+        col1.metric(f"{avg_pollutant_level} μg/m3", '-500')
+        
     
     with col2:
         st.header("Point 2: Regional Impact")
         # Show how selected region is affected
     
     with col3:
-        st.header("Point 3: Pollutant Effect")
-        # Display simple info about the selected pollutant
+        st.header("higher income vs Air Quality")
+        correlation_gni_pollution = round(df[['avg_GNI_PPP', 'avg_air_pollutant_level']].corr().iloc[0, 1], 2)
+        col3.metric("**Economic correlation:**",(correlation_gni_pollution))
 
     # Additional explanations about AQGs and RLs
     st.markdown("### Understanding the Numbers")
-    st.info("The guidelines and reference levels from WHO are designed to keep air quality at a level that's safe for public health. When pollution levels go above these numbers, it can lead to health concerns for the population, especially vulnerable groups like children and the elderly.")
+    st.write("correlation between a country's income levels and its air pollution,suggesting that higher income might be associated with better air quality.")
+
 
     # Call the plotting function and show the plot
     plot_emissions(df, selected_pollutants)
         
+st.info("The guidelines and reference levels from WHO are designed to keep air quality at a level that's safe for public health. When pollution levels go above these numbers, it can lead to health concerns for the population, especially vulnerable groups like children and the elderly.")
 
 # This ensures the app runs when the script is executed
 if __name__ == "__main__":
