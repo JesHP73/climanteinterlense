@@ -184,10 +184,9 @@ def main():
             col3.metric("Economic Correlation", f"{correlation_gni_pollution:.2f}")
             # Explanatory note about correlation
             col3.caption("A positive value indicates that higher income correlates with higher air pollution levels, and vice versa.")
-    else:
-        col3.write("Data not available for correlation analysis.")
         else:
-            col3.write("Data not available for correlation analysis.")
+        col3.write("Data not available for correlation analysis.")
+        
 
     # Additional explanations about AQGs and RLs
     st.markdown("### Understanding the Numbers")
