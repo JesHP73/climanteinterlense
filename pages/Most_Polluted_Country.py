@@ -18,10 +18,8 @@ def load_data():
 def main():
      original_mapping = load_data()
      df = original_mapping.copy()
-     #(df, latitude='latitude', longitude='longitude', size='avg_AQI_Index', color=' ig_label')
-     plot_data = avg_AQI_Index.to_frame(name='AQI Index')
-     plot_data['latitude']
-     plot_data['longitude']
+     
+     plot_data = (df, latitude='latitude', longitude='longitude', size='avg_AQI_Index', color=' ig_label')
      return st.map(plot_data)
 
 
