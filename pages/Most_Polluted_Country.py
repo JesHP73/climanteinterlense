@@ -8,8 +8,8 @@ import numpy as np
 def load_data():
      try:
         URL = 'https://github.com/JesHP73/climanteinterlense/blob/7119b0a7a9d50d703a3f2f2e0a5ada59a377ea50/dataset/mapping.csv'
-        data = pd.read_csv(URL)
-        return data #= pickle.load(data, fix_imports=True, encoding='ASCII', errors='strict', buffers=None)
+        data_mapping = pd.read_csv(URL)
+        return data_mapping #= pickle.load(data, fix_imports=True, encoding='ASCII', errors='strict', buffers=None)
      except Exception as e:
          st.error(f"Error loading data: {e}")
          return pd.DataFrame()  # Return an empty DataFrame in case of error
@@ -19,12 +19,12 @@ def main():
     # Load data
     original_mapping = load_data()
     df = original_mapping.copy()
-
-st.map(df,
-    latitude='latitude',
-    longitude='longitude',
-    size='avg_AQI_Index',
-    color=' ig_label')
+     
+     st.map(df,
+         latitude='latitude',
+         longitude='longitude',
+         size='avg_AQI_Index',
+         color=' ig_label')
 
 
 # This ensures the app runs when the script is executed
