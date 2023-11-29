@@ -68,7 +68,7 @@ def plot_emissions(df, selected_pollutants):
             plot_data['WHO RL'] = rl
 
             # Plot the data using st.line_chart
-            st.line_chart(plot_data, width=14, height=10 )
+            st.line_chart(plot_data)
 
         else:
             # Initialize an empty DataFrame for joined data
