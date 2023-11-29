@@ -135,18 +135,19 @@ def display_key_facts(df, pollutants, zones, regions, countries):
 
     if not df.empty:
         # Simplified metrics
+        col1, col2, col3 = st.columns(3)
         avg_pollutant_level = round(df['avg_air_pollutant_level'].mean())
         max_pollutant_level = round(df['avg_air_pollutant_level'].max())
         min_pollutant_level = round(df['avg_air_pollutant_level'].min())
-        st.metric(label="**Average level of air pollution**", value=f"{avg_pollutant_level} μg/m3")
-        st.metric(label="**Highest recorded air pollution level**", value=f"{max_pollutant_level} μg/m3")
+        col1.metric(label="**Average level of air pollution**", value=f"{avg_pollutant_level} μg/m3")
+        col2.metric(label="**Highest recorded air pollution level**", value=f"{max_pollutant_level} μg/m3")
         #st.metric(label="**Lowest recorded air pollution level**", value=f"{min_pollutant_level} μg/m3")
 
         # Instances exceeding WHO standards
         exceedances_aqg = df[df['avg_air_pollutant_level'] > df['air_pollutant'].apply(lambda x: get_standard(x, 'AQG'))].shape[0]
         exceedances_rl = df[df['avg_air_pollutant_level'] > df['air_pollutant'].apply(lambda x: get_standard(x, 'RL'))].shape[0]
-
-        st.metric(label='How many times the **limits has been exceed** it', value=(exceedances_aqg))
+        
+        col3.metric(label='How many times the **limits has been exceed** it', value=(exceedances_aqg))
                 
         # Population exposure, rounded and simplified
         population_exposed_aqg_pm25 = round(df[df['avg_air_pollutant_level'] > WHO_STANDARDS['PM2.5']['AQG']]['total_population'].sum())
