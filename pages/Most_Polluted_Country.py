@@ -19,8 +19,10 @@ def main():
      original_mapping = load_data()
      df = original_mapping.copy()
      #(df, latitude='latitude', longitude='longitude', size='avg_AQI_Index', color=' ig_label')
-     
-     return st.map(df)
+     plot_data = avg_AQI_Index_mean.to_frame(name='AQI Index')
+     plot_data['latitude']
+     plot_data['longitude']
+     return st.map(plot_data)
 
 
 # This ensures the app runs when the script is executed
