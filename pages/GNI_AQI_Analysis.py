@@ -32,11 +32,21 @@ def show_gni_aqi_analysis(df):
     st.title("📊 Income Per Person vs AQI Analysis")
     st.write("Here you can analyze how Gross National Income (GNI) correlates with Air Quality Index (AQI).")
 
-    # Sidebar filters
-    selected_region = st.sidebar.multiselect('Select Region', options=df['region'].unique(), default=df['region'].unique())
-    selected_country = st.sidebar.multiselect('Select Country', options=df['country'].unique(), default=df['country'].unique())
-    selected_decade = st.sidebar.multiselect('Select Decade', options=df['decade'].unique(), default=df['decade'].unique())
 
+    # User input areas
+    # Sidebar filters
+    
+    region_options = ['All'] + sorted(df['region'].unique().tolist())
+    country_options = ['All'] + sorted(df['country'].unique().tolist())
+    decade_options = ['All'] + sorted(df['decade'].unique().tolist())
+    
+    
+    # Sidebar filters
+    selected_region = st.sidebar.multiselect('Select Region', options=region_options, default='All')
+    selected_country = st.sidebar.multiselect('Select Country', options=country_options), default='All')
+    selected_decade = st.sidebar.multiselect('Select Decade', options=decade_options), default='All')
+
+    
     # Data filtering based on sidebar selection
     if not selected_region:
         filtered_data = df
