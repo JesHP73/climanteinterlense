@@ -5,6 +5,7 @@ import streamlit as st
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
+import plotly.express as px
 
 # Function to load data
 @st.cache
@@ -17,19 +18,23 @@ def load_data():
         st.error(f"Error loading data: {e}")
         return pd.DataFrame()  # Return an empty DataFrame in case of error
 
-# Page content function
 def show_gni_aqi_analysis(df):
     if df.empty:
         st.error("No data available to display.")
         return
 
-    st.title("📊 GNI vs AQI Analysis")
+    st.title("📊 Income Per Person vs AQI Analysis")
     st.write("Here you can analyze how Gross National Income (GNI) correlates with Air Quality Index (AQI).")
 
     # Sidebar filters
     selected_region = st.sidebar.multiselect('Select Region', options=df['region'].unique(), default=df['region'].unique())
     selected_country = st.sidebar.multiselect('Select Country', options=df['country'].unique(), default=df['country'].unique())
     selected_decade = st.sidebar.multiselect('Select Decade', options=df['decade'].unique(), default=df['decade'].unique())
+
+    selected_region = st.sidebar.multiselect('Select Region', options=region_options, default=['All'])
+    selected_country = st.sidebar.multiselect('Select Country', options=country_options, default=['All'])
+    selected_decade = st.sidebar.multiselect('Select Decade', options=decade_options, default=['All'])
+    
 
     # Data filtering based on sidebar selection
     if not selected_region:
@@ -41,19 +46,29 @@ def show_gni_aqi_analysis(df):
             (df['decade'].isin(selected_decade))
         ]
 
-    # Plotting
+    # Plotting with Plotly
     if not filtered_data.empty:
-        fig, ax = plt.subplots()
-        sns.scatterplot(data=filtered_data, x='avg_GNI_PPP', y='avg_AQI_Index', hue='region', ax=ax)
-        plt.title("Scatter Plot of GNI vs AQI by Region")
-        plt.xlabel("Average GNI (PPP)")
-        plt.ylabel("Average AQI Index")
-        st.pyplot(fig)
+        fig = px.scatter(
+            filtered_data,
+            x="avg_GNI_Atlas",
+            y="avg_AQI_Index",
+            size="total_population",  
+            color="region",
+            hover_name="country",
+            log_x=True, 
+            size_max=60
+        )
+
+        tab1 = st.tabs(["Streamlit theme (default)")
+        with tab1:
+            st.plotly_chart(fig, theme="streamlit", use_container_width=True)
     else:
         st.write("No data to display. Please adjust the filter options.")
 
+
 # Load data
-df = load_data()
+original_data = load_data()
+df = original_data.copy()
 
 # Call page content function
 show_gni_aqi_analysis(df)
