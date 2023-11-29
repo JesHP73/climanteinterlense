@@ -152,7 +152,7 @@ def display_key_facts(df, pollutants, zones, regions, countries):
         population_exposed_aqg_pm25 = round(df[df['avg_air_pollutant_level'] > WHO_STANDARDS['PM2.5']['AQG']]['total_population'].sum())
         population_exposed_aqg_pm10 = round(df[df['avg_air_pollutant_level'] > WHO_STANDARDS['PM10']['AQG']]['total_population'].sum())
                           
-        st.metric(label=f"**People**", value=(population_exposed_aqg_pm25))
+        st.metric(label=f"**People**", value=(population_exposed_aqg_pm25), delta=5, delta_color='inverse')
         st.write('that has been expose to PM2.5')
         st.metric(label=f"**Approximately**", value=(population_exposed_aqg_pm10))
         st.write('that has been exposed to PM10')
