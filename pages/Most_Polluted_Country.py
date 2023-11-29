@@ -5,6 +5,8 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 
+token='sk.eyJ1IjoiamVzd2JzIiwiYSI6ImNscGswZzJsMTA1YnYyanF2Y2liNDZ0bjgifQ.rgJ4q6jeVsotKmyGXxabdQ'
+
 # Function to load data
 #@st.cache_data  # 👈 Add the caching decorator
 def load_data():
@@ -20,7 +22,7 @@ def load_data():
 def main():
      original_mapping = load_data()
      df = original_mapping.copy()
-     return st.map(df, token='sk.eyJ1IjoiamVzd2JzIiwiYSI6ImNscGswZzJsMTA1YnYyanF2Y2liNDZ0bjgifQ.rgJ4q6jeVsotKmyGXxabdQ' )
+     return st.map(df)
 
 
 # This ensures the app runs when the script is executed
