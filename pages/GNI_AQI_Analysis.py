@@ -53,19 +53,19 @@ def show_gni_aqi_analysis(df):
             filtered_data,
             x="avg_GNI_Atlas",
             y="avg_AQI_Index",
-            size="total_population",  # Replace with an appropriate column if necessary
+            size="total_population", 
             color="region",
             hover_name="country",
             log_x=True, 
             size_max=60
         )
 
-        tab1 = st.tabs(["Streamlit theme (default)"])
-        with tab1:
-            st.plotly_chart(fig, theme="streamlit", use_container_width=True)
+        st.plotly_chart(fig, use_container_width=True)
     else:
         st.write("No data to display. Please adjust the filter options.")
 
+
 # Call page content function
 show_gni_aqi_analysis(df)
+
 
