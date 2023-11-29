@@ -18,7 +18,7 @@ def load_data():
         st.error(f"Error loading data: {e}")
         return pd.DataFrame()  # Return an empty DataFrame in case of error
 
-# Load data
+# Assuming load_data() is defined elsewhere
 df_original = load_data()
 
 # Create a copy of the DataFrame for manipulation
@@ -32,16 +32,6 @@ def show_gni_aqi_analysis(df):
     st.title("📊 Income Per Person vs AQI Analysis")
     st.write("Here you can analyze how Gross National Income (GNI) correlates with Air Quality Index (AQI).")
     
-    # Data filtering based on sidebar selection
-    if not selected_region:
-        filtered_data = df
-    else:
-        filtered_data = df[
-            (df['region'].isin(selected_region)) &
-            (df['country'].isin(selected_country)) &
-            (df['decade'].isin(selected_decade))
-        ]
-        
     # User input areas
     region_options = ['All'] + sorted(df['region'].unique().tolist())
     country_options = ['All'] + sorted(df['country'].unique().tolist())
@@ -60,35 +50,30 @@ def show_gni_aqi_analysis(df):
         conditions.append(df['country'].isin(selected_country))
     if 'All' not in selected_decade:
         conditions.append(df['decade'].isin(selected_decade))
+
     if conditions:
-        df_filtered = df[np.logical_and.reduce(conditions)].copy()
-    if not df_filtered.empty:
-        show_gni_aqi_analysis(df_filtered)
+        filtered_data = df[np.logical_and.reduce(conditions)]
     else:
+        filtered_data = df
+
+    # Check if there is data to display after filtering
+    if filtered_data.empty:
         st.error("No data available for the selected criteria.")
+        return
 
-    
     # Plotting with Plotly
-    if not filtered_data.empty:
-        fig = px.scatter(
-            filtered_data,
-            x="avg_GNI_Atlas",
-            y="avg_AQI_Index",
-            size="total_population", 
-            color="region",
-            hover_name="country",
-            log_x=True, 
-            size_max=60
-        )
+    fig = px.scatter(
+        filtered_data,
+        x="avg_GNI_Atlas",
+        y="avg_AQI_Index",
+        size="total_population", 
+        color="region",
+        hover_name="country",
+        log_x=True, 
+        size_max=60
+    )
 
-        st.plotly_chart(fig, use_container_width=True)
-    else:
-        st.write("No data to display. Please adjust the filter options.")
+    st.plotly_chart(fig, use_container_width=True)
 
 # Call page content function
 show_gni_aqi_analysis(df)
-
-
-
-
-
