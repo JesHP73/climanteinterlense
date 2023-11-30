@@ -73,11 +73,11 @@ def plot_aqi_and_gni_over_time(filtered_data):
     # Add GNI per Capita trace
 
     if 'GNI_per_capita' in aggregated_data.columns:
-    fig.add_trace(
-        go.Scatter(x=aggregated_data['year'], y=aggregated_data['GNI_per_capita'], name='GNI per Capita',
-                   mode='lines+markers', line=dict(color='darkblue')),
-        secondary_y=True,
-    )
+        fig.add_trace(
+            go.Scatter(x=aggregated_data['year'], y=aggregated_data['GNI_per_capita'], name='GNI per Capita',
+                       mode='lines+markers', line=dict(color='darkblue')),
+            secondary_y=True,
+        )
 
     # Set x-axis title
     fig.update_xaxes(title_text="Year")
