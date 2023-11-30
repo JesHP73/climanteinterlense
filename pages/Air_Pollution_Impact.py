@@ -49,7 +49,7 @@ def plot_emissions(df, selected_region, selected_country, selected_pollutants): 
             st.error('No data available for the selected filters')
             return
     
-        fig = go.Figure()
+        #fig = go.Figure()
 
         if selected_region == 'All' and selected_country == 'All' and selected_pollutant == 'All':
             # Add lines for the WHO standards
