@@ -41,7 +41,7 @@ def plot_data(filtered_data):
     color_discrete_map = {
         'Low Income': 'blue',
         'High Income': 'green',
-        'Upper Middle Income': 'brown'
+        'Upper Middle Income': 'grey'
     }
 
     # Plot the line chart using the aggregated data
@@ -52,7 +52,7 @@ def plot_data(filtered_data):
         color='ig_label',
         color_discrete_map=color_discrete_map,
         labels={'total_death_attributed_sex_standarized': 'Percentage of Deaths', 'ig_label': 'Income Group'},
-        title='Time Series of Deaths Attributed to Air Pollution by Income Group'
+        title='Deaths Attributed to Air Pollution by Income Group'
     )
 
     # Improve layout for better readability
@@ -104,7 +104,7 @@ def main():
         st.error("No data available to display.")
         return
 
-    st.title('Percentage of Deaths Attributed to Air Pollution, 1990-2019')
+    st.title('Percentage of Deaths Attributed to Air Pollution)
 
     # Sidebar for filters
     st.sidebar.header('Filters')
@@ -133,9 +133,10 @@ def main():
         return
 
     # Additional explanations about AQGs and RLs
-    st.markdown("### Understanding the Numbers")
+    st.markdown("### Understanding What You See")
 
-    st.info("The guidelines and reference levels from WHO are designed to keep air quality at a level that's safe for public health. When pollution levels go above these numbers, it can lead to health concerns for the population, especially vulnerable groups like children and the elderly.")
+    st.info(" The IHME, Global Burden of Disease Dataset studied, provides the Death by Risk factors since 1990 umtil 2019; I have filter this risk factors by the following causes: High temperature, Low temperature, Ambient particulate matter pollution, Household air pollution from solid fuels acroos Europe")
+    st.caption('Here the term 'contributes', meaning it was one of the attributed risk factors for a given disease or cause of death. There can be multiple risk factors for a given disease which corroborate or amplify one another when both are present. This means that in some cases, air pollution was not the only risk factor but one of several.'
 
     # Plotting
     plot_data(filtered_data)
