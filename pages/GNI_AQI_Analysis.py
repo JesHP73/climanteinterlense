@@ -53,7 +53,6 @@ if selected_pollutants != ['All']:
 
 
 def plot_aqi_and_gni_over_time(data):
-    # Check if data is empty
     if data.empty:
         st.error('No data available for plotting.')
         return
@@ -65,44 +64,38 @@ def plot_aqi_and_gni_over_time(data):
     # Drop rows where 'year' or 'AQI_Index' is NaN
     data = data.dropna(subset=['year', 'AQI_Index'])
 
-    # Ensure that the data is not empty after dropping NaN values
     if data.empty:
         st.error('No data available for plotting after cleaning.')
         return
 
     fig, ax1 = plt.subplots(figsize=(10, 6))
 
-    # Plotting AQI Index
     try:
-        # Using a rolling mean for AQI Index to smooth the line, and setting a thinner linewidth
-        ax1.plot(data['year'].values, data['AQI_Index'].rolling(window=3).mean(), 'r-', linewidth=0.5, alpha=0.7, label='Rolling Mean AQI Index')
-
+        ax1.plot(data['year'], data['AQI_Index'], 'r-', label='AQI Index')
     except Exception as e:
         st.error(f'Error plotting AQI Index: {e}')
         return
 
     ax1.set_xlabel('Year')
     ax1.set_ylabel('AQI Index', color='r')
+    ax1.set_title("AQI Index and GNI per Capita Over Time")
     
-    # Plotting GNI per Capita
     if 'GNI_per_capita' in data.columns:
         try:
             ax2 = ax1.twinx()
-            ax2.plot(data['year'].values, data['GNI_per_capita'].values, 'b-', label='GNI per Capita')
-            ax2.set_ylabel('GNI per Capita', color='b')
+            ax2.plot(data['year'], data['GNI_per_capita'], 'b-', label='GNI per Capita')
+            ax2.set_ylabel('GNI per Capita ($)', color='b')
         except Exception as e:
             st.error(f'Error plotting GNI per Capita: {e}')
             return
     else:
         st.warning("GNI_per_capita data not available for plotting.")
     
-    # Moving the legend to the top of the plot
-    ax1.legend(loc='upper center', bbox_to_anchor=(0.5, -0.05), fancybox=True, shadow=True, ncol=2)
+    ax1.legend(loc='upper left')
+    ax2.legend(loc='upper right')
 
     fig.tight_layout()
-    plt.show()
-    return fig
-
+    st.pyplot(fig)
 
 
 # Function for plotting individual pollutants with emissions levels and units
