@@ -48,7 +48,7 @@ else:
 
 
 # Function for plotting AQI Index vs GNI per Capita
-def plot_aqi_and_gni_over_time(data):
+def plot_aqi_and_gni_over_time(filtered_data):
     if data.empty:
         st.error('No data available for plotting.')
         return
