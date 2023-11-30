@@ -18,12 +18,16 @@ def load_data():
     except Exception as e:
         st.error(f"Error loading data: {e}")
         return pd.DataFrame()  # Return an empty DataFrame in case of error
-        
+
 
 def plot_data(filtered_data):
-    
-    # Group by 'year' and 'ig_label', then calculate the mean percentage
-    aggregated_data = filtered_data.groupby(['year', 'ig_label'], as_index=False)['death_percentage'].mean()
+    # Make sure the column is of numeric type
+    filtered_data['total_death_attributed_sex_standarized'] = pd.to_numeric(
+        filtered_data['total_death_attributed_sex_standarized'], errors='coerce'
+    )
+
+    # Group by 'year' and 'ig_label', then calculate the mean of the standardized death total
+    aggregated_data = filtered_data.groupby(['year', 'ig_label'], as_index=False)['total_death_attributed_sex_standarized'].mean()
 
     # Mapping from short labels to full names for income groups
     income_label_mapping = {
@@ -31,6 +35,7 @@ def plot_data(filtered_data):
         'UM': 'Upper Middle Income',
         'H': 'High Income'
     }
+
     # Apply the mapping to the 'ig_label' column
     aggregated_data['ig_label'] = aggregated_data['ig_label'].map(income_label_mapping)
 
@@ -38,17 +43,17 @@ def plot_data(filtered_data):
     color_discrete_map = {
         'Low Income': 'blue',
         'High Income': 'green',
-        'Upper Middle Income': 'grey'
+        'Upper Middle Income': 'red' # Changed for visibility
     }
 
     # Plot the line chart using the aggregated data
     fig = px.line(
         aggregated_data,
         x='year',
-        y='death_percentage',
+        y='total_death_attributed_sex_standarized',
         color='ig_label',
         color_discrete_map=color_discrete_map,
-        labels={'death_percentage': 'Percentage of Deaths', 'ig_label': 'Income Group'},
+        labels={'total_death_attributed_sex_standarized': 'Percentage of Deaths', 'ig_label': 'Income Group'},
         title='Deaths Attributed to Air Pollution by Income Group'
     )
 
@@ -56,7 +61,7 @@ def plot_data(filtered_data):
     fig.update_layout(
         xaxis_title='Year',
         yaxis_title='Percentage of Deaths',
-        yaxis_tickformat='.2%', # Ensuring that y-axis labels are formatted as percentages
+        yaxis_tickformat='.2%',
         showlegend=True,
         legend_title_text='Income Group'
     )
