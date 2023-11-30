@@ -32,42 +32,50 @@ def load_data():
 
 # Assuming 'load_data()' is a function that loads and returns the aggregated DataFrame
 df = load_data()
+df_original = df.copy()
 
-# Sidebar multiselect for Region and Country
-selected_regions = st.sidebar.multiselect('Select Region(s)', options=df['region'].unique(), default=df['region'].unique())
-selected_countries = st.sidebar.multiselect('Select Country(ies)', options=df[df['region'].isin(selected_regions)]['country'].unique())
+# Sidebar - Selecting 'All' or specific regions/countries
+all_regions = ['All'] + list(df_original['region'].unique())
+all_countries = ['All'] + list(df_original['country'].unique())
+selected_regions = st.sidebar.multiselect('Select Region(s)', options=all_regions, default='All')
+selected_countries = st.sidebar.multiselect('Select Country(ies)', options=all_countries, default='All')
+
+# Handling 'All' selections
+if 'All' in selected_regions:
+    selected_regions = all_regions[1:]  # Exclude 'All' from the list
+if 'All' in selected_countries:
+    selected_countries = all_countries[1:]  # Exclude 'All' from the list
 
 # Filter the DataFrame based on the selections
-filtered_df = df[df['region'].isin(selected_regions) & df['country'].isin(selected_countries)]
+filtered_df = df_original[
+    df_original['region'].isin(selected_regions) &
+    df_original['country'].isin(selected_countries)
+]
 
-# Since your data is already aggregated, you can proceed directly to creating the plots
-# Create the AQI Index plot
-fig = px.line(filtered_df, x='year', y='AQI_Index', title='AQI Index over Time', markers=True, labels={'AQI_Index': 'AQI Index'})
-fig.update_traces(name='AQI Index', showlegend=True)
+# Create the plot
+fig = px.line(
+    filtered_df,
+    x='year',
+    y=['AQI_Index', 'GNI_per_capita'],
+    labels={'value':'Index', 'variable':'Indicator'},
+    title='AQI and GNI per Capita over Time'
+)
 
-# Create the GNI per Capita plot with an explicit name for the legend
-fig.add_scatter(x=filtered_df['year'], y=filtered_df['GNI_per_capita'], mode='lines+markers', name='GNI per Capita', yaxis='y2', showlegend=True)
-
-# Update layout to add a secondary y-axis for GNI per Capita
+# Simplify the legend and layout
 fig.update_layout(
+    legend_title_text='Indicator',
+    yaxis_title='AQI Index',
     yaxis2=dict(
         title='GNI per Capita',
         overlaying='y',
         side='right'
-    ),
-    yaxis=dict(
-        title='AQI Index'
     )
 )
-
-# Show the plot
-st.plotly_chart(fig)
-
-      
-#st.info("The guidelines and reference levels from WHO are designed to keep air quality at a level that's safe for public health. When pollution levels go above these numbers, it can lead to health concerns for the population, especially vulnerable groups like children and the elderly.")
-
 
 ## Additional explanations about AQGs and RLs
 st.markdown("### Understanding the Numbers")
 st.write("correlation between a country's income levels and its air pollution,suggesting that higher income might be associated with better air quality.")
+
+# Show the plot
+st.plotly_chart(fig)
 
