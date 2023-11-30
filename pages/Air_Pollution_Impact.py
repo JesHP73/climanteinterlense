@@ -33,6 +33,80 @@ def load_data():
          return pd.DataFrame()  # Return an empty DataFrame in case of error
 
 
+def main():
+    # Load data
+    original_data = load_data()
+    df = original_data.copy()
+    
+    if df.empty:
+        st.error("No data available to display.")
+        return
+
+    st.title("Understanding Air Pollution and Its Impact")
+    st.write("This page provides a simple overview of key aspects of air pollution and its impact on climate change.")
+    
+    # Filters
+    region_options = ['All'] + sorted(df['region'].unique().tolist())
+    country_options = ['All'] + sorted(df['country'].unique().tolist())
+    pollutant_options = ['All'] + sorted(WHO_STANDARDS.keys())
+    
+    selected_region = st.sidebar.multiselect('Select Region', options=region_options, default=['All'])
+    selected_country = st.sidebar.multiselect('Select Country', options=country_options, default=['All'])
+    selected_pollutants = st.sidebar.multiselect('Select Pollutant(s)', options=pollutant_options, default=['All'])
+    
+    # Efficient combined filtering
+    conditions = []
+    if 'All' not in selected_region:
+        conditions.append(df['region'].isin(selected_region))
+    if 'All' not in selected_country:
+        conditions.append(df['country'].isin(selected_country))
+    if 'All' not in selected_pollutants:
+        conditions.append(df['air_pollutant'].isin(selected_pollutants))
+    
+    if conditions:
+        filtered_data = df[np.logical_and.reduce(conditions)]
+    else:
+        filtered_data = df
+
+    if filtered_data.empty:
+        st.error("No data available for the selected criteria.")
+        return
+
+   # Main Content - Three Columns
+    col1, col2, col3 = st.columns(3)
+    
+    with col1:
+        st.header("Avg. AQI")
+        avg_aqi = filtered_data['avg_AQI_Index'].mean()
+        col1.metric("Average AQI", f"{avg_aqi:.2f} μg/m3")
+    
+    with col2:
+        st.header("Point 2: Regional Impact")
+        # Show how selected region is affected
+        # Include relevant content or visualizations for regional impact here
+    
+    with col3:
+        st.header("Higher Income vs Air Quality")
+    
+        # Check if columns exist
+        if 'avg_GNI_PPP' in filtered_data.columns and 'avg_air_pollutant_level' in filtered_data.columns:
+            # Calculate correlation
+            correlation_gni_pollution = filtered_data[['avg_GNI_PPP', 'avg_air_pollutant_level']].corr().iloc[0, 1]
+            col3.metric("Economic Correlation", f"{correlation_gni_pollution:.2f}")
+            # Explanatory note about correlation
+            col3.caption("A positive value indicates that higher income correlates with higher air pollution levels, and vice versa.")
+        else:
+            col3.write("Data not available for correlation analysis.")
+        
+
+    # Call the plotting function and show the plot
+    plot_emissions(df, selected_region, selected_country, selected_pollutant) 
+        
+    # Additional explanations about AQGs and RLs
+    st.markdown("### Understanding the Numbers")
+                
+    st.info("The guidelines and reference levels from WHO are designed to keep air quality at a level that's safe for public health. When pollution levels go above these numbers, it can lead to health concerns for the population, especially vulnerable groups like children and the elderly.")
+
 def display_pollutant_summary(pollutants):
     return 'All' if 'All' in pollutants else ', '.join(pollutants)
 
@@ -107,79 +181,7 @@ def plot_emissions(df, selected_region, selected_country, selected_pollutant): #
 
         
     
-def main():
-    # Load data
-    original_data = load_data()
-    df = original_data.copy()
-    
-    if df.empty:
-        st.error("No data available to display.")
-        return
 
-    st.title("Understanding Air Pollution and Its Impact")
-    st.write("This page provides a simple overview of key aspects of air pollution and its impact on climate change.")
-    
-    # Filters
-    region_options = ['All'] + sorted(df['region'].unique().tolist())
-    country_options = ['All'] + sorted(df['country'].unique().tolist())
-    pollutant_options = ['All'] + sorted(WHO_STANDARDS.keys())
-    
-    selected_region = st.sidebar.multiselect('Select Region', options=region_options, default=['All'])
-    selected_country = st.sidebar.multiselect('Select Country', options=country_options, default=['All'])
-    selected_pollutants = st.sidebar.multiselect('Select Pollutant(s)', options=pollutant_options, default=['All'])
-    
-    # Efficient combined filtering
-    conditions = []
-    if 'All' not in selected_region:
-        conditions.append(df['region'].isin(selected_region))
-    if 'All' not in selected_country:
-        conditions.append(df['country'].isin(selected_country))
-    if 'All' not in selected_pollutants:
-        conditions.append(df['air_pollutant'].isin(selected_pollutants))
-    
-    if conditions:
-        filtered_data = df[np.logical_and.reduce(conditions)]
-    else:
-        filtered_data = df
-
-    if filtered_data.empty:
-        st.error("No data available for the selected criteria.")
-        return
-
-   # Main Content - Three Columns
-    col1, col2, col3 = st.columns(3)
-    
-    with col1:
-        st.header("Avg. AQI")
-        avg_aqi = filtered_data['avg_AQI_Index'].mean()
-        col1.metric("Average AQI", f"{avg_aqi:.2f} μg/m3")
-    
-    with col2:
-        st.header("Point 2: Regional Impact")
-        # Show how selected region is affected
-        # Include relevant content or visualizations for regional impact here
-    
-    with col3:
-        st.header("Higher Income vs Air Quality")
-    
-        # Check if columns exist
-        if 'avg_GNI_PPP' in filtered_data.columns and 'avg_air_pollutant_level' in filtered_data.columns:
-            # Calculate correlation
-            correlation_gni_pollution = filtered_data[['avg_GNI_PPP', 'avg_air_pollutant_level']].corr().iloc[0, 1]
-            col3.metric("Economic Correlation", f"{correlation_gni_pollution:.2f}")
-            # Explanatory note about correlation
-            col3.caption("A positive value indicates that higher income correlates with higher air pollution levels, and vice versa.")
-        else:
-            col3.write("Data not available for correlation analysis.")
-        
-
-    # Call the plotting function and show the plot
-    plot_emissions(df, selected_region, selected_country, selected_pollutant) 
-        
-    # Additional explanations about AQGs and RLs
-    st.markdown("### Understanding the Numbers")
-                
-    st.info("The guidelines and reference levels from WHO are designed to keep air quality at a level that's safe for public health. When pollution levels go above these numbers, it can lead to health concerns for the population, especially vulnerable groups like children and the elderly.")
 
 # This ensures the app runs when the script is executed
 if __name__ == "__main__":
