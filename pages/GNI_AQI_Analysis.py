@@ -80,7 +80,7 @@ def plot_aqi_and_gni_over_time(filtered_data):
 
     # Set y-axes titles
     fig.update_yaxes(title_text="Air Quality Index", secondary_y=False)
-    fig.update_yaxes(title_text="GNI per Capita (EUR", secondary_y=True)
+    fig.update_yaxes(title_text="GNI per Capita (EUR)", secondary_y=True)
 
     # Set figure title and legend
     fig.update_layout(
