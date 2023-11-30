@@ -42,12 +42,13 @@ avg_data = df.groupby('year').agg({
     'GNI_per_capita': 'mean'
 }).reset_index()
 
-# Create the plot with Plotly
-fig = px.line(avg_data, x='year', y='AQI_Index', title='Average AQI Index over Time', markers=True)
-fig.update_traces(line=dict(color='red'))
+# Create the AQI Index plot with an explicit name for the legend
+fig = px.line(avg_data, x='year', y='AQI_Index', title='Average AQI Index over Time', markers=True, labels={'AQI_Index': 'Avg. AQI Index'})
+fig.update_traces(name='AQI Index', showlegend=True)
 
-# You can create a secondary y-axis for GNI per capita
-fig.add_scatter(x=avg_data['year'], y=avg_data['GNI_per_capita'], mode='lines+markers', name='GNI per Capita', yaxis='y2')
+# Create the GNI per Capita plot with an explicit name for the legend
+fig.add_scatter(x=avg_data['year'], y=avg_data['GNI_per_capita'], mode='lines+markers', name='GNI per Capita', yaxis='y2', showlegend=True)
+
 
 # Update layout to add a secondary y-axis
 fig.update_layout(
