@@ -56,24 +56,40 @@ def plot_aqi_and_gni_over_time(filtered_data):
         st.error('No data available for plotting.')
         return
 
-    # Aggregating data by year for AQI and GNI
-    aggregated_data = filtered_data.groupby('year').agg({'AQI_Index':'mean', 'GNI_per_capita':'mean'}).reset_index() #am I calculating the mean of the mean?
+    # Aggregating data by year and income group for AQI and GNI
+    aggregated_data = filtered_data.groupby(['year', 'ig_label']).agg({'AQI_Index':'mean', 'GNI_per_capita':'mean'}).reset_index()
 
-    # Plot with Plotly
+       # Define the color mapping for income groups with long names
+    color_mapping = {
+        'LM': ('Low Income', 'darkblue'),
+        'UM': ('Middle Income', 'grey'),
+        'H': ('High Income', 'green'),
+    }
+    
+    # Create the subplots
     fig = make_subplots(specs=[[{"secondary_y": True}]])
     
+    # Add AQI Index trace
     fig.add_trace(
         go.Scatter(x=aggregated_data['year'], y=aggregated_data['AQI_Index'], name='AQI Index',
                    mode='lines+markers', line=dict(color='orange')),
         secondary_y=False,
     )
-
-    # Add GNI per Capita trace
-
-    if 'GNI_per_capita' in aggregated_data.columns:
+    
+    # Add overall GNI per Capita trace
+    fig.add_trace(
+        go.Scatter(x=aggregated_data['year'], y=aggregated_data['GNI_per_capita'], name='GNI per Capita',
+                   mode='lines+markers', line=dict(color='blue')),
+        secondary_y=True,
+    )
+    
+    # Add GNI per Capita traces for each income group
+    for ig_label, (long_name, color) in color_mapping.items():
+        # Filter the data for the current income group
+        income_group_data = aggregated_data[aggregated_data['ig_label'] == ig_label]
         fig.add_trace(
-            go.Scatter(x=aggregated_data['year'], y=aggregated_data['GNI_per_capita'], name='GNI per Capita',
-                       mode='lines+markers', line=dict(color='darkblue')),
+            go.Scatter(x=income_group_data['year'], y=income_group_data['GNI_per_capita'],
+                       name=long_name, mode='lines+markers', line=dict(color=color)),
             secondary_y=True,
         )
 
