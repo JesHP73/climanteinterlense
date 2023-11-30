@@ -19,14 +19,14 @@ def load_data():
         st.error(f"Error loading data: {e}")
         return pd.DataFrame()  # Return an empty DataFrame in case of error
         
-def plot_data(filtered_data):
-    # Convert the percentage column to numeric, handling non-numeric entries
-    filtered_data['total_death_attributed_sex_standarized'] = pd.to_numeric(
-        filtered_data['total_death_attributed_sex_standarized'], errors='coerce'
-    )
 
-    # Group by 'year' and 'ig_label', then calculate the mean
-    aggregated_data = filtered_data.groupby(['year', 'ig_label'], as_index=False)['total_death_attributed_sex_standarized'].mean()
+def plot_data(filtered_data):
+    
+    # Calculate the percentage of deaths
+    filtered_data['death_percentage'] = (filtered_data['num_deaths'] / filtered_data['population']) * 100
+    
+    # Group by 'year' and 'ig_label', then calculate the mean percentage
+    aggregated_data = filtered_data.groupby(['year', 'ig_label'], as_index=False)['death_percentage'].mean()
 
     # Mapping from short labels to full names for income groups
     income_label_mapping = {
@@ -48,10 +48,10 @@ def plot_data(filtered_data):
     fig = px.line(
         aggregated_data,
         x='year',
-        y='total_death_attributed_sex_standarized',
+        y='death_percentage',
         color='ig_label',
         color_discrete_map=color_discrete_map,
-        labels={'total_death_attributed_sex_standarized': 'Percentage of Deaths', 'ig_label': 'Income Group'},
+        labels={'death_percentage': 'Percentage of Deaths', 'ig_label': 'Income Group'},
         title='Deaths Attributed to Air Pollution by Income Group'
     )
 
@@ -59,13 +59,14 @@ def plot_data(filtered_data):
     fig.update_layout(
         xaxis_title='Year',
         yaxis_title='Percentage of Deaths',
-        yaxis_tickformat='.2%',
+        yaxis_tickformat='.2%', # Ensuring that y-axis labels are formatted as percentages
         showlegend=True,
         legend_title_text='Income Group'
     )
 
     # Show the figure
     st.plotly_chart(fig)
+
 
 def display_statistics(filtered_data):
     
