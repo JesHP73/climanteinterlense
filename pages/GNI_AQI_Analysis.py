@@ -100,12 +100,35 @@ def plot_aqi_and_gni_over_time(data):
 
 # Function for plotting individual pollutants with emissions levels and units
 def plot_individual_pollutant_with_levels(data, pollutant, unit_column, level_column):
+    # Check if columns exist
+    if unit_column not in data.columns or level_column not in data.columns:
+        st.error(f"Column names {unit_column} or {level_column} not found in data.")
+        return
+
+    # Drop missing values
+    data = data.dropna(subset=['year', level_column])
+
+    # Ensure data types are correct
+    data['year'] = pd.to_numeric(data['year'], errors='coerce')
+    data[level_column] = pd.to_numeric(data[level_column], errors='coerce')
+
+    # Check if data is empty after processing
+    if data.empty:
+        st.error("No data available for plotting after processing.")
+        return
+
     fig, ax = plt.subplots()
-    sns.lineplot(x='year', y=level_column, data=data, ax=ax, label=pollutant)
+    try:
+        sns.lineplot(x='year', y=level_column, data=data, ax=ax, label=pollutant)
+    except Exception as e:
+        st.error(f"Error plotting data: {e}")
+        return
+
     ax.set_ylabel(f"{pollutant} ({data[unit_column].iloc[0]})")
     ax.set_xlabel('Year')
     ax.set_title(f"Yearly Trend of {pollutant}")
     return fig
+
 
 
 # Visualization Header
