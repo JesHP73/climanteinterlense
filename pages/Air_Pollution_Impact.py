@@ -20,13 +20,18 @@ def load_data():
         return pd.DataFrame()  # Return an empty DataFrame in case of error
         
 def plot_data(filtered_data):
-    # Ensure that 'ig_label' column in 'filtered_data' contains the short income group labels
-    # If it contains full names, adjust the 'income_label_mapping' dictionary accordingly
+    
+    # Ensure all columns to be aggregated are numeric
+    filtered_data['total_death_attributed_sex_standarized'] = pd.to_numeric(filtered_data['total_death_attributed_sex_standarized'], errors='coerce')
 
-    # Aggregate the data if there are multiple entries per income group per year
-    aggregated_data = filtered_data.groupby(['year', 'ig_label'], as_index=False).mean()
+    # Perform the aggregation only on numeric columns
+    # If 'ig_label' is not numeric, we exclude it from the aggregation and later merge it back
+    numeric_data = filtered_data.groupby(['year'], as_index=False).mean()
+    
+    # Merge 'ig_label' back to the aggregated data
+    aggregated_data = numeric_data.merge(filtered_data[['year', 'ig_label']].drop_duplicates(), on='year', how='left')
 
-    # Now perform the mapping from short labels to full names for income groups
+    # mapping from short labels to full names for income groups
     income_label_mapping = {
         'LM': 'Low Income',
         'UM': 'Upper Middle Income',
