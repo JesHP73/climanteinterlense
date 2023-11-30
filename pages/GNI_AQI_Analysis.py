@@ -29,53 +29,136 @@ def load_data():
         st.error(f"Error loading data: {e}")
         return pd.DataFrame()  # Return an empty DataFrame in case of error
 
+# Assuming load_data() is defined elsewhere
+df_original = load_data()
 
-# Assuming 'load_data()' is a function that loads and returns the aggregated DataFrame
-df = load_data()
-df_original = df.copy()
+# Create a copy of the DataFrame for manipulation
+df = df_original.copy()
 
-# Sidebar - Selecting 'All' or specific regions/countries
-all_regions = ['All'] + list(df_original['region'].unique())
-all_countries = ['All'] + list(df_original['country'].unique())
-selected_regions = st.sidebar.multiselect('Select Region(s)', options=all_regions, default='All')
-selected_countries = st.sidebar.multiselect('Select Country(ies)', options=all_countries, default='All')
+# Sidebar - User input areas
+st.sidebar.header("Filters")
+selected_region = st.sidebar.selectbox('Select Region', ['All'] + sorted(df['region'].unique()))
+selected_country = st.sidebar.selectbox('Select Country', ['All'] + sorted(df['country'].unique()))
+selected_pollutants = st.sidebar.multiselect('Select Pollutant', ['All'] + sorted(df['air_pollutant'].unique()))
+selected_year = st.sidebar.selectbox('Select Year', ['All'] + sorted(df['year'].unique().astype(str)))
 
-# Handling 'All' selections
-if 'All' in selected_regions:
-    selected_regions = all_regions[1:]  # Exclude 'All' from the list
-if 'All' in selected_countries:
-    selected_countries = all_countries[1:]  # Exclude 'All' from the list
+# Filtering the data based on user selections
+filtered_data = df.copy()
+if selected_region != 'All':
+    filtered_data = filtered_data[filtered_data['region'] == selected_region]
+if selected_country != 'All':
+    filtered_data = filtered_data[filtered_data['country'] == selected_country]
+if selected_pollutants != ['All']:
+    filtered_data = filtered_data[filtered_data['air_pollutant'].isin(selected_pollutants)]
+if selected_year != 'All':
+    filtered_data = filtered_data[filtered_data['year'] == int(selected_year)]
 
-# Filter the DataFrame based on the selections
-filtered_df = df_original[
-    df_original['region'].isin(selected_regions) &
-    df_original['country'].isin(selected_countries)
-]
+def plot_emissions(df, selected_pollutants):
+    if df.empty:
+        st.error('No data available for the selected filters.')
+        return
+    
+    fig, ax = plt.subplots()
 
-# Create the plot
-fig = px.line(
-    filtered_df,
-    x='year',
-    y=['AQI_Index', 'GNI_per_capita'],
-    labels={'value':'Index', 'variable':'Indicator'},
-    title='AQI and GNI per Capita over Time'
-)
+    # Verify that the 'air_pollutant_level' column exists
+    if 'air_pollutant_level' not in df.columns:
+        st.error("Column 'air_pollutant_level' does not exist in the dataset.")
+        return
+    
+    # Check each pollutant for plotting
+    for pollutant in WHO_STANDARDS.keys():
+        pollutant_df = df[df['air_pollutant'] == pollutant]
+        if not pollutant_df.empty:
+            sns.lineplot(x='year', y='air_pollutant_level', data=pollutant_df, ax=ax, label=pollutant)
+            ax.axhline(y=WHO_STANDARDS[pollutant]['AQG'], color='red', linestyle='--', label=f"{pollutant} WHO AQG")
+        else:
+            st.warning(f"No data available for pollutant: {pollutant}")
+    
+    ax.set_title('Pollutant Levels Over Time Compared to WHO Standards')
+    ax.set_xlabel('Year')
+    ax.set_ylabel('Pollutant Level')
+    ax.legend()
+    return fig
 
-# Simplify the legend and layout
-fig.update_layout(
-    legend_title_text='Indicator',
-    yaxis_title='AQI Index',
-    yaxis2=dict(
-        title='GNI per Capita',
-        overlaying='y',
-        side='right'
-    )
-)
+
+
+# Function for plotting AQI Index and GNI per Capita over time as lines
+def plot_aqi_and_gni_over_time(data):
+    # Check if data is empty
+    if data.empty:
+        st.error('No data available for plotting.')
+        return
+
+    # Convert 'year' to numeric if it's not already
+    if not pd.api.types.is_numeric_dtype(data['year']):
+        data['year'] = pd.to_numeric(data['year'], errors='coerce')
+
+    # Drop rows where 'year' or 'AQI_Index' is NaN
+    data = data.dropna(subset=['year', 'AQI_Index'])
+
+    fig, ax1 = plt.subplots()
+
+    ax1.plot(data['year'], data['AQI_Index'], 'r-')
+    ax1.set_xlabel('Year')
+    ax1.set_ylabel('AQI Index', color='r')
+    
+    # Ensure GNI_per_capita is available for plotting
+    if 'GNI_per_capita' in data.columns:
+        ax2 = ax1.twinx()
+        ax2.plot(data['year'], data['GNI_per_capita'], 'b-')
+        ax2.set_ylabel('GNI per Capita', color='b')
+    else:
+        st.warning("GNI_per_capita data not available for plotting.")
+
+    fig.tight_layout()
+    return fig
+
+
+
+# Function for plotting individual pollutants with emissions levels and units
+def plot_individual_pollutant_with_levels(data, pollutant, unit_column, level_column):
+    fig, ax = plt.subplots()
+    sns.lineplot(x='year', y=level_column, data=data, ax=ax, label=pollutant)
+    ax.set_ylabel(f"{pollutant} ({data[unit_column].iloc[0]})")
+    ax.set_xlabel('Year')
+    ax.set_title(f"Yearly Trend of {pollutant}")
+    return fig
+
+
+# Visualization Header
+st.header("GNI per Capita and AQI Index Analysis Over Time")
+
+# Check if there's data to plot
+if not filtered_data.empty:
+    # Determine the correct plot based on the user's selection of pollutants
+    if 'All' in selected_pollutants or len(selected_pollutants) > 1:
+        fig = plot_aqi_and_gni_over_time(filtered_data)
+        if fig:  # Check if the figure was successfully created
+            st.pyplot(fig)
+    else:
+        for pollutant in selected_pollutants:
+            st.subheader(f"Analysis for {pollutant}")
+            pollutant_data = filtered_data[filtered_data['air_pollutant'] == pollutant]
+            # Check if there is data for the selected pollutant
+            if not pollutant_data.empty:
+                fig = plot_individual_pollutant_with_levels(pollutant_data, pollutant, 'unit_air_poll_lvl', 'air_pollutant_level')
+                st.pyplot(fig)
+            else:
+                st.error(f'No data available for pollutant: {pollutant}')
+
+        # Call the plotting function for individual pollutants if selected
+        fig = plot_emissions(filtered_data, selected_pollutants)
+        if fig:  # Check if the figure was successfully created
+            st.pyplot(fig)
+else:
+    st.error('Filtered data is empty. Please adjust the filters.')
+
+
+        
+st.info("The guidelines and reference levels from WHO are designed to keep air quality at a level that's safe for public health. When pollution levels go above these numbers, it can lead to health concerns for the population, especially vulnerable groups like children and the elderly.")
+
 
 ## Additional explanations about AQGs and RLs
 st.markdown("### Understanding the Numbers")
 st.write("correlation between a country's income levels and its air pollution,suggesting that higher income might be associated with better air quality.")
-
-# Show the plot
-st.plotly_chart(fig)
 
