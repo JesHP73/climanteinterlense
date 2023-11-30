@@ -4,6 +4,7 @@
 import pandas as pd
 import numpy as np
 import streamlit as st
+import plotly.express as px
 
 data = [
     {"country": "Turkiye", "latitude": 38.959759, "longitude": 34.924965, "avg_air_pollutant_level": 38.613282},
