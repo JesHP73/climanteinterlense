@@ -68,27 +68,27 @@ def plot_data(filtered_data):
     st.plotly_chart(fig)
 
 def display_statistics(filtered_data):
+    
     if not filtered_data.empty:
-        # For a dynamic metric, choose a relevant statistic like the latest year's data
+        # Choose the latest year's data for a dynamic metric
         latest_year = filtered_data['year'].max()
         latest_data = filtered_data[filtered_data['year'] == latest_year]
         latest_avg_death_percentage = latest_data['total_death_attributed_sex_standarized'].mean()
         
-        correlation = filtered_data['GNI_per_capita_wb_Atlas_USD_EUR'].corr(filtered_data['total_death_attributed_sex_standarized'])
-        correlation_label = "Negative" if correlation < 0 else "Positive"
+        # Calculate the mean of people affected for the latest year
+        people_affected = latest_data['people_affected'].mean()
         
         col1, col2 = st.columns(2)
         with col1:
-            st.header("Key Fact")
-            # Display the latest average percentage or another dynamic statistic
+            st.header("Rate Per 100 Thousand Total Population")
             st.metric(label=f"Avg Deaths in {latest_year}", value=f"{latest_avg_death_percentage:.2f}%")
         with col2:
-            st.header("Correlation Analysis")
-            # Use Streamlit's built-in method to set the delta color
-            delta_color = "inverse" if correlation < 0 else "normal"
-            st.metric(label="Income vs. Death Correlation", value=f"{correlation:.2f}", delta=correlation_label, delta_color=delta_color)
+            st.header("Equivalent to")
+            # Provide a relevant delta calculation if necessary
+            st.metric(label="Number of People", value=f"{people_affected:.2f}", delta="Delta Value")
     else:
         st.error("Insufficient data to calculate statistics.")
+
 
 def main():
     # Load data
