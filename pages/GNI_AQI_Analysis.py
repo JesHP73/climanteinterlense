@@ -51,37 +51,51 @@ if conditions:
 else:
     filtered_data = df.copy()
 
-# Function for plotting AQI Index vs GNI per Capita
-def plot_aqi_vs_gni(data):
-    fig, ax = plt.subplots()
-    scatter = ax.scatter(data['GNI_per_capita'], data['AQI_Index'], c=data['year'], cmap='viridis')
-    legend1 = ax.legend(*scatter.legend_elements(), title="Years")
-    ax.add_artist(legend1)
-    ax.set_xlabel('GNI per Capita')
-    ax.set_ylabel('AQI Index')
-    ax.set_title('GNI per Capita vs AQI Index')
+# Sort the data for line plotting
+filtered_data.sort_values(by='year', inplace=True)
+
+# Function for plotting AQI Index and GNI per Capita over time as lines
+def plot_aqi_and_gni_over_time(data):
+    fig, ax1 = plt.subplots()
+
+    color = 'tab:red'
+    ax1.set_xlabel('Year')
+    ax1.set_ylabel('AQI Index', color=color)
+    ax1.plot(data['year'], data['AQI_Index'], color=color)
+    ax1.tick_params(axis='y', labelcolor=color)
+
+    ax2 = ax1.twinx()  # instantiate a second axes that shares the same x-axis
+    color = 'tab:blue'
+    ax2.set_ylabel('GNI per Capita', color=color)  # we already handled the x-label with ax1
+    ax2.plot(data['year'], data['GNI_per_capita'], color=color)
+    ax2.tick_params(axis='y', labelcolor=color)
+
+    fig.tight_layout()  # otherwise the right y-label is slightly clipped
     return fig
 
-# Function for plotting individual pollutants
-def plot_individual_pollutant(data, pollutant):
+# Function for plotting individual pollutants with emissions levels and units
+def plot_individual_pollutant_with_levels(data, pollutant, unit_column, level_column):
     fig, ax = plt.subplots()
-    ax.bar(data['country'], data['air_pollutant_level'])
-    ax.set_xlabel('Country')
-    ax.set_ylabel('AQI Index')
-    ax.set_title(f'AQI Index for {pollutant}')
+    sns.lineplot(x='year', y=level_column, data=data, ax=ax, label=pollutant)
+    ax.set_ylabel(f"{pollutant} ({data[unit_column].iloc[0]})")
+    ax.set_xlabel('Year')
+    ax.set_title(f"Yearly Trend of {pollutant}")
     return fig
+
 
 # Visualization Header
-st.header("GNI per Capita and AQI Index Analysis")
+st.header("GNI per Capita and AQI Index Analysis Over Time")
 
-# Plotting logic
+# Determine the correct plot based on the user's selection of pollutants
 if 'All' in selected_pollutants or len(selected_pollutants) > 1:
-    st.pyplot(plot_aqi_vs_gni(filtered_data))
+    st.pyplot(plot_aqi_and_gni_over_time(filtered_data))
 else:
     for pollutant in selected_pollutants:
         st.subheader(f"Analysis for {pollutant}")
         pollutant_data = filtered_data[filtered_data['air_pollutant'] == pollutant]
-        st.pyplot(plot_individual_pollutant(pollutant_data, pollutant))
+        # Assume 'unit_air_poll_lvl' and 'air_pollutant_level' are the columns with units and levels
+        st.pyplot(plot_individual_pollutant_with_levels(pollutant_data, pollutant, 'unit_air_poll_lvl', 'air_pollutant_level'))
 
 # Additional insights or summaries based on the filtered data
 st.write("Additional insights or data summaries can go here.")
+
