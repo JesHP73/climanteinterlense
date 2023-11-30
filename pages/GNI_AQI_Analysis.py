@@ -30,10 +30,8 @@ def load_data():
         return pd.DataFrame()  # Return an empty DataFrame in case of error
 
 
-df_original = load_data()
-
-# Create a copy of the DataFrame for manipulation
-df = df_original.copy()
+# Assuming 'load_data()' is a function that loads and returns the aggregated DataFrame
+df = load_data()
 
 # Sidebar multiselect for Region and Country
 selected_regions = st.sidebar.multiselect('Select Region(s)', options=df['region'].unique(), default=df['region'].unique())
@@ -42,16 +40,15 @@ selected_countries = st.sidebar.multiselect('Select Country(ies)', options=df[df
 # Filter the DataFrame based on the selections
 filtered_df = df[df['region'].isin(selected_regions) & df['country'].isin(selected_countries)]
 
-
-# Create the AQI Index plot with an explicit name for the legend
-fig = px.line(avg_data, x='year', y='AQI_Index', title='Average AQI Index over Time', markers=True, labels={'AQI_Index': 'AQI Index'})
+# Since your data is already aggregated, you can proceed directly to creating the plots
+# Create the AQI Index plot
+fig = px.line(filtered_df, x='year', y='AQI_Index', title='AQI Index over Time', markers=True, labels={'AQI_Index': 'AQI Index'})
 fig.update_traces(name='AQI Index', showlegend=True)
 
 # Create the GNI per Capita plot with an explicit name for the legend
-fig.add_scatter(x=avg_data['year'], y=avg_data['GNI_per_capita'], mode='lines+markers', name='GNI per Capita', yaxis='y2', showlegend=True)
+fig.add_scatter(x=filtered_df['year'], y=filtered_df['GNI_per_capita'], mode='lines+markers', name='GNI per Capita', yaxis='y2', showlegend=True)
 
-
-# Update layout to add a secondary y-axis
+# Update layout to add a secondary y-axis for GNI per Capita
 fig.update_layout(
     yaxis2=dict(
         title='GNI per Capita',
@@ -65,6 +62,7 @@ fig.update_layout(
 
 # Show the plot
 st.plotly_chart(fig)
+
       
 #st.info("The guidelines and reference levels from WHO are designed to keep air quality at a level that's safe for public health. When pollution levels go above these numbers, it can lead to health concerns for the population, especially vulnerable groups like children and the elderly.")
 
