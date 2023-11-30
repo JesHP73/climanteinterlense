@@ -44,8 +44,8 @@ filtered_df = df[df['region'].isin(selected_regions) & df['country'].isin(select
 
 
 # Create the AQI Index plot with an explicit name for the legend
-fig = px.line(avg_data, x='year', y='AQI_Index', title='Average AQI Index over Time', markers=True, labels={'AQI_Index': 'Avg. AQI Index'})
-fig.update_traces(name='Avg. AQI Index', showlegend=True)
+fig = px.line(avg_data, x='year', y='AQI_Index', title='Average AQI Index over Time', markers=True, labels={'AQI_Index': 'AQI Index'})
+fig.update_traces(name='AQI Index', showlegend=True)
 
 # Create the GNI per Capita plot with an explicit name for the legend
 fig.add_scatter(x=avg_data['year'], y=avg_data['GNI_per_capita'], mode='lines+markers', name='GNI per Capita', yaxis='y2', showlegend=True)
