@@ -127,7 +127,10 @@ def plot_individual_pollutant_with_levels(data, pollutant, unit_column, level_co
     ax.set_ylabel(f"{pollutant} ({data[unit_column].iloc[0]})")
     ax.set_xlabel('Year')
     ax.set_title(f"Yearly Trend of {pollutant}")
-    return fig
+
+    # Pass the figure object to st.pyplot()
+    st.pyplot(fig)
+
 
 
 
