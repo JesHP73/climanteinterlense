@@ -12,7 +12,7 @@ import plotly.express as px
 @st.cache_data  # 👈 Add the caching decorator
 def load_data():
     try:
-        URL = 'https://raw.githubusercontent.com/JesHP73/climanteinterlense/main/dataset/socio_economical_agg_dataset.csv'
+        URL = 'https://raw.githubusercontent.com/JesHP73/climanteinterlense/main/dataset/global_bourden_risk_factor.csv'
         data = pd.read_csv(URL)
         return data
     except Exception as e:
