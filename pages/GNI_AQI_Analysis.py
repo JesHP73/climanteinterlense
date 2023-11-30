@@ -48,17 +48,18 @@ else:
 
 
 # Function for plotting AQI Index vs GNI per Capita
+
 def plot_aqi_and_gni_over_time(filtered_data):
-    if data.empty:
+    if filtered_data.empty:
         st.error('No data available for plotting.')
         return
 
     # Convert 'year' to numeric
     if not pd.api.types.is_numeric_dtype(data['year']):
-        data['year'] = pd.to_numeric(data['year'], errors='coerce')
+        filtered_data['year'] = pd.to_numeric(filtered_data['year'], errors='coerce')
 
     # Drop rows where 'year' or 'AQI_Index' is NaN
-    data = data.dropna(subset=['year', 'AQI_Index'])
+    filtered_data = filtered_data.dropna(subset=['year', 'AQI_Index'])
 
     if data.empty:
         st.error('No data available for plotting after cleaning.')
@@ -70,7 +71,7 @@ def plot_aqi_and_gni_over_time(filtered_data):
 
     if 'GNI_per_capita' in data.columns:
         try:
-            gni_per_capita = data['GNI_per_capita'].to_numpy()
+            gni_per_capita = filtered_data['GNI_per_capita'].to_numpy()
             ax2 = ax1.twinx()
             ax2.plot(years, gni_per_capita, 'b-', label='GNI per Capita')
             ax2.set_ylabel('GNI per Capita (Eur)', color='b')
@@ -84,10 +85,10 @@ def plot_aqi_and_gni_over_time(filtered_data):
     ax2.legend(loc='upper right')
     
     # Plot with Plotly
-    fig = px.line(data, x='year', y='AQI_Index', title='AQI Index over Time', markers=True)
+    fig = px.line(filtered_data, x='year', y='AQI_Index', title='AQI Index over Time', markers=True)
     
     # Create a secondary y-axis for GNI per capita
-    fig.add_scatter(x=data['year'], y=data['GNI_per_capita'], mode='lines+markers', name='GNI per Capita', yaxis='y2')
+    fig.add_scatter(x=filtered_data['year'], y=filtered_data['GNI_per_capita'], mode='lines+markers', name='GNI per Capita', yaxis='y2')
     
     # Update layout to add a secondary y-axis
     fig.update_layout(
