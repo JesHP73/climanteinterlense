@@ -53,31 +53,33 @@ if selected_pollutants != ['All']:
 if selected_year != 'All':
     filtered_data = filtered_data[filtered_data['year'] == int(selected_year)]
 
-def plot_emissions(df):
-    # Check if dataframe is empty
+def plot_emissions(df, selected_pollutants):
     if df.empty:
         st.error('No data available for the selected filters.')
         return
-
-    # Convert year to string for plotting purposes
-    df['year'] = df['year'].astype(str)
-
-    # Create a plot comparing each pollutant's level to WHO standards
+    
     fig, ax = plt.subplots()
+
+    # Verify that the 'air_pollutant_level' column exists
+    if 'air_pollutant_level' not in df.columns:
+        st.error("Column 'air_pollutant_level' does not exist in the dataset.")
+        return
+    
+    # Check each pollutant for plotting
     for pollutant in WHO_STANDARDS.keys():
-        if pollutant in df['air_pollutant'].unique():
-            sns.lineplot(x='year', y='air_pollutant_level', data=df[df['air_pollutant'] == pollutant], ax=ax, label=pollutant)
+        pollutant_df = df[df['air_pollutant'] == pollutant]
+        if not pollutant_df.empty:
+            sns.lineplot(x='year', y='air_pollutant_level', data=pollutant_df, ax=ax, label=pollutant)
             ax.axhline(y=WHO_STANDARDS[pollutant]['AQG'], color='red', linestyle='--', label=f"{pollutant} WHO AQG")
+        else:
+            st.warning(f"No data available for pollutant: {pollutant}")
+    
     ax.set_title('Pollutant Levels Over Time Compared to WHO Standards')
     ax.set_xlabel('Year')
     ax.set_ylabel('Pollutant Level')
     ax.legend()
     return fig
 
-# Plot based on the filtered data
-if not filtered_data.empty:
-    fig = plot_emissions(filtered_data)
-    st.pyplot(fig)
 
 
 # Function for plotting AQI Index and GNI per Capita over time as lines
@@ -120,17 +122,27 @@ def plot_individual_pollutant_with_levels(data, pollutant, unit_column, level_co
 # Visualization Header
 st.header("GNI per Capita and AQI Index Analysis Over Time")
 
-# Determine the correct plot based on the user's selection of pollutants
-if 'All' in selected_pollutants or len(selected_pollutants) > 1:
-    st.pyplot(plot_aqi_and_gni_over_time(filtered_data))
+# Check if there's data to plot
+if not filtered_data.empty:
+    # Determine the correct plot based on the user's selection of pollutants
+    if 'All' in selected_pollutants or len(selected_pollutants) > 1:
+        st.pyplot(plot_aqi_and_gni_over_time(filtered_data))
+    else:
+        for pollutant in selected_pollutants:
+            st.subheader(f"Analysis for {pollutant}")
+            pollutant_data = filtered_data[filtered_data['air_pollutant'] == pollutant]
+            # Assume 'unit_air_poll_lvl' and 'air_pollutant_level' are the columns with units and levels
+            if not pollutant_data.empty:
+                st.pyplot(plot_individual_pollutant_with_levels(pollutant_data, pollutant, 'unit_air_poll_lvl', 'air_pollutant_level'))
+            else:
+                st.error(f'No data available for pollutant: {pollutant}')
+
+        # Call the plotting function for individual pollutants if selected
+        fig = plot_emissions(filtered_data, selected_pollutants)
+        st.pyplot(fig)
 else:
-    for pollutant in selected_pollutants:
-        st.subheader(f"Analysis for {pollutant}")
-        pollutant_data = filtered_data[filtered_data['air_pollutant'] == pollutant]
-        # Assume 'unit_air_poll_lvl' and 'air_pollutant_level' are the columns with units and levels
-        st.pyplot(plot_individual_pollutant_with_levels(pollutant_data, pollutant, 'unit_air_poll_lvl', 'air_pollutant_level'))
-        # Call the plotting function and show the plot
-        plot_emissions(df, selected_pollutants)
+    st.error('Filtered data is empty. Please adjust the filters.')
+
         
 st.info("The guidelines and reference levels from WHO are designed to keep air quality at a level that's safe for public health. When pollution levels go above these numbers, it can lead to health concerns for the population, especially vulnerable groups like children and the elderly.")
 
