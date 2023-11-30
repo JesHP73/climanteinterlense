@@ -60,8 +60,6 @@ def plot_data(filtered_data):
     # Show the figure
     st.plotly_chart(fig)
 
-
-   
   
 
 def display_statistics(filtered_data):
@@ -92,7 +90,6 @@ def display_statistics(filtered_data):
     else:
         st.error("Insufficient data to calculate statistics.")
 
-
 def main():
     # Load data
     original_data = load_data()
@@ -114,22 +111,17 @@ def main():
     selected_region = st.sidebar.multiselect('Select Region', options=region_options, default=['All'])
     selected_country = st.sidebar.multiselect('Select Country', options=country_options, default=['All'])
 
-    # Efficient combined filtering
-    conditions = []
+    # Apply regional and country filters
     if 'All' not in selected_region:
-        conditions.append(df['region'].isin(selected_region))
+        df = df[df['region'].isin(selected_region)]
     if 'All' not in selected_country:
-        conditions.append(df['country'].isin(selected_country))
+        df = df[df['country'].isin(selected_country)]
+
+    # Specify the income groups to filter on
+    income_groups = ['LM', 'UM', 'H']  # Use the short labels if those are present in the 'ig_label' column
 
     # Filter the DataFrame to include only the specified income groups
-    income_groups = ['Low Income', 'Upper Middle Income', 'High Income']  # Corrected income_groups to be a list
-    conditions.append(df['ig_label'].isin(income_groups))
-
-    # Apply all filters at once
-    if conditions:
-        filtered_data = df[np.logical_and.reduce(conditions)]
-    else:
-        filtered_data = df.copy()
+    filtered_data = df[df['ig_label'].isin(income_groups)]
 
     if filtered_data.empty:
         st.error("No data available for the selected criteria.")
@@ -148,8 +140,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-
-
-
