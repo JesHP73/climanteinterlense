@@ -89,18 +89,19 @@ def plot_emissions(df, selected_region, selected_country, selected_pollutant): #
                 fig.add_vline(x=aqg, line_dash="dash", line_color="green", annotation_text=f"{pollutant} AQG")
                 fig.add_vline(x=rl, line_dash="dash", line_color="red", annotation_text=f"{pollutant} RL")
 
-        # Update layout for a cleaner look
-        fig.update_layout(
-            xaxis_title='Pollutant Level (μg/m3)',
-            yaxis_title='Decades',
-            title='Distribution of Air Pollutant Levels and WHO Limit Standars'
-            )
+    # Update layout for a cleaner look
+    fig.update_layout(
+        xaxis_title='Pollutant Level (μg/m3)',
+        yaxis_title='Decades',
+        title='Distribution of Air Pollutant Levels and WHO Limit Standards'
+    )
 
-        # Display the plot in Streamlit
-        st.plotly_chart(fig, use_container_width=True)
+    # Display the plot in Streamlit
+    st.plotly_chart(fig, use_container_width=True)
 
-     except Exception as e: 
-         st.error(f"An error occurred while plotting: {e}")
+except Exception as e:
+    st.error(f"An error occurred while plotting: {e}")
+
         
     
 def main():
