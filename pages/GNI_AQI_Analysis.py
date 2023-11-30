@@ -79,12 +79,12 @@ def plot_aqi_and_gni_over_time(filtered_data):
     fig.update_xaxes(title_text="Year")
 
     # Set y-axes titles
-    fig.update_yaxes(title_text="AQI Index", secondary_y=False)
-    fig.update_yaxes(title_text="GNI per Capita (USD)", secondary_y=True)
+    fig.update_yaxes(title_text="Air Quality Index", secondary_y=False)
+    fig.update_yaxes(title_text="GNI per Capita (EUR", secondary_y=True)
 
     # Set figure title and legend
     fig.update_layout(
-        title_text="AQI Index and GNI per Capita over Time",
+        title_text="AQI Index and Worl Bank GNI per Capita over Time",
         legend_title_text='Metric',
         legend=dict(
             x=1.05,  # This places the legend to the right of the plot
