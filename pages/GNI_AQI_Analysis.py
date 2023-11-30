@@ -84,7 +84,7 @@ def plot_aqi_and_gni_over_time(filtered_data):
             )
         )
         # Show the plot
-        st.plotly(fig)
+        st.plotly_chart(fig)
     else:
         st.warning("GNI_per_capita data not available for plotting.")
 
