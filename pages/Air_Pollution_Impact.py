@@ -33,16 +33,6 @@ def load_data():
          return pd.DataFrame()  # Return an empty DataFrame in case of error
 
 
-
-def display_pollutant_summary(pollutants):
-    return 'All' if 'All' in pollutants else ', '.join(pollutants)
-
-def display_geographical_focus(regions, countries):
-    if 'All' not in regions:
-        return ', '.join(regions)
-    elif 'All' not in countries:
-        return ', '.join(countries)
-
 def plot_emissions(df, selected_region, selected_country, selected_pollutants): # ⚠️
     try:
         if df.empty:
