@@ -70,8 +70,12 @@ def plot_aqi_and_gni_over_time(data):
 
     fig, ax1 = plt.subplots(figsize=(10, 6))
 
+    # Convert DataFrame columns to NumPy arrays
+    years = data['year'].to_numpy()
+    aqi_index = data['AQI_Index'].to_numpy()
+
     try:
-        ax1.plot(data['year'], data['AQI_Index'], 'r-', label='AQI Index')
+        ax1.plot(years, aqi_index, 'r-', label='AQI Index')
     except Exception as e:
         st.error(f'Error plotting AQI Index: {e}')
         return
@@ -79,18 +83,19 @@ def plot_aqi_and_gni_over_time(data):
     ax1.set_xlabel('Year')
     ax1.set_ylabel('AQI Index', color='r')
     ax1.set_title("AQI Index and GNI per Capita Over Time")
-    
+
     if 'GNI_per_capita' in data.columns:
         try:
+            gni_per_capita = data['GNI_per_capita'].to_numpy()
             ax2 = ax1.twinx()
-            ax2.plot(data['year'], data['GNI_per_capita'], 'b-', label='GNI per Capita')
+            ax2.plot(years, gni_per_capita, 'b-', label='GNI per Capita')
             ax2.set_ylabel('GNI per Capita ($)', color='b')
         except Exception as e:
             st.error(f'Error plotting GNI per Capita: {e}')
             return
     else:
         st.warning("GNI_per_capita data not available for plotting.")
-    
+
     ax1.legend(loc='upper left')
     ax2.legend(loc='upper right')
 
