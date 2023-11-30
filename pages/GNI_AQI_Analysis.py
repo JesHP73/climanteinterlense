@@ -63,17 +63,21 @@ def plot_aqi_and_gni_over_time(filtered_data):
     fig = make_subplots(specs=[[{"secondary_y": True}]])
 
     # Add AQI Index trace
-    fig.add_trace(
-        go.Scatter(x=aggregated_data['year'], y=aggregated_data['AQI_Index'], name='AQI Index', mode='lines+markers'),
-        secondary_y=False,
+
+   fig.add_trace(
+       go.Scatter(x=aggregated_data['year'], y=aggregated_data['AQI_Index'], name='AQI Index',
+                  mode='lines+markers', line=dict(color='orange')),
+       secondary_y=False,
     )
 
     # Add GNI per Capita trace
+
     if 'GNI_per_capita' in aggregated_data.columns:
-        fig.add_trace(
-            go.Scatter(x=aggregated_data['year'], y=aggregated_data['GNI_per_capita'], name='GNI per Capita', mode='lines+markers'),
-            secondary_y=True,
-        )
+    fig.add_trace(
+        go.Scatter(x=aggregated_data['year'], y=aggregated_data['GNI_per_capita'], name='GNI per Capita',
+                   mode='lines+markers', line=dict(color='darkblue')),
+        secondary_y=True,
+    )
 
     # Set x-axis title
     fig.update_xaxes(title_text="Year")
