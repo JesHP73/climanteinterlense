@@ -48,7 +48,7 @@ def plot_emissions(df, selected_region, selected_country, selected_pollutants): 
                 fig.add_hline(y=standards['RL'], line_dash="dash", line_color="red", annotation_text=f"{pollutant} RL")
             
             # Average pollution levels by decade
-            df['decade'] = pd.to_datetime(df['decade'], format='%Y').dt.year
+            df['decade'] = df['decade'].astype(str) #pd.to_datetime(df['decade'], format='%Y').dt.year
             avg_pollution_by_decade = df.groupby('decade')['avg_AQI_Index'].mean().reset_index()
             fig.add_trace(go.Scatter(x=avg_pollution_by_decade['avg_AQI_Index'], y=avg_pollution_by_decade['decade'],
                                      mode='lines', name='Average Pollution Level'))
