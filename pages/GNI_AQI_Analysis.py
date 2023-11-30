@@ -65,7 +65,7 @@ def plot_aqi_vs_gni(data):
 # Function for plotting individual pollutants
 def plot_individual_pollutant(data, pollutant):
     fig, ax = plt.subplots()
-    ax.bar(data['country'], data['AQI_Index'])
+    ax.bar(data['country'], data['air_pollutant_level'])
     ax.set_xlabel('Country')
     ax.set_ylabel('AQI Index')
     ax.set_title(f'AQI Index for {pollutant}')
