@@ -173,13 +173,13 @@ def main():
             col3.write("Data not available for correlation analysis.")
         
 
-    # Call the plotting function and show the plot
-    plot_emissions(df, selected_region, selected_country, selected_pollutant) 
-
-    # Additional explanations about AQGs and RLs
-    st.markdown("### Understanding the Numbers")
-        
-    st.info("The guidelines and reference levels from WHO are designed to keep air quality at a level that's safe for public health. When pollution levels go above these numbers, it can lead to health concerns for the population, especially vulnerable groups like children and the elderly.")
+        # Call the plotting function and show the plot
+        plot_emissions(df, selected_region, selected_country, selected_pollutant) 
+    
+        # Additional explanations about AQGs and RLs
+        st.markdown("### Understanding the Numbers")
+            
+        st.info("The guidelines and reference levels from WHO are designed to keep air quality at a level that's safe for public health. When pollution levels go above these numbers, it can lead to health concerns for the population, especially vulnerable groups like children and the elderly.")
 
 # This ensures the app runs when the script is executed
 if __name__ == "__main__":
