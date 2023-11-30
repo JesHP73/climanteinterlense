@@ -46,8 +46,14 @@ df = pd.DataFrame(data)
 df.rename(columns={'latitude': 'lat', 'longitude': 'lon'}, inplace=True)
 
 # Display the DataFrame on a map using Streamlit
-st.map(df,
-    latitude='lat',
-    longitude='lon',
-    size='avg_air_pollutant_level')
+# Create a scatter_geo plot
+fig = px.scatter_geo(df, 
+                     lat='lat', 
+                     lon='lon', 
+                     size='avg_air_pollutant_level',
+                     hover_name='country',  # Shows country name when hovering over the point
+                     title='Top 30 EU Most Polluted Countries')
+
+# Display the plot in Streamlit
+st.plotly_chart(fig)
 
