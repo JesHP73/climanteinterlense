@@ -35,12 +35,13 @@ df_original = load_data()
 # Create a copy of the DataFrame for manipulation
 df = df_original.copy()
 
+# Sidebar multiselect for Region and Country
+selected_regions = st.sidebar.multiselect('Select Region(s)', options=merged_df['region'].unique(), default=merged_df['region'].unique())
+selected_countries = st.sidebar.multiselect('Select Country(ies)', options=merged_df[merged_df['region'].isin(selected_regions)]['country'].unique())
 
-# Calculate the mean or median for AQI Index and GNI per capita for each year
-avg_data = df.groupby('year').agg({
-    'AQI_Index': 'mean',  
-    'GNI_per_capita': 'mean'
-}).reset_index()
+# Filter the DataFrame based on the selections
+filtered_df = merged_df[merged_df['region'].isin(selected_regions) & merged_df['country'].isin(selected_countries)]
+
 
 # Create the AQI Index plot with an explicit name for the legend
 fig = px.line(avg_data, x='year', y='AQI_Index', title='Average AQI Index over Time', markers=True, labels={'AQI_Index': 'Avg. AQI Index'})
