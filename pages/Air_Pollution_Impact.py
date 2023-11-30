@@ -61,7 +61,7 @@ def plot_data(filtered_data):
     fig.update_layout(
         xaxis_title='Year',
         yaxis_title='Percentage of Deaths',
-        yaxis_tickformat='.2%',
+        #yaxis_tickformat='.2%',
         showlegend=True,
         legend_title_text='Income Group'
     )
