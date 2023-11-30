@@ -54,40 +54,46 @@ def plot_aqi_and_gni_over_time(filtered_data):
         st.error('No data available for plotting.')
         return
 
-    # Convert 'year' to numeric
-    if not pd.api.types.is_numeric_dtype(filtered_data['year']):
-        filtered_data['year'] = pd.to_numeric(filtered_data['year'], errors='coerce')
+    # Aggregating data by year for AQI and GNI
+    aggregated_data = filtered_data.groupby('year').agg({'AQI_Index':'mean', 'GNI_per_capita':'mean'}).reset_index() #am I calculating the mean of the mean?
 
-    # Drop rows where 'year' or 'AQI_Index' is NaN
-    filtered_data = filtered_data.dropna(subset=['year', 'AQI_Index'])
+    # Plot with Plotly
+    fig = make_subplots(specs=[[{"secondary_y": True}]])
 
-    if filtered_data.empty:
-        st.error('No data available for plotting after cleaning.')
-        return
+    # Add AQI Index trace
+    fig.add_trace(
+        go.Scatter(x=aggregated_data['year'], y=aggregated_data['AQI_Index'], name='AQI Index', mode='lines+markers'),
+        secondary_y=False,
+    )
 
-    if 'GNI_per_capita' in filtered_data.columns:
-        # Plot with Plotly
-        fig = px.line(filtered_data, x='year', y='AQI_Index', title='AQI Index over Time', markers=True)
-        
-        # Create a secondary y-axis for GNI per capita
-        fig.add_scatter(x=filtered_data['year'], y=filtered_data['GNI_per_capita'], mode='lines+markers', name='GNI per Capita', yaxis='y2')
-        
-        # Update layout to add a secondary y-axis
-        fig.update_layout(
-            yaxis2=dict(
-                title='GNI per Capita',
-                overlaying='y',
-                side='right'
-            ),
-            yaxis=dict(
-                title='AQI Index'
-            )
+    # Add GNI per Capita trace
+    if 'GNI_per_capita' in aggregated_data.columns:
+        fig.add_trace(
+            go.Scatter(x=aggregated_data['year'], y=aggregated_data['GNI_per_capita'], name='GNI per Capita', mode='lines+markers'),
+            secondary_y=True,
         )
-        # Show the plot
-        st.plotly_chart(fig)
-    else:
-        st.warning("GNI_per_capita data not available for plotting.")
 
+    # Set x-axis title
+    fig.update_xaxes(title_text="Year")
+
+    # Set y-axes titles
+    fig.update_yaxes(title_text="AQI Index", secondary_y=False)
+    fig.update_yaxes(title_text="GNI per Capita (USD)", secondary_y=True)
+
+    # Set figure title and legend
+    fig.update_layout(
+        title_text="AQI Index and GNI per Capita over Time",
+        legend_title_text='Metric',
+        legend=dict(
+            x=1.05,  # This places the legend to the right of the plot
+            y=1,
+            xanchor='left',  # This anchors the legend at the left side at x position
+            bgcolor='rgba(255,255,255,0.5)'  #This makes the legend slightly transparent
+        )
+    )
+
+    # Show the plot
+    st.plotly_chart(fig)
 
 # Call the function to plot data
 if not filtered_data.empty:
