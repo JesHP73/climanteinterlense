@@ -33,44 +33,50 @@ def load_data():
          return pd.DataFrame()  # Return an empty DataFrame in case of error
 
 
-def plot_emissions(df, selected_region, selected_country, selected_pollutants): # ⚠️
-    try:
-        if df.empty:
-            st.error('No data available for the selected filters')
-            return
-    
-        #fig = go.Figure()
 
-        if selected_region == 'All' and selected_country == 'All' and selected_pollutant == 'All':
-            # Add lines for the WHO standards
-            for pollutant, standards in WHO_STANDARDS.items():
-                fig.add_hline(y=standards['AQG'], line_dash="dash", line_color="green", annotation_text=f"{pollutant} AQG")
-                fig.add_hline(y=standards['RL'], line_dash="dash", line_color="red", annotation_text=f"{pollutant} RL")
-            
-            # Average pollution levels by decade
-            df['decade'] = df['decade'].astype(str) #pd.to_datetime(df['decade'], format='%Y').dt.year
-            avg_pollution_by_decade = df.groupby('decade')['avg_AQI_Index'].mean().reset_index()
-            fig.add_trace(go.Scatter(x=avg_pollution_by_decade['avg_AQI_Index'], y=avg_pollution_by_decade['decade'],
-                                     mode='lines', name='Average Pollution Level'))
-          
+def plot_emissions(df, selected_pollutants):
+    # Data Validation: Check if dataframe is empty
+    if df.empty:
+        st.error('No data available for the selected filters')
+        return
+
+    try:
+        # Determine if 'All' pollutants are selected
+        all_pollutants_selected = 'All' in selected_pollutants
+
+        if all_pollutants_selected:
+            # Calculate the overall average AQI Index
+            overall_avg_aqi = df['avg_AQI_Index'].mean()
+
+            # Create a bar chart with the average AQI
+            fig = px.bar(x=['Average AQI'], y=[overall_avg_aqi], labels={'x':'', 'y':'AQI Index'})
+            fig.update_layout(
+                title='Overall Average AQI Index',
+                xaxis_title='',
+                yaxis_title='Average AQI Index'
+            )
+
+            # Add a line for the overall WHO AQG level
+            overall_aqg = np.mean([value['AQG'] for key, value in WHO_STANDARDS.items()])
+            fig.add_hline(y=overall_aqg, line_dash="dash", line_color="green", annotation_text="Overall WHO AQG")
+        
         else:
-        # Initialize list for histogram data and group labels
+            # Initialize list for histogram data and group labels
             hist_data = []
             group_labels = []
-            
-             # Loop through the selected pollutants
+
+            # Include only selected pollutants in the plot
             for pollutant in selected_pollutants:
-                if pollutant != 'All':  # Skip 'All' if it's in the list 
+                if pollutant != 'All':  # Skip 'All' if it's in the list
                     pollutant_data = df[df['air_pollutant'] == pollutant]['avg_air_pollutant_level'].dropna()
                     if not pollutant_data.empty:
                         hist_data.append(pollutant_data)
                         group_labels.append(pollutant)
-    
-                # Check if we have any data to plot
+
+            # Check if we have any data to plot
             if not hist_data:
                 st.error('No data available for the selected pollutants after filtering.')
                 return
-
 
             # Create distribution plot
             fig = ff.create_distplot(hist_data, group_labels, show_hist=False, show_rug=False)
@@ -82,20 +88,19 @@ def plot_emissions(df, selected_region, selected_country, selected_pollutants): 
                     rl = WHO_STANDARDS[pollutant]['RL']
                     fig.add_vline(x=aqg, line_dash="dash", line_color="green", annotation_text=f"{pollutant} AQG")
                     fig.add_vline(x=rl, line_dash="dash", line_color="red", annotation_text=f"{pollutant} RL")
-    
-        # Update layout for a cleaner look
-        fig.update_layout(
-            xaxis_title='Decades',
-            yaxis_title='Pollutant Level (μg/m3)',
-            title='Distribution of Air Pollutant Levels and WHO Limit Standards'
-        )
+
+            # Update layout for a cleaner look
+            fig.update_layout(
+                xaxis_title='Pollutant Level (μg/m3)',
+                yaxis_title='Density',
+                title='Distribution of Air Pollutant Levels'
+            )
 
         # Display the plot in Streamlit
         st.plotly_chart(fig, use_container_width=True)
 
     except Exception as e:
         st.error(f"An error occurred while plotting: {e}")
-
 
 def main():
     # Load data
@@ -164,7 +169,7 @@ def main():
         
 
     # Call the plotting function and show the plot
-    plot_emissions(df, selected_region, selected_country, selected_pollutants) 
+    plot_emissions(df, selected_pollutants) 
         
     # Additional explanations about AQGs and RLs
     st.markdown("### Understanding the Numbers")
