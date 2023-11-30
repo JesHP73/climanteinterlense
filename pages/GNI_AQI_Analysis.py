@@ -82,7 +82,6 @@ def plot_emissions(df, selected_pollutants):
 
 
 
-# Function for plotting AQI Index and GNI per Capita over time as lines
 def plot_aqi_and_gni_over_time(data):
     # Check if data is empty
     if data.empty:
@@ -96,17 +95,32 @@ def plot_aqi_and_gni_over_time(data):
     # Drop rows where 'year' or 'AQI_Index' is NaN
     data = data.dropna(subset=['year', 'AQI_Index'])
 
+    # Ensure that the data is not empty after dropping NaN values
+    if data.empty:
+        st.error('No data available for plotting after cleaning.')
+        return
+
     fig, ax1 = plt.subplots()
 
-    ax1.plot(data['year'], data['AQI_Index'], 'r-')
+    # Plotting AQI Index
+    try:
+        ax1.plot(data['year'].values, data['AQI_Index'].values, 'r-')
+    except Exception as e:
+        st.error(f'Error plotting AQI Index: {e}')
+        return
+
     ax1.set_xlabel('Year')
     ax1.set_ylabel('AQI Index', color='r')
     
-    # Ensure GNI_per_capita is available for plotting
+    # Plotting GNI per Capita
     if 'GNI_per_capita' in data.columns:
-        ax2 = ax1.twinx()
-        ax2.plot(data['year'], data['GNI_per_capita'], 'b-')
-        ax2.set_ylabel('GNI per Capita', color='b')
+        try:
+            ax2 = ax1.twinx()
+            ax2.plot(data['year'].values, data['GNI_per_capita'].values, 'b-')
+            ax2.set_ylabel('GNI per Capita', color='b')
+        except Exception as e:
+            st.error(f'Error plotting GNI per Capita: {e}')
+            return
     else:
         st.warning("GNI_per_capita data not available for plotting.")
 
