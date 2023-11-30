@@ -70,24 +70,29 @@ def plot_data(filtered_data):
 def display_statistics(filtered_data):
     
     if not filtered_data.empty:
-        # Choose the latest year's data for a dynamic metric
         latest_year = filtered_data['year'].max()
         latest_data = filtered_data[filtered_data['year'] == latest_year]
         latest_avg_death_percentage = latest_data['total_death_attributed_sex_standarized'].mean()
-        
-        # Calculate the mean of people affected for the latest year
-        people_affected = latest_data['people_affected'].mean()
-        
+
+        if 'people_affected' in latest_data.columns:
+            people_affected = latest_data['people_affected'].mean()
+        else:
+            st.warning("Column 'people_affected' not found in the data.")
+            people_affected = None
+
         col1, col2 = st.columns(2)
         with col1:
             st.header("Rate Per 100 Thousand Total Population")
             st.metric(label=f"Avg Deaths in {latest_year}", value=f"{latest_avg_death_percentage:.2f}%")
         with col2:
             st.header("Equivalent to")
-            # Provide a relevant delta calculation if necessary
-            st.metric(label="Number of People", value=f"{people_affected:.2f}", delta="Delta Value")
+            if people_affected is not None:
+                st.metric(label="Number of People", value=f"{people_affected:.2f}", delta="Delta Value")
+            else:
+                st.write("People affected data is not available.")
     else:
         st.error("Insufficient data to calculate statistics.")
+
 
 
 def main():
