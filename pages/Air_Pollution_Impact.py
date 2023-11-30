@@ -41,6 +41,7 @@ def display_geographical_focus(regions, countries):
     elif 'All' not in countries:
         return ', '.join(countries)
 
+
 def plot_emissions(df, selected_pollutants):
     # Data Validation: Check if dataframe is empty
     if df.empty:
@@ -48,57 +49,67 @@ def plot_emissions(df, selected_pollutants):
         return
 
     try:
-        # Initialize list for histogram data and group labels
-        hist_data = []
-        group_labels = []
-
         # Determine if 'All' pollutants are selected
         all_pollutants_selected = 'All' in selected_pollutants
 
-        # Loop over the standards or the selected pollutants based on the user selection
-        for pollutant in (WHO_STANDARDS if all_pollutants_selected else selected_pollutants):
-            if pollutant != 'All':  # Skip 'All' if it's in the list
-                # Filter data for the current pollutant
-                pollutant_data = df[df['air_pollutant'] == pollutant]['avg_air_pollutant_level'].dropna()
-                if not pollutant_data.empty:
-                    hist_data.append(pollutant_data)
-                    group_labels.append(pollutant)
+        if all_pollutants_selected:
+            # Calculate the overall average AQI Index
+            overall_avg_aqi = df['avg_AQI_Index'].mean()
+
+            # Create a bar chart with the average AQI
+            fig = px.bar(x=['Average AQI'], y=[overall_avg_aqi], labels={'x':'', 'y':'AQI Index'})
+            fig.update_layout(
+                title='Overall Average AQI Index',
+                xaxis_title='',
+                yaxis_title='Average AQI Index'
+            )
+
+            # Add a line for the overall WHO AQG level
+            overall_aqg = np.mean([value['AQG'] for key, value in WHO_STANDARDS.items()])
+            fig.add_hline(y=overall_aqg, line_dash="dash", line_color="green", annotation_text="Overall WHO AQG")
+        
         else:
+            # Initialize list for histogram data and group labels
+            hist_data = []
+            group_labels = []
+
             # Include only selected pollutants in the plot
             for pollutant in selected_pollutants:
-                pollutant_data = df[df['air_pollutant'] == pollutant]['avg_air_pollutant_level'].dropna()
-                if not pollutant_data.empty:
-                    hist_data.append(pollutant_data)
-                    group_labels.append(pollutant)
+                if pollutant != 'All':  # Skip 'All' if it's in the list
+                    pollutant_data = df[df['air_pollutant'] == pollutant]['avg_air_pollutant_level'].dropna()
+                    if not pollutant_data.empty:
+                        hist_data.append(pollutant_data)
+                        group_labels.append(pollutant)
 
-        # Check if we have any data to plot
-        if not hist_data:
-            st.error('No data available for the selected pollutants after filtering.')
-            return
+            # Check if we have any data to plot
+            if not hist_data:
+                st.error('No data available for the selected pollutants after filtering.')
+                return
 
-        # Create distribution plot
-        fig = ff.create_distplot(hist_data, group_labels, show_hist=False, show_rug=False)
+            # Create distribution plot
+            fig = ff.create_distplot(hist_data, group_labels, show_hist=False, show_rug=False)
 
-        # Add WHO AQG and RL lines for the pollutants
-        for pollutant in (WHO_STANDARDS if all_pollutants_selected else selected_pollutants):
-            if pollutant != 'All':  # Skip 'All' if it's in the list
-                aqg = WHO_STANDARDS[pollutant]['AQG']
-                rl = WHO_STANDARDS[pollutant]['RL']
-                fig.add_vline(x=aqg, line_dash="dash", line_color="green", annotation_text=f"{pollutant} AQG")
-                fig.add_vline(x=rl, line_dash="dash", line_color="red", annotation_text=f"{pollutant} RL")
+            # Add WHO AQG and RL lines for the pollutants
+            for pollutant in selected_pollutants:
+                if pollutant != 'All':  # Skip 'All' if it's in the list
+                    aqg = WHO_STANDARDS[pollutant]['AQG']
+                    rl = WHO_STANDARDS[pollutant]['RL']
+                    fig.add_vline(x=aqg, line_dash="dash", line_color="green", annotation_text=f"{pollutant} AQG")
+                    fig.add_vline(x=rl, line_dash="dash", line_color="red", annotation_text=f"{pollutant} RL")
 
-        # Update layout for a cleaner look
-        fig.update_layout(
-            xaxis_title='Pollutant Level (μg/m3)',
-            yaxis_title='Density',
-            title='Distribution of Air Pollutant Levels'
-        )
+            # Update layout for a cleaner look
+            fig.update_layout(
+                xaxis_title='Pollutant Level (μg/m3)',
+                yaxis_title='Density',
+                title='Distribution of Air Pollutant Levels'
+            )
 
         # Display the plot in Streamlit
         st.plotly_chart(fig, use_container_width=True)
 
     except Exception as e:
         st.error(f"An error occurred while plotting: {e}")
+
 
 
     
