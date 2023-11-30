@@ -100,11 +100,13 @@ def plot_aqi_and_gni_over_time(data):
         st.error('No data available for plotting after cleaning.')
         return
 
-    fig, ax1 = plt.subplots()
+    fig, ax1 = plt.subplots(figsize=(10, 6))
 
     # Plotting AQI Index
     try:
-        ax1.plot(data['year'].values, data['AQI_Index'].values, 'r-')
+        # Using a rolling mean for AQI Index to smooth the line, and setting a thinner linewidth
+        ax1.plot(data['year'].values, data['AQI_Index'].rolling(window=3).mean(), 'r-', linewidth=0.5, alpha=0.7, label='Rolling Mean AQI Index'))
+
     except Exception as e:
         st.error(f'Error plotting AQI Index: {e}')
         return
@@ -116,15 +118,19 @@ def plot_aqi_and_gni_over_time(data):
     if 'GNI_per_capita' in data.columns:
         try:
             ax2 = ax1.twinx()
-            ax2.plot(data['year'].values, data['GNI_per_capita'].values, 'b-')
+            ax2.plot(data['year'].values, data['GNI_per_capita'].values, 'b-', label='GNI per Capita'))
             ax2.set_ylabel('GNI per Capita', color='b')
         except Exception as e:
             st.error(f'Error plotting GNI per Capita: {e}')
             return
     else:
         st.warning("GNI_per_capita data not available for plotting.")
+    
+    # Moving the legend to the top of the plot
+    ax1.legend(loc='upper center', bbox_to_anchor=(0.5, -0.05), fancybox=True, shadow=True, ncol=2)
 
     fig.tight_layout()
+    plt.show()
     return fig
 
 
