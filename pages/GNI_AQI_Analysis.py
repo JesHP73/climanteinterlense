@@ -105,7 +105,7 @@ def plot_aqi_and_gni_over_time(data):
     # Plotting AQI Index
     try:
         # Using a rolling mean for AQI Index to smooth the line, and setting a thinner linewidth
-        ax1.plot(data['year'].values, data['AQI_Index'].rolling(window=3).mean(), 'r-', linewidth=0.5, alpha=0.7, label='Rolling Mean AQI Index'))
+        ax1.plot(data['year'].values, data['AQI_Index'].rolling(window=3).mean(), 'r-', linewidth=0.5, alpha=0.7, label='Rolling Mean AQI Index')
 
     except Exception as e:
         st.error(f'Error plotting AQI Index: {e}')
@@ -118,7 +118,7 @@ def plot_aqi_and_gni_over_time(data):
     if 'GNI_per_capita' in data.columns:
         try:
             ax2 = ax1.twinx()
-            ax2.plot(data['year'].values, data['GNI_per_capita'].values, 'b-', label='GNI per Capita'))
+            ax2.plot(data['year'].values, data['GNI_per_capita'].values, 'b-', label='GNI per Capita')
             ax2.set_ylabel('GNI per Capita', color='b')
         except Exception as e:
             st.error(f'Error plotting GNI per Capita: {e}')
