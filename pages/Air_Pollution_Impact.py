@@ -20,30 +20,35 @@ def load_data():
         return pd.DataFrame()  # Return an empty DataFrame in case of error
         
 def plot_data(filtered_data):
-    # Mapping from short labels to full names for income groups
+    # Ensure that 'ig_label' column in 'filtered_data' contains the short income group labels
+    # If it contains full names, adjust the 'income_label_mapping' dictionary accordingly
+
+    # Aggregate the data if there are multiple entries per income group per year
+    aggregated_data = filtered_data.groupby(['year', 'ig_label'], as_index=False).mean()
+
+    # Now perform the mapping from short labels to full names for income groups
     income_label_mapping = {
         'LM': 'Low Income',
         'UM': 'Upper Middle Income',
         'H': 'High Income'
     }
-
-    # Replace short labels with full names in the dataframe
-    filtered_data['ig_label'] = filtered_data['ig_label'].map(income_label_mapping)
+    # Apply the mapping
+    aggregated_data['ig_label'] = aggregated_data['ig_label'].map(income_label_mapping)
 
     # Define the color mapping for income groups
     color_discrete_map = {
-        'Low Income': 'blue', 
-        'High Income': 'green', 
+        'Low Income': 'blue',
+        'High Income': 'green',
         'Upper Middle Income': 'brown'
     }
 
-    # Plot the line chart
-    fig = px.line(filtered_data, 
-                  x='year', 
-                  y='total_death_attributed_sex_standarized', 
+    # Plot the line chart using the aggregated data
+    fig = px.line(aggregated_data,
+                  x='year',
+                  y='total_death_attributed_sex_standarized',
                   color='ig_label',
                   color_discrete_map=color_discrete_map,  # Apply custom colors
-                  labels={'ig_label': 'Income Group', 'total_death_attributed_sex_standarized': '% of Deaths'},
+                  labels={'total_death_attributed_sex_standarized': 'Percentage of Deaths', 'ig_label': 'Income Group'},
                   title='Time Series of Deaths Attributed to Air Pollution by Income Group')
 
     # Improve layout for better readability
