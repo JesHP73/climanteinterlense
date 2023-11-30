@@ -51,7 +51,7 @@ def main():
     if conditions:
         filtered_data = df[np.logical_and.reduce(conditions)]
     else:
-        filtered_data = df
+        filtered_data = df.copy()
 
     if filtered_data.empty:
         st.error("No data available for the selected criteria.")
