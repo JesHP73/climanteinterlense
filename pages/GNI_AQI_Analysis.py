@@ -36,11 +36,11 @@ df_original = load_data()
 df = df_original.copy()
 
 # Sidebar multiselect for Region and Country
-selected_regions = st.sidebar.multiselect('Select Region(s)', options=merged_df['region'].unique(), default=merged_df['region'].unique())
-selected_countries = st.sidebar.multiselect('Select Country(ies)', options=merged_df[merged_df['region'].isin(selected_regions)]['country'].unique())
+selected_regions = st.sidebar.multiselect('Select Region(s)', options=df['region'].unique(), default=df['region'].unique())
+selected_countries = st.sidebar.multiselect('Select Country(ies)', options=df[df['region'].isin(selected_regions)]['country'].unique())
 
 # Filter the DataFrame based on the selections
-filtered_df = merged_df[merged_df['region'].isin(selected_regions) & merged_df['country'].isin(selected_countries)]
+filtered_df = df[df['region'].isin(selected_regions) & df['country'].isin(selected_countries)]
 
 
 # Create the AQI Index plot with an explicit name for the legend
