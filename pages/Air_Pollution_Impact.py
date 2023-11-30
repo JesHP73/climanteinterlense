@@ -60,7 +60,7 @@ def plot_emissions(df, selected_region, selected_country, selected_pollutants): 
             # Average pollution levels by decade
             df['decade'] = pd.to_datetime(df['decade'], format='%Y').dt.year
             avg_pollution_by_decade = df.groupby('decade')['avg_AQI_Index'].mean().reset_index()
-            fig.add_trace(go.Scatter(x=avg_pollution_by_decade['decade'], y=avg_pollution_by_decade['avg_AQI_Index'],
+            fig.add_trace(go.Scatter(x=avg_pollution_by_decade['avg_AQI_Index'], y=avg_pollution_by_decade['decade'],
                                      mode='lines', name='Average Pollution Level'))
           
         else:
@@ -95,8 +95,8 @@ def plot_emissions(df, selected_region, selected_country, selected_pollutants): 
     
         # Update layout for a cleaner look
         fig.update_layout(
-            xaxis_title='Pollutant Level (μg/m3)',
-            yaxis_title='Decades',
+            xaxis_title='Decades',
+            yaxis_title='Pollutant Level (μg/m3)',
             title='Distribution of Air Pollutant Levels and WHO Limit Standards'
         )
 
