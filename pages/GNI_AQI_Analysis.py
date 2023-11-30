@@ -29,140 +29,42 @@ def load_data():
         st.error(f"Error loading data: {e}")
         return pd.DataFrame()  # Return an empty DataFrame in case of error
 
-# Assuming load_data() is defined elsewhere
+
 df_original = load_data()
 
 # Create a copy of the DataFrame for manipulation
 df = df_original.copy()
 
-# Sidebar - User input areas
-st.sidebar.header("Filters")
-selected_region = st.sidebar.selectbox('Select Region', ['All'] + sorted(df['region'].unique()))
-selected_country = st.sidebar.selectbox('Select Country', ['All'] + sorted(df['country'].unique()))
-selected_pollutants = st.sidebar.multiselect('Select Pollutant', ['All'] + sorted(df['air_pollutant'].unique()))
 
+# Calculate the mean or median for AQI Index and GNI per capita for each year
+avg_data = df.groupby('year').agg({
+    'AQI_Index': 'mean',  
+    'GNI_per_capita': 'mean'
+}).reset_index()
 
-# Filtering the data based on user selections
-filtered_data = df.copy()
-if selected_region != 'All':
-    filtered_data = filtered_data[filtered_data['region'] == selected_region]
-if selected_country != 'All':
-    filtered_data = filtered_data[filtered_data['country'] == selected_country]
-if selected_pollutants != ['All']:
-    filtered_data = filtered_data[filtered_data['air_pollutant'].isin(selected_pollutants)]
+# Create the plot with Plotly
+fig = px.line(avg_data, x='year', y='AQI_Index', title='Average AQI Index over Time', markers=True)
+fig.update_traces(line=dict(color='red'))
 
+# You can create a secondary y-axis for GNI per capita
+fig.add_scatter(x=avg_data['year'], y=avg_data['GNI_per_capita'], mode='lines+markers', name='GNI per Capita', yaxis='y2')
 
-def plot_aqi_and_gni_over_time(data):
-    if data.empty:
-        st.error('No data available for plotting.')
-        return
+# Update layout to add a secondary y-axis
+fig.update_layout(
+    yaxis2=dict(
+        title='GNI per Capita',
+        overlaying='y',
+        side='right'
+    ),
+    yaxis=dict(
+        title='AQI Index'
+    )
+)
 
-    # Convert 'year' to numeric if it's not already
-    if not pd.api.types.is_numeric_dtype(data['year']):
-        data['year'] = pd.to_numeric(data['year'], errors='coerce')
-
-    # Drop rows where 'year' or 'AQI_Index' is NaN
-    data = data.dropna(subset=['year', 'AQI_Index'])
-
-    if data.empty:
-        st.error('No data available for plotting after cleaning.')
-        return
-
-    fig, ax1 = plt.subplots(figsize=(10, 6))
-
-    # Convert DataFrame columns to NumPy arrays
-    years = data['year'].to_numpy()
-    aqi_index = data['AQI_Index'].to_numpy()
-
-    try:
-        ax1.plot(years, aqi_index, 'r-', label='AQI Index')
-    except Exception as e:
-        st.error(f'Error plotting AQI Index: {e}')
-        return
-
-    ax1.set_xlabel('Year')
-    ax1.set_ylabel('AQI Index', color='r')
-    ax1.set_title("AQI Index and GNI per Capita Over Time")
-
-    if 'GNI_per_capita' in data.columns:
-        try:
-            gni_per_capita = data['GNI_per_capita'].to_numpy()
-            ax2 = ax1.twinx()
-            ax2.plot(years, gni_per_capita, 'b-', label='GNI per Capita')
-            ax2.set_ylabel('GNI per Capita ($)', color='b')
-        except Exception as e:
-            st.error(f'Error plotting GNI per Capita: {e}')
-            return
-    else:
-        st.warning("GNI_per_capita data not available for plotting.")
-
-    ax1.legend(loc='upper left')
-    ax2.legend(loc='upper right')
-
-    fig.tight_layout()
-    st.pyplot(fig)
-
-
-# Function for plotting individual pollutants with emissions levels and units
-def plot_individual_pollutant_with_levels(data, pollutant, unit_column, level_column):
-    # Check if columns exist
-    if unit_column not in data.columns or level_column not in data.columns:
-        st.error(f"Column names {unit_column} or {level_column} not found in data.")
-        return
-
-    # Drop missing values
-    data = data.dropna(subset=['year', level_column])
-
-    # Ensure data types are correct
-    data['year'] = pd.to_numeric(data['year'], errors='coerce')
-    data[level_column] = pd.to_numeric(data[level_column], errors='coerce')
-
-    # Check if data is empty after processing
-    if data.empty:
-        st.error("No data available for plotting after processing.")
-        return
-
-    fig, ax = plt.subplots()
-    try:
-        sns.lineplot(x='year', y=level_column, data=data, ax=ax, label=pollutant)
-    except Exception as e:
-        st.error(f"Error plotting data: {e}")
-        return
-
-    ax.set_ylabel(f"{pollutant} ({data[unit_column].iloc[0]})")
-    ax.set_xlabel('Year')
-    ax.set_title(f"Yearly Trend of {pollutant}")
-
-    # Pass the figure object to st.pyplot()
-    st.pyplot(fig)
-
-
-
-
-# Visualization Header
-st.header("GNI per Capita and AQI Index Analysis Over Time")
-
-# Check if there's data to plot
-if not filtered_data.empty:
-    # Determine the correct plot based on the user's selection of pollutants
-    if 'All' in selected_pollutants or len(selected_pollutants) > 1:
-        fig = plot_aqi_and_gni_over_time(filtered_data)
-        if fig:  # Check if the figure was successfully created
-            st.pyplot(fig)
-    else:
-        for pollutant in selected_pollutants:
-            st.subheader(f"Analysis for {pollutant}")
-            pollutant_data = filtered_data[filtered_data['air_pollutant'] == pollutant]
-            # Check if there is data for the selected pollutant
-            if not pollutant_data.empty:
-                fig = plot_individual_pollutant_with_levels(pollutant_data, pollutant, 'unit_air_poll_lvl', 'air_pollutant_level')
-                st.pyplot(fig)
-            else:
-                st.error(f'No data available for pollutant: {pollutant}')
-
-
-        
-st.info("The guidelines and reference levels from WHO are designed to keep air quality at a level that's safe for public health. When pollution levels go above these numbers, it can lead to health concerns for the population, especially vulnerable groups like children and the elderly.")
+# Show the plot
+st.plotly_chart(fig)
+      
+#st.info("The guidelines and reference levels from WHO are designed to keep air quality at a level that's safe for public health. When pollution levels go above these numbers, it can lead to health concerns for the population, especially vulnerable groups like children and the elderly.")
 
 
 ## Additional explanations about AQGs and RLs
