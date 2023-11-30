@@ -96,11 +96,11 @@ def plot_emissions(df, selected_region, selected_country, selected_pollutant):
             title='Distribution of Air Pollutant Levels and WHO Limit Standars'
             )
 
-    # Display the plot in Streamlit
-    st.plotly_chart(fig, use_container_width=True)
+        # Display the plot in Streamlit
+        st.plotly_chart(fig, use_container_width=True)
     
-except Exception as e:
-st.error(f"An error occurred while plotting: {e}")
+    except Exception as e:
+    st.error(f"An error occurred while plotting: {e}")
 
     
 def main():
