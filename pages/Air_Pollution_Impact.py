@@ -135,15 +135,15 @@ def main():
 
     # Additional explanations about AQGs and RLs
     st.markdown("### Understanding What You See")
-
+    
+    # Plotting
+    plot_data(filtered_data)
+     # Display statistics
+    display_statistics(filtered_data)
+    
     st.info(" The IHME, Global Burden of Disease Dataset studied, provides the Death by Risk factors since 1990 umtil 2019; I have filter this risk factors by the following causes: High temperature, Low temperature, Ambient particulate matter pollution, Household air pollution from solid fuels acroos Europe")
     st.caption('Here the term **contributes**, meaning it was one of the attributed risk factors for a given disease or cause of death. There can be multiple risk factors for a given disease which corroborate or amplify one another when both are present. This means that in some cases, air pollution was not the only risk factor but one of several.'
 
-    # Plotting
-    plot_data(filtered_data)
-
-    # Display statistics
-    display_statistics(filtered_data)
 
 if __name__ == "__main__":
     main()
