@@ -40,7 +40,7 @@ st.sidebar.header("Filters")
 selected_region = st.sidebar.selectbox('Select Region', ['All'] + sorted(df['region'].unique()))
 selected_country = st.sidebar.selectbox('Select Country', ['All'] + sorted(df['country'].unique()))
 selected_pollutants = st.sidebar.multiselect('Select Pollutant', ['All'] + sorted(df['air_pollutant'].unique()))
-selected_year = st.sidebar.selectbox('Select Year', ['All'] + sorted(df['year'].unique().astype(str)))
+
 
 # Filtering the data based on user selections
 filtered_data = df.copy()
@@ -50,8 +50,7 @@ if selected_country != 'All':
     filtered_data = filtered_data[filtered_data['country'] == selected_country]
 if selected_pollutants != ['All']:
     filtered_data = filtered_data[filtered_data['air_pollutant'].isin(selected_pollutants)]
-if selected_year != 'All':
-    filtered_data = filtered_data[filtered_data['year'] == int(selected_year)]
+
 
 def plot_emissions(df, selected_pollutants):
     if df.empty:
