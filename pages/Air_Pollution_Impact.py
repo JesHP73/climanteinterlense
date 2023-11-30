@@ -114,8 +114,8 @@ def main():
     region_options = ['All'] + sorted(df['region'].unique().tolist())
     country_options = ['All'] + sorted(df['country'].unique().tolist())
 
-    selected_region = st.sidebar.multiselect('Select Region', options=region_options, default=['All'])
-    selected_country = st.sidebar.multiselect('Select Country', options=country_options, default=['All'])
+    selected_region = st.sidebar.multiselect('Select Region', options=region_options, default='All')
+    selected_country = st.sidebar.multiselect('Select Country', options=country_options, default='All')
 
     # Apply regional and country filters
     if 'All' not in selected_region:
@@ -129,21 +129,23 @@ def main():
     # Filter the DataFrame to include only the specified income groups
     filtered_data = df[df['ig_label'].isin(income_groups)]
 
+    # Calculate the death percentage
+    filtered_data['death_percentage'] = (filtered_data['num_deaths'] / filtered_data['population']) * 100
+
     if filtered_data.empty:
         st.error("No data available for the selected criteria.")
         return
 
     # Additional explanations about AQGs and RLs
     st.markdown("### Understanding What You See")
+    st.info("The IHME, Global Burden of Disease Dataset studied, provides the Death by Risk factors since 1990 until 2019; I have filtered these risk factors by the following causes: High temperature, Low temperature, Ambient particulate matter pollution, Household air pollution from solid fuels across Europe.")
+    st.caption('Here the term **contributes**, meaning it was one of the attributed risk factors for a given disease or cause of death. There can be multiple risk factors for a given disease which corroborate or amplify one another when both are present. This means that in some cases, air pollution was not the only risk factor but one of several.')
     
     # Plotting
     plot_data(filtered_data)
-     # Display statistics
-    display_statistics(filtered_data)
     
-    st.info(" The IHME, Global Burden of Disease Dataset studied, provides the Death by Risk factors since 1990 umtil 2019; I have filter this risk factors by the following causes: High temperature, Low temperature, Ambient particulate matter pollution, Household air pollution from solid fuels acroos Europe")
-    st.caption('Here the term **contributes**, meaning it was one of the attributed risk factors for a given disease or cause of death. There can be multiple risk factors for a given disease which corroborate or amplify one another when both are present. This means that in some cases, air pollution was not the only risk factor but one of several.'
-
+    # Display statistics
+    display_statistics(filtered_data)
 
 if __name__ == "__main__":
     main()
