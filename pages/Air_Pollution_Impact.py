@@ -9,7 +9,7 @@ import plotly.express as px
 
 
 # Function to load data
-@st.cache_data  # 👈 Add the caching decorator
+@st.cache  # Corrected cache decorator
 def load_data():
     try:
         URL = 'https://raw.githubusercontent.com/JesHP73/climanteinterlense/main/dataset/global_bourden_risk_factor.csv'
@@ -18,6 +18,7 @@ def load_data():
     except Exception as e:
         st.error(f"Error loading data: {e}")
         return pd.DataFrame()  # Return an empty DataFrame in case of error
+
 
 
 def main():
