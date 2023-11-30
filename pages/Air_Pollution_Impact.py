@@ -63,23 +63,23 @@ def main():
     st.info("The guidelines and reference levels from WHO are designed to keep air quality at a level that's safe for public health. When pollution levels go above these numbers, it can lead to health concerns for the population, especially vulnerable groups like children and the elderly.")
   
     # Plotting
-    plot_data(filtered_df)
+    plot_data(filtered_data)
 
     # Display statistics
-    display_statistics(filtered_df)
+    display_statistics(filtered_data)
 
 if __name__ == "__main__":
     main()
 
-def plot_data(filtered_df):
-    fig = px.line(filtered_df, x='year', y='total_death_attributed_sex_standarized',
+def plot_data(filtered_data):
+    fig = px.line(filtered_data, x='year', y='total_death_attributed_sex_standarized',
                   color='ig_label', title='Line Chart')
     st.plotly_chart(fig)  
 
-def display_statistics(filtered_df):
+def display_statistics(filtered_data):
     # Calculate the average percentage of deaths and the correlation
-    avg_death_percentage = filtered_df['total_death_attributed_sex_standarized'].mean()
-    correlation = filtered_df['GNI_per_capita_wb_Atlas_USD_EUR'].corr(filtered_df['total_death_attributed_sex_standarized'])
+    avg_death_percentage = filtered_data['total_death_attributed_sex_standarized'].mean()
+    correlation = filtered_data['GNI_per_capita_wb_Atlas_USD_EUR'].corr(filtered_data['total_death_attributed_sex_standarized'])
 
     # Using columns to display the statistics
     col1, col2 = st.columns(2)
