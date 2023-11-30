@@ -20,24 +20,21 @@ def load_data():
         return pd.DataFrame()  # Return an empty DataFrame in case of error
         
 def plot_data(filtered_data):
-    
-    # Ensure all columns to be aggregated are numeric
-    filtered_data['total_death_attributed_sex_standarized'] = pd.to_numeric(filtered_data['total_death_attributed_sex_standarized'], errors='coerce')
+    # Convert the percentage column to numeric, handling non-numeric entries
+    filtered_data['total_death_attributed_sex_standarized'] = pd.to_numeric(
+        filtered_data['total_death_attributed_sex_standarized'], errors='coerce'
+    )
 
-    # Perform the aggregation only on numeric columns
-    # If 'ig_label' is not numeric, we exclude it from the aggregation and later merge it back
-    numeric_data = filtered_data.groupby(['year'], as_index=False).mean()
-    
-    # Merge 'ig_label' back to the aggregated data
-    aggregated_data = numeric_data.merge(filtered_data[['year', 'ig_label']].drop_duplicates(), on='year', how='left')
+    # Group by 'year' and 'ig_label', then calculate the mean
+    aggregated_data = filtered_data.groupby(['year', 'ig_label'], as_index=False)['total_death_attributed_sex_standarized'].mean()
 
-    # mapping from short labels to full names for income groups
+    # Mapping from short labels to full names for income groups
     income_label_mapping = {
         'LM': 'Low Income',
         'UM': 'Upper Middle Income',
         'H': 'High Income'
     }
-    # Apply the mapping
+    # Apply the mapping to the 'ig_label' column
     aggregated_data['ig_label'] = aggregated_data['ig_label'].map(income_label_mapping)
 
     # Define the color mapping for income groups
@@ -48,19 +45,21 @@ def plot_data(filtered_data):
     }
 
     # Plot the line chart using the aggregated data
-    fig = px.line(aggregated_data,
-                  x='year',
-                  y='total_death_attributed_sex_standarized',
-                  color='ig_label',
-                  color_discrete_map=color_discrete_map,  # Apply custom colors
-                  labels={'total_death_attributed_sex_standarized': 'Percentage of Deaths', 'ig_label': 'Income Group'},
-                  title='Time Series of Deaths Attributed to Air Pollution by Income Group')
+    fig = px.line(
+        aggregated_data,
+        x='year',
+        y='total_death_attributed_sex_standarized',
+        color='ig_label',
+        color_discrete_map=color_discrete_map,
+        labels={'total_death_attributed_sex_standarized': 'Percentage of Deaths', 'ig_label': 'Income Group'},
+        title='Time Series of Deaths Attributed to Air Pollution by Income Group'
+    )
 
     # Improve layout for better readability
     fig.update_layout(
         xaxis_title='Year',
         yaxis_title='Percentage of Deaths',
-        yaxis_tickformat='.2%',  # Display y-axis values as percentages with 2 decimal places
+        yaxis_tickformat='.2%',
         showlegend=True,
         legend_title_text='Income Group'
     )
