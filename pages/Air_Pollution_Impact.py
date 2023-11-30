@@ -130,7 +130,7 @@ def main():
     filtered_data = df[df['ig_label'].isin(income_groups)]
 
     # Calculate the death percentage
-    filtered_data['death_percentage'] = (filtered_data['num_deaths'] / filtered_data['population']) * 100
+    #filtered_data['death_percentage'] = (filtered_data['num_deaths'] / filtered_data['population']) * 100
 
     if filtered_data.empty:
         st.error("No data available for the selected criteria.")
