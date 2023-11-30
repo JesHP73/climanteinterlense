@@ -36,12 +36,12 @@ def show_gni_aqi_analysis(df):
     # User input areas
     region_options = ['All'] + sorted(df['region'].unique().tolist())
     country_options = ['All'] + sorted(df['country'].unique().tolist())
-    decade_options = ['All'] + sorted(df['decade'].unique().tolist())
+    pollutants_options = ['All'] + sorted(df['air_pollutant'].unique().tolist())
      
     # Sidebar filters
     selected_region = st.sidebar.multiselect('Select Region', options=region_options, default=['All'])
     selected_country = st.sidebar.multiselect('Select Country', options=country_options, default=['All'])
-    selected_decade = st.sidebar.multiselect('Select Decade', options=decade_options, default=['All'])
+    selected_pollutants = st.sidebar.multiselect('Select Decade', options=pollutants_options, default=['All'])
 
     # Efficient combined filtering
     conditions = []
@@ -49,8 +49,8 @@ def show_gni_aqi_analysis(df):
         conditions.append(df['region'].isin(selected_region))
     if 'All' not in selected_country:
         conditions.append(df['country'].isin(selected_country))
-    if 'All' not in selected_decade:
-        conditions.append(df['decade'].isin(selected_decade))
+    if 'All' not in selected_pollutants:
+        conditions.append(df['air_pollutant'].isin(selected_pollutants))
 
     if conditions:
         filtered_data = df[np.logical_and.reduce(conditions)]
@@ -65,9 +65,9 @@ def show_gni_aqi_analysis(df):
     # Plotting with Plotly
     fig = px.scatter(
         filtered_data,
-        x="avg_GNI_Atlas",
-        y="avg_AQI_Index",
-        size="total_population",  # Ensure this column exists
+        x="GNI_per_capita",
+        y="AQI_Index",
+        size="total_population", 
         color="region",
         hover_name="country",
         log_x=True, 
