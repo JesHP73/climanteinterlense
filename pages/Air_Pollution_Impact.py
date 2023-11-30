@@ -18,27 +18,32 @@ def load_data():
     except Exception as e:
         st.error(f"Error loading data: {e}")
         return pd.DataFrame()  # Return an empty DataFrame in case of error
-
+        
 def plot_data(filtered_data):
-    # First, aggregate the data to get one value per year per income group
-    # Ensure that 'ig_label' column in 'filtered_data' contains the short income group labels
-    aggregated_data = filtered_data.groupby(['year', 'ig_label'])['total_death_attributed_sex_standarized'].mean().reset_index()
-
-    # Now perform the mapping from short labels to full names for income groups
+    # Mapping from short labels to full names for income groups
     income_label_mapping = {
         'LM': 'Low Income',
         'UM': 'Upper Middle Income',
         'H': 'High Income'
     }
-    # Apply the mapping
-    aggregated_data['ig_label'] = aggregated_data['ig_label'].map(income_label_mapping)
 
-    # Plot the line chart using the aggregated data
-    fig = px.line(aggregated_data,
-                  x='year',
-                  y='total_death_attributed_sex_standarized',
+    # Replace short labels with full names in the dataframe
+    filtered_data['ig_label'] = filtered_data['ig_label'].map(income_label_mapping)
+
+    # Define the color mapping for income groups
+    color_discrete_map = {
+        'Low Income': 'blue', 
+        'High Income': 'green', 
+        'Upper Middle Income': 'brown'
+    }
+
+    # Plot the line chart
+    fig = px.line(filtered_data, 
+                  x='year', 
+                  y='total_death_attributed_sex_standarized', 
                   color='ig_label',
-                  labels={'total_death_attributed_sex_standarized': 'Percentage of Deaths', 'ig_label': 'Income Group'},
+                  color_discrete_map=color_discrete_map,  # Apply custom colors
+                  labels={'ig_label': 'Income Group', 'total_death_attributed_sex_standarized': '% of Deaths'},
                   title='Time Series of Deaths Attributed to Air Pollution by Income Group')
 
     # Improve layout for better readability
@@ -53,27 +58,28 @@ def plot_data(filtered_data):
     # Show the figure
     st.plotly_chart(fig)
 
-  
-
 def display_statistics(filtered_data):
-    
     if not filtered_data.empty:
-        max_death_percentage = filtered_data['total_death_attributed_sex_standarized'].max()
+        # For a dynamic metric, choose a relevant statistic like the latest year's data
+        latest_year = filtered_data['year'].max()
+        latest_data = filtered_data[filtered_data['year'] == latest_year]
+        latest_avg_death_percentage = latest_data['total_death_attributed_sex_standarized'].mean()
+        
         correlation = filtered_data['GNI_per_capita_wb_Atlas_USD_EUR'].corr(filtered_data['total_death_attributed_sex_standarized'])
         correlation_label = "Negative" if correlation < 0 else "Positive"
-        # Determine the delta color based on the correlation sign
-        delta_color = "inverse" if correlation < 0 else "normal"
         
         col1, col2 = st.columns(2)
         with col1:
             st.header("Key Fact")
-            st.metric(label="Max Deaths Attributed to Air Pollution", value=f"{max_death_percentage:.2f}%")
+            # Display the latest average percentage or another dynamic statistic
+            st.metric(label=f"Avg Deaths in {latest_year}", value=f"{latest_avg_death_percentage:.2f}%")
         with col2:
             st.header("Correlation Analysis")
+            # Use Streamlit's built-in method to set the delta color
+            delta_color = "inverse" if correlation < 0 else "normal"
             st.metric(label="Income vs. Death Correlation", value=f"{correlation:.2f}", delta=correlation_label, delta_color=delta_color)
     else:
         st.error("Insufficient data to calculate statistics.")
-
 
 def main():
     # Load data
@@ -84,7 +90,7 @@ def main():
         st.error("No data available to display.")
         return
 
-    st.title('Percentage of Deaths Attributed to Air Pollution, 1990-2022')
+    st.title('Percentage of Deaths Attributed to Air Pollution, 1990-2019')
 
     # Sidebar for filters
     st.sidebar.header('Filters')
