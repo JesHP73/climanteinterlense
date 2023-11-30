@@ -26,7 +26,7 @@ def plot_data(filtered_data):
     )
 
     # Group by 'year' and 'ig_label', then calculate the mean
-    aggregated_data = filtered_data.groupby(['year', 'ig_label'], as_index=False)['total_death_attributed_sex_standarized'].mean()
+    aggregated_data = filtered_data.groupby(['year', 'ig_label'], as_index=False)['total_death_attributed_sex_standarized']
 
     # Mapping from short labels to full names for income groups
     income_label_mapping = {
@@ -72,7 +72,7 @@ def display_statistics(filtered_data):
         # For a dynamic metric, choose a relevant statistic like the latest year's data
         latest_year = filtered_data['year'].max()
         latest_data = filtered_data[filtered_data['year'] == latest_year]
-        latest_avg_death_percentage = latest_data['total_death_attributed_sex_standarized'].mean()
+        latest_avg_death_percentage = latest_data['total_death_attributed_sex_standarized']
         
         correlation = filtered_data['GNI_per_capita_wb_Atlas_USD_EUR'].corr(filtered_data['total_death_attributed_sex_standarized'])
         correlation_label = "Negative" if correlation < 0 else "Positive"
