@@ -36,7 +36,7 @@ def plot_data(filtered_data):
                   x='year', 
                   y='total_death_attributed_sex_standarized', 
                   color='ig_label',
-                  labels={'ig_label': 'Income Group'},
+                  labels={'total_death_attributed_sex_standarized': 'Percentage of Deaths', 'ig_label': 'Income Group'},
                   title='Time Series of Deaths Attributed to Air Pollution by Income Group')
 
     # Improve layout for better readability
@@ -44,17 +44,8 @@ def plot_data(filtered_data):
         xaxis_title='Year',
         yaxis_title='Percentage of Deaths',
         yaxis_tickformat='.2%',  # Display y-axis values as percentages with 2 decimal places
-        legend_title='Income Group',
-        # Update legend to use full names
-        legend=dict(
-            title='Income Group',
-            traceorder='normal',
-            font=dict(
-                family='sans-serif',
-                size=12,
-                color='black'
-            ),
-        )
+        showlegend=True,
+        legend_title_text='Income Group'
     )
 
     # Show the figure
@@ -65,30 +56,22 @@ def plot_data(filtered_data):
 def display_statistics(filtered_data):
     
     if not filtered_data.empty:
-        # Displaying max and min values for more meaningful insights
         max_death_percentage = filtered_data['total_death_attributed_sex_standarized'].max()
-        #min_death_percentage = filtered_data['total_death_attributed_sex_standarized'].min()
-        
-        # Correlation calculation remains the same
         correlation = filtered_data['GNI_per_capita_wb_Atlas_USD_EUR'].corr(filtered_data['total_death_attributed_sex_standarized'])
-
-        # Using columns to display the statistics
+        correlation_label = "Negative" if correlation < 0 else "Positive"
+        # Determine the delta color based on the correlation sign
+        delta_color = "inverse" if correlation < 0 else "normal"
+        
         col1, col2 = st.columns(2)
-
         with col1:
             st.header("Key Fact")
             st.metric(label="Max Deaths Attributed to Air Pollution", value=f"{max_death_percentage:.2f}%")
-            #st.metric(label="Min Deaths Attributed to Air Pollution", value=f"{min_death_percentage:.2f}%")
-
         with col2:
             st.header("Correlation Analysis")
-            correlation = filtered_data['GNI_per_capita_wb_Atlas_USD_EUR'].corr(filtered_data['total_death_attributed_sex_standarized'])
-            correlation_label = "Good" if correlation < 0 else "Bad"
-            # Use colors to represent good (green) or bad (red)
-            correlation_color = "green" if correlation < 0 else "red"
-            st.metric(label="Income vs. Death Correlation", value=f"{correlation:.2f}", delta=correlation_label, delta_color=correlation_color)
+            st.metric(label="Income vs. Death Correlation", value=f"{correlation:.2f}", delta=correlation_label, delta_color=delta_color)
     else:
         st.error("Insufficient data to calculate statistics.")
+
 
 def main():
     # Load data
