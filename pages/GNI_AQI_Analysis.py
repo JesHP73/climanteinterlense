@@ -61,59 +61,69 @@ def plot_aqi_and_gni_over_time(filtered_data):
 
        # Define the color mapping for income groups with long names
     color_mapping = {
-        'LM': ('Low Income', 'darkblue'),
+        'LM': ('Low Income', 'orange'),
         'UM': ('Middle Income', 'grey'),
-        'H': ('High Income', 'green'),
+        'H': ('High Income', 'grey'),
     }
     
     # Create the subplots
     fig = make_subplots(specs=[[{"secondary_y": True}]])
     
-    # Add AQI Index trace
+    # Add AQI Index trace with its own legend group
     fig.add_trace(
         go.Scatter(x=aggregated_data['year'], y=aggregated_data['AQI_Index'], name='AQI Index',
-                   mode='lines+markers', line=dict(color='orange')),
+                   mode='lines+markers', line=dict(color='orange'), legendgroup='AQI'),
         secondary_y=False,
     )
     
-    # Add overall GNI per Capita trace
-    fig.add_trace(
-        go.Scatter(x=aggregated_data['year'], y=aggregated_data['GNI_per_capita'], name='GNI per Capita',
-                   mode='lines+markers', line=dict(color='blue')),
-        secondary_y=True,
-    )
+    # Add GNI per Capita traces for each income group with their own legend group
+    legend_groups = {'LM': 'Low Income', 'UM': 'Middle Income', 'H': 'High Income'}
+    colors = {'LM': 'orange', 'UM': 'grey', 'H': 'grey'}
     
-    # Add GNI per Capita traces for each income group
-    for ig_label, (long_name, color) in color_mapping.items():
+    for ig_label, name in legend_groups.items():
         # Filter the data for the current income group
         income_group_data = aggregated_data[aggregated_data['ig_label'] == ig_label]
         fig.add_trace(
             go.Scatter(x=income_group_data['year'], y=income_group_data['GNI_per_capita'],
-                       name=long_name, mode='lines+markers', line=dict(color=color)),
+                       name=name, mode='lines+markers', line=dict(color=colors[ig_label]),
+                       legendgroup='GNI'),
             secondary_y=True,
         )
-
+    
     # Set x-axis title
     fig.update_xaxes(title_text="Year")
-
+    
     # Set y-axes titles
-    fig.update_yaxes(title_text="Air Quality Index", secondary_y=False)
+    fig.update_yaxes(title_text="AQI Index", secondary_y=False)
     fig.update_yaxes(title_text="GNI per Capita (EUR)", secondary_y=True)
-
-    # Set figure title and legend
+    
+    # Set figure title
     fig.update_layout(
-        title_text="AQI Index and Worl Bank GNI per Capita over Time",
+        title_text="AQI Index and World Bank GNI per Capita over Time",
         legend_title_text='Metric',
         legend=dict(
-            x=1.05,  # This places the legend to the right of the plot
-            y=1,
-            xanchor='left',  # This anchors the legend at the left side at x position
+            orientation="h",
+            yanchor="bottom",
+            y=1.02,
+            xanchor="right",
+            x=1
             bgcolor='rgba(255,255,255,0.5)'  #This makes the legend slightly transparent
         )
     )
-
+    
+    # Set the position of the legend for AQI Index
+    fig['data'][0]['showlegend'] = True
+    fig['data'][0]['legendgroup'] = 'AQI'
+    
+    # Set the position of the legends for GNI per Capita income groups
+    
+    for i, ig_label in enumerate(legend_groups, start=1):
+        fig['data'][i]['showlegend'] = True
+        fig['data'][i]['legendgroup'] = 'GNI'
+    
     # Show the plot
     st.plotly_chart(fig)
+
 
 # Call the function to plot data
 if not filtered_data.empty:
