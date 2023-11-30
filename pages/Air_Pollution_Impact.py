@@ -21,12 +21,22 @@ def load_data():
 
 def plot_data(filtered_data):
     
-    # Plot the line chart directly without further aggregation
+    # Mapping from short labels to full names for income groups
+    income_label_mapping = {
+        'LM': 'Low Income',
+        'UM': 'Upper Middle Income',
+        'H': 'High Income'
+    }
+
+    # Replace short labels with full names in the dataframe
+    filtered_data['ig_label'] = filtered_data['ig_label'].map(income_label_mapping)
+
+    # Plot the line chart
     fig = px.line(filtered_data, 
                   x='year', 
                   y='total_death_attributed_sex_standarized', 
                   color='ig_label',
-                  labels={'total_death_attributed_sex_standarized': '% of Deaths Attributed to Air Pollution'},
+                  labels={'ig_label': 'Income Group'},
                   title='Time Series of Deaths Attributed to Air Pollution by Income Group')
 
     # Improve layout for better readability
@@ -34,11 +44,22 @@ def plot_data(filtered_data):
         xaxis_title='Year',
         yaxis_title='Percentage of Deaths',
         yaxis_tickformat='.2%',  # Display y-axis values as percentages with 2 decimal places
-        legend_title='Income Group'
+        legend_title='Income Group',
+        # Update legend to use full names
+        legend=dict(
+            title='Income Group',
+            traceorder='normal',
+            font=dict(
+                family='sans-serif',
+                size=12,
+                color='black'
+            ),
+        )
     )
 
     # Show the figure
     st.plotly_chart(fig)
+
 
    
   
@@ -63,8 +84,11 @@ def display_statistics(filtered_data):
 
         with col2:
             st.header("Correlation Analysis")
-            correlation_label = "Positive" if correlation > 0 else "Negative" if correlation < 0 else "No Correlation"
-            st.metric(label="Income vs. Death Correlation", value=f"{correlation:.2f}", delta=correlation_label)
+            correlation = filtered_data['GNI_per_capita_wb_Atlas_USD_EUR'].corr(filtered_data['total_death_attributed_sex_standarized'])
+            correlation_label = "Good" if correlation < 0 else "Bad"
+            # Use colors to represent good (green) or bad (red)
+            correlation_color = "green" if correlation < 0 else "red"
+            st.metric(label="Income vs. Death Correlation", value=f"{correlation:.2f}", delta=correlation_label, delta_color=correlation_color)
     else:
         st.error("Insufficient data to calculate statistics.")
 
@@ -98,7 +122,7 @@ def main():
         conditions.append(df['country'].isin(selected_country))
 
     # Filter the DataFrame to include only the specified income groups
-    income_groups = ['LM', 'UM', 'H']  # Corrected income_groups to be a list
+    income_groups = ['Low Income', 'Upper Middle Income', 'High Income']  # Corrected income_groups to be a list
     conditions.append(df['ig_label'].isin(income_groups))
 
     # Apply all filters at once
