@@ -22,7 +22,7 @@ def get_standard(pollutant, standard_type):
     return WHO_STANDARDS.get(pollutant, {}).get(standard_type, None)
 
 # Function to load data
-@st.cache  # 👈 Add the caching decorator
+@st.cache_data  # 👈 Add the caching decorator
 def load_data():
      try:
         URL = 'https://raw.githubusercontent.com/JesHP73/climanteinterlense/main/dataset/socio_economical_agg_dataset.csv'
