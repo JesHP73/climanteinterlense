@@ -61,7 +61,7 @@ def plot_aqi_and_gni_over_time(filtered_data):
     # Drop rows where 'year' or 'AQI_Index' is NaN
     filtered_data = filtered_data.dropna(subset=['year', 'AQI_Index'])
 
-    if data.empty:
+    if filtered_data.empty:
         st.error('No data available for plotting after cleaning.')
         return
         
