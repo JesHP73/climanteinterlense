@@ -64,45 +64,30 @@ def plot_aqi_and_gni_over_time(filtered_data):
     if filtered_data.empty:
         st.error('No data available for plotting after cleaning.')
         return
-        
-    ax1.set_xlabel('Year')
-    ax1.set_ylabel('AQI Index', color='r')
-    ax1.set_title("AQI Index and GNI per Capita Over Time")
 
-    if 'GNI_per_capita' in data.columns:
-        try:
-            gni_per_capita = filtered_data['GNI_per_capita'].to_numpy()
-            ax2 = ax1.twinx()
-            ax2.plot(years, gni_per_capita, 'b-', label='GNI per Capita')
-            ax2.set_ylabel('GNI per Capita (Eur)', color='b')
-        except Exception as e:
-            st.error(f'Error plotting GNI per Capita: {e}')
-            return
+    if 'GNI_per_capita' in filtered_data.columns:
+        # Plot with Plotly
+        fig = px.line(filtered_data, x='year', y='AQI_Index', title='AQI Index over Time', markers=True)
+        
+        # Create a secondary y-axis for GNI per capita
+        fig.add_scatter(x=filtered_data['year'], y=filtered_data['GNI_per_capita'], mode='lines+markers', name='GNI per Capita', yaxis='y2')
+        
+        # Update layout to add a secondary y-axis
+        fig.update_layout(
+            yaxis2=dict(
+                title='GNI per Capita',
+                overlaying='y',
+                side='right'
+            ),
+            yaxis=dict(
+                title='AQI Index'
+            )
+        )
+        # Show the plot
+        st.plotly(fig)
     else:
         st.warning("GNI_per_capita data not available for plotting.")
 
-    ax1.legend(loc='upper left')
-    ax2.legend(loc='upper right')
-    
-    # Plot with Plotly
-    fig = px.line(filtered_data, x='year', y='AQI_Index', title='AQI Index over Time', markers=True)
-    
-    # Create a secondary y-axis for GNI per capita
-    fig.add_scatter(x=filtered_data['year'], y=filtered_data['GNI_per_capita'], mode='lines+markers', name='GNI per Capita', yaxis='y2')
-    
-    # Update layout to add a secondary y-axis
-    fig.update_layout(
-        yaxis2=dict(
-            title='GNI per Capita',
-            overlaying='y',
-            side='right'
-        ),
-        yaxis=dict(
-            title='AQI Index'
-        )
-    )
-    # Show the plot
-    st.plotly(fig)
 
 # Call the function to plot data
 if not filtered_data.empty:
