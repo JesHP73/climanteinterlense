@@ -24,8 +24,6 @@ df_original = load_data()
 # Create a copy of the DataFrame for manipulation
 df = df_original.copy()
 
-import numpy as np
-
 def show_gni_aqi_analysis(df):
     if df.empty:
         st.error("No data available to display.")
