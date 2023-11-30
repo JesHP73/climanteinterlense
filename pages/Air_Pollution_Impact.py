@@ -35,15 +35,33 @@ def main():
     st.sidebar.header('Filters')
 
     # Multiselect for Region and Country
-    regions = df['region'].unique()
-    selected_regions = st.sidebar.multiselect('Select Region', regions, default=regions)
+    # Filters
+    region_options = ['All'] + sorted(df['region'].unique().tolist())
+    country_options = ['All'] + sorted(df['country'].unique().tolist())
+    
+    selected_region = st.sidebar.multiselect('Select Region', options=region_options, default=['All'])
+    selected_country = st.sidebar.multiselect('Select Country', options=country_options, default=['All'])
 
-    countries = df[df['region'].isin(selected_regions)]['country'].unique()
-    selected_countries = st.sidebar.multiselect('Select Country', countries, default=countries)
+    # Efficient combined filtering
+    conditions = []
+    if 'All' not in selected_region:
+        conditions.append(df['region'].isin(selected_region))
+    if 'All' not in selected_country:
+        conditions.append(df['country'].isin(selected_country))
+    if conditions:
+        filtered_data = df[np.logical_and.reduce(conditions)]
+    else:
+        filtered_data = df
 
-    # Filter the DataFrame based on selections
-    filtered_df = df[df['region'].isin(selected_regions) & df['country'].isin(selected_countries)]
-
+    if filtered_data.empty:
+        st.error("No data available for the selected criteria.")
+        return
+    
+    # Additional explanations about AQGs and RLs
+    st.markdown("### Understanding the Numbers")
+                
+    st.info("The guidelines and reference levels from WHO are designed to keep air quality at a level that's safe for public health. When pollution levels go above these numbers, it can lead to health concerns for the population, especially vulnerable groups like children and the elderly.")
+  
     # Plotting
     plot_data(filtered_df)
 
@@ -56,7 +74,7 @@ if __name__ == "__main__":
 def plot_data(filtered_df):
     fig = px.line(filtered_df, x='year', y='total_death_attributed_sex_standarized',
                   color='ig_label', title='Line Chart')
-    st.plotly_chart(fig)
+    st.plotly_chart(fig)  
 
 def display_statistics(filtered_df):
     # Calculate the average percentage of deaths and the correlation
