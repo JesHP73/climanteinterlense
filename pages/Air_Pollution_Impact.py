@@ -100,7 +100,7 @@ def plot_emissions(df, selected_region, selected_country, selected_pollutant):
         st.plotly_chart(fig, use_container_width=True)
     
     except Exception as e:
-    st.error(f"An error occurred while plotting: {e}")
+        st.error(f"An error occurred while plotting: {e}")
 
     
 def main():
