@@ -74,9 +74,9 @@ def plot_emissions(df, selected_region, selected_country, selected_pollutant):
                     group_labels.append(pollutant)
 
             # Check if we have any data to plot
-         if not hist_data:
-             st.error('No data available for the selected pollutants after filtering.')
-             return
+        if not hist_data:
+            st.error('No data available for the selected pollutants after filtering.')
+            return
 
         # Create distribution plot
         fig = ff.create_distplot(hist_data, group_labels, show_hist=False, show_rug=False)
