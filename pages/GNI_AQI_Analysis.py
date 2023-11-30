@@ -46,22 +46,6 @@ if conditions:
 else:
     filtered_data = df.copy()
 
-# Function for plotting AQI Index vs GNI per Capita
-def plot_aqi_vs_gni(data):
-    fig, ax = plt.subplots()
-    scatter = ax.scatter(data['GNI_per_capita'], data['AQI_Index'], c=data['year'], cmap='viridis')
-    legend1 = ax.legend(*scatter.legend_elements(), title="Years")
-    ax.add_artist(legend1)
-    ax.set_xlabel('GNI per Capita')
-    ax.set_ylabel('AQI Index')
-    ax.set_title('World Bank GNI per Capita vs AQI Index')
-    return fig
-    
-# Assuming load_data() is defined elsewhere
-df_original = load_data()
-
-# Create a copy of the DataFrame for manipulation
-df = df_original.copy()
 
 # Function for plotting AQI Index vs GNI per Capita
 def plot_aqi_and_gni_over_time(data):
