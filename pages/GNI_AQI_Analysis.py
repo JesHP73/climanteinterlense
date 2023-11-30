@@ -30,28 +30,27 @@ def load_data():
         return pd.DataFrame()  # Return an empty DataFrame in case of error
 
 # Assuming load_data() is defined elsewhere
-df_original = load_data()
+df = load_data()
 
 # Create a copy of the DataFrame for manipulation
-df = df_original.copy()
+df_original = df.copy()
 
 # Sidebar - User input areas
 st.sidebar.header("Filters")
-selected_region = st.sidebar.selectbox('Select Region', ['All'] + sorted(df['region'].unique()))
-selected_country = st.sidebar.selectbox('Select Country', ['All'] + sorted(df['country'].unique()))
-selected_pollutants = st.sidebar.multiselect('Select Pollutant', ['All'] + sorted(df['air_pollutant'].unique()))
-
+selected_region = st.sidebar.selectbox('Select Region', ['All'] + sorted(df_original['region'].unique()))
+selected_country = st.sidebar.selectbox('Select Country', ['All'] + sorted(df_original['country'].unique()))
+selected_pollutants = st.sidebar.multiselect('Select Pollutant', ['All'] + sorted(df_original['air_pollutant'].unique()))
 
 # Filtering the data based on user selections
-filtered_data = df.copy()
+filtered_data = df_original.copy()
 if selected_region != 'All':
     filtered_data = filtered_data[filtered_data['region'] == selected_region]
 if selected_country != 'All':
     filtered_data = filtered_data[filtered_data['country'] == selected_country]
-if selected_pollutants != ['All']:
+if 'All' not in selected_pollutants:
     filtered_data = filtered_data[filtered_data['air_pollutant'].isin(selected_pollutants)]
 
-
+# Function for plotting AQI Index and GNI per Capita over time
 def plot_aqi_and_gni_over_time(data):
     if data.empty:
         st.error('No data available for plotting.')
@@ -67,19 +66,7 @@ def plot_aqi_and_gni_over_time(data):
     if data.empty:
         st.error('No data available for plotting after cleaning.')
         return
-
-    fig, ax1 = plt.subplots(figsize=(10, 6))
-
-    # Convert DataFrame columns to NumPy arrays
-    years = data['year'].to_numpy()
-    aqi_index = data['AQI_Index'].to_numpy()
-
-    try:
-        ax1.plot(years, aqi_index, 'r-', label='AQI Index')
-    except Exception as e:
-        st.error(f'Error plotting AQI Index: {e}')
-        return
-
+        
     ax1.set_xlabel('Year')
     ax1.set_ylabel('AQI Index', color='r')
     ax1.set_title("AQI Index and GNI per Capita Over Time")
@@ -98,9 +85,32 @@ def plot_aqi_and_gni_over_time(data):
 
     ax1.legend(loc='upper left')
     ax2.legend(loc='upper right')
+    
+    # Plot with Plotly
+    fig = px.line(data, x='year', y='AQI_Index', title='AQI Index over Time', markers=True)
+    
+    # Create a secondary y-axis for GNI per capita
+    fig.add_scatter(x=data['year'], y=data['GNI_per_capita'], mode='lines+markers', name='GNI per Capita', yaxis='y2')
+    
+    # Update layout to add a secondary y-axis
+    fig.update_layout(
+        yaxis2=dict(
+            title='GNI per Capita',
+            overlaying='y',
+            side='right'
+        ),
+        yaxis=dict(
+            title='AQI Index'
+        )
+    )
+    # Show the plot
+    st.plotly(fig)
 
-    fig.tight_layout()
-    st.pyplot(fig)
+# Call the function to plot data
+if not filtered_data.empty:
+    plot_aqi_and_gni_over_time(filtered_data)
+else:
+    st.error("No data available for the selected filters.")
 
 
 # Function for plotting individual pollutants with emissions levels and units
@@ -135,8 +145,6 @@ def plot_individual_pollutant_with_levels(data, pollutant, unit_column, level_co
 
     # Pass the figure object to st.pyplot()
     st.pyplot(fig)
-
-
 
 
 # Visualization Header
