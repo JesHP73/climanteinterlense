@@ -43,7 +43,7 @@ def plot_data(filtered_data):
     color_discrete_map = {
         'Low Income': 'blue',
         'High Income': 'green',
-        'Upper Middle Income': 'red' # Changed for visibility
+        'Upper Middle Income': 'grey'
     }
 
     # Plot the line chart using the aggregated data
