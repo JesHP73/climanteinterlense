@@ -43,31 +43,33 @@ def display_geographical_focus(regions, countries):
         return ', '.join(countries)
 
 
-def plot_emissions(df, selected_pollutants):
+def plot_emissions(df, selected_region, selected_country, selected_pollutant):
     # Data Validation: Check if dataframe is empty
     if df.empty:
         st.error('No data available for the selected filters')
         return
+    
+    # Set up the figure
+    fig = go.Figure()
 
-    try:
-        # Determine if 'All' pollutants are selected
-        all_pollutants_selected = 'All' in selected_pollutants
+    # Determine ranges for pollutant levels (x-axis) based on the data
+    min_level = df['avg_air_pollutant_level'].min()
+    max_level = df['avg_air_pollutant_level'].max()
+    pollutant_levels = np.linspace(min_level, max_level, num=100)  # Adjust 'num' for more or fewer points
 
-        if all_pollutants_selected:
-            # Calculate the overall average AQI Index
-            overall_avg_aqi = df['avg_AQI_Index'].mean()
+    # Filter data based on selections
+    if selected_region == 'All' and selected_country == 'All' and selected_pollutant == 'All':
+        # Plot the average of the WHO guidelines and all regions and countries average across time
+        for pollutant, standards in WHO_STANDARDS.items():
+            fig.add_hline(y=standards['AQG'], line_dash="dash", line_color="green", annotation_text=f"{pollutant} AQG")
+            fig.add_hline(y=standards['RL'], line_dash="dash", line_color="green", annotation_text=f"{pollutant} RL")
 
-            # Create a bar chart with the average AQI
-            fig = px.bar(x=['Average AQI'], y=[overall_avg_aqi], labels={'x':'', 'y':'AQI Index'})
-            fig.update_layout(
-                title='Overall Average AQI Index',
-                xaxis_title='',
-                yaxis_title='Average AQI Index'
-            )
-
-            # Add a line for the overall WHO AQG level
-            overall_aqg = np.mean([value['AQG'] for key, value in WHO_STANDARDS.items()])
-            fig.add_hline(y=overall_aqg, line_dash="dash", line_color="green", annotation_text="Overall WHO AQG")
+        # 'avg_AQI_Index' is the column with the average AQI index
+        df['decade'] = pd.to_datetime(df['decade'], format='%Y').dt.year  # Convert to datetime for easier handling
+        avg_pollution_by_decade = df.groupby(df['decade'].mean().reset_index()
+        fig.add_trace(go.Scatter(x=pollutant_levels, y=avg_pollution_by_decade['decade'],
+                                 mode='lines', name='Average Pollution Level'))
+    
         
         else:
             # Initialize list for histogram data and group labels
@@ -101,8 +103,8 @@ def plot_emissions(df, selected_pollutants):
             # Update layout for a cleaner look
             fig.update_layout(
                 xaxis_title='Pollutant Level (μg/m3)',
-                yaxis_title='Density',
-                title='Distribution of Air Pollutant Levels'
+                yaxis_title='Decades',
+                title='Distribution of Air Pollutant Levels and WHO Limit Standars'
             )
 
         # Display the plot in Streamlit
@@ -110,8 +112,6 @@ def plot_emissions(df, selected_pollutants):
 
     except Exception as e:
         st.error(f"An error occurred while plotting: {e}")
-
-
 
     
 def main():
@@ -186,7 +186,7 @@ def main():
 
 
     # Call the plotting function and show the plot
-    plot_emissions(df, selected_pollutants)
+    plot_emissions(df, selected_region, selected_country, selected_pollutant):
         
     st.info("The guidelines and reference levels from WHO are designed to keep air quality at a level that's safe for public health. When pollution levels go above these numbers, it can lead to health concerns for the population, especially vulnerable groups like children and the elderly.")
 
