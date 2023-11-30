@@ -78,6 +78,8 @@ def plot_emissions(df, selected_region, selected_country, selected_pollutant): #
             st.error('No data available for the selected pollutants after filtering.')
             return
 
+        pass
+
         # Create distribution plot
         fig = ff.create_distplot(hist_data, group_labels, show_hist=False, show_rug=False)
 
@@ -88,13 +90,13 @@ def plot_emissions(df, selected_region, selected_country, selected_pollutant): #
                 rl = WHO_STANDARDS[pollutant]['RL']
                 fig.add_vline(x=aqg, line_dash="dash", line_color="green", annotation_text=f"{pollutant} AQG")
                 fig.add_vline(x=rl, line_dash="dash", line_color="red", annotation_text=f"{pollutant} RL")
-
-    # Update layout for a cleaner look
-    fig.update_layout(
-        xaxis_title='Pollutant Level (μg/m3)',
-        yaxis_title='Decades',
-        title='Distribution of Air Pollutant Levels and WHO Limit Standards'
-    )
+    
+        # Update layout for a cleaner look
+        fig.update_layout(
+            xaxis_title='Pollutant Level (μg/m3)',
+            yaxis_title='Decades',
+            title='Distribution of Air Pollutant Levels and WHO Limit Standards'
+        )
 
     # Display the plot in Streamlit
     st.plotly_chart(fig, use_container_width=True)
