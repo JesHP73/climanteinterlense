@@ -20,21 +20,23 @@ def load_data():
         return pd.DataFrame()  # Return an empty DataFrame in case of error
 
 def plot_data(filtered_data):
-    
-    # Mapping from short labels to full names for income groups
+    # First, aggregate the data to get one value per year per income group
+    # Ensure that 'ig_label' column in 'filtered_data' contains the short income group labels
+    aggregated_data = filtered_data.groupby(['year', 'ig_label'])['total_death_attributed_sex_standarized'].mean().reset_index()
+
+    # Now perform the mapping from short labels to full names for income groups
     income_label_mapping = {
         'LM': 'Low Income',
         'UM': 'Upper Middle Income',
         'H': 'High Income'
     }
+    # Apply the mapping
+    aggregated_data['ig_label'] = aggregated_data['ig_label'].map(income_label_mapping)
 
-    # Replace short labels with full names in the dataframe
-    filtered_data['ig_label'] = filtered_data['ig_label'].map(income_label_mapping)
-
-    # Plot the line chart
-    fig = px.line(filtered_data, 
-                  x='year', 
-                  y='total_death_attributed_sex_standarized', 
+    # Plot the line chart using the aggregated data
+    fig = px.line(aggregated_data,
+                  x='year',
+                  y='total_death_attributed_sex_standarized',
                   color='ig_label',
                   labels={'total_death_attributed_sex_standarized': 'Percentage of Deaths', 'ig_label': 'Income Group'},
                   title='Time Series of Deaths Attributed to Air Pollution by Income Group')
