@@ -63,6 +63,13 @@ def plot_emissions(df, selected_pollutants):
                 if not pollutant_data.empty:
                     hist_data.append(pollutant_data)
                     group_labels.append(pollutant)
+        else:
+            # Include only selected pollutants in the plot
+            for pollutant in selected_pollutants:
+                pollutant_data = df[df['air_pollutant'] == pollutant]['avg_air_pollutant_level'].dropna()
+                if not pollutant_data.empty:
+                    hist_data.append(pollutant_data)
+                    group_labels.append(pollutant)
 
         # Check if we have any data to plot
         if not hist_data:
