@@ -61,13 +61,11 @@ def plot_aqi_and_gni_over_time(filtered_data):
 
     # Plot with Plotly
     fig = make_subplots(specs=[[{"secondary_y": True}]])
-
-    # Add AQI Index trace
-
-   fig.add_trace(
-       go.Scatter(x=aggregated_data['year'], y=aggregated_data['AQI_Index'], name='AQI Index',
-                  mode='lines+markers', line=dict(color='orange')),
-       secondary_y=False,
+    
+    fig.add_trace(
+        go.Scatter(x=aggregated_data['year'], y=aggregated_data['AQI_Index'], name='AQI Index',
+                   mode='lines+markers', line=dict(color='orange')),
+        secondary_y=False,
     )
 
     # Add GNI per Capita trace
