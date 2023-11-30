@@ -84,29 +84,35 @@ def plot_emissions(df, selected_pollutants):
 
 # Function for plotting AQI Index and GNI per Capita over time as lines
 def plot_aqi_and_gni_over_time(data):
-    # Debugging: print out the data types and lengths of the series being plotted
-    print("Year data type:", data['year'].dtype, "Length:", len(data['year']))
-    print("AQI Index data type:", data['AQI_Index'].dtype, "Length:", len(data['AQI_Index']))
-    print("GNI per Capita data type:", data['GNI_per_capita'].dtype, "Length:", len(data['GNI_per_capita']))
-    
-    # Ensure data is sorted by year
-    data = data.sort_values('year')
-    
+    # Check if data is empty
+    if data.empty:
+        st.error('No data available for plotting.')
+        return
+
+    # Convert 'year' to numeric if it's not already
+    if not pd.api.types.is_numeric_dtype(data['year']):
+        data['year'] = pd.to_numeric(data['year'], errors='coerce')
+
+    # Drop rows where 'year' or 'AQI_Index' is NaN
+    data = data.dropna(subset=['year', 'AQI_Index'])
+
     fig, ax1 = plt.subplots()
 
-    # Plot AQI_Index
     ax1.plot(data['year'], data['AQI_Index'], 'r-')
     ax1.set_xlabel('Year')
     ax1.set_ylabel('AQI Index', color='r')
     
-    # Create a second y-axis for GNI per capita
-    ax2 = ax1.twinx()
-    ax2.plot(data['year'], data['GNI_per_capita'], 'b-')
-    ax2.set_ylabel('GNI per Capita', color='b')
+    # Ensure GNI_per_capita is available for plotting
+    if 'GNI_per_capita' in data.columns:
+        ax2 = ax1.twinx()
+        ax2.plot(data['year'], data['GNI_per_capita'], 'b-')
+        ax2.set_ylabel('GNI per Capita', color='b')
+    else:
+        st.warning("GNI_per_capita data not available for plotting.")
 
-    # Make the layout tight to handle the second y-axis
     fig.tight_layout()
     return fig
+
 
 
 # Function for plotting individual pollutants with emissions levels and units
@@ -126,22 +132,27 @@ st.header("GNI per Capita and AQI Index Analysis Over Time")
 if not filtered_data.empty:
     # Determine the correct plot based on the user's selection of pollutants
     if 'All' in selected_pollutants or len(selected_pollutants) > 1:
-        st.pyplot(plot_aqi_and_gni_over_time(filtered_data))
+        fig = plot_aqi_and_gni_over_time(filtered_data)
+        if fig:  # Check if the figure was successfully created
+            st.pyplot(fig)
     else:
         for pollutant in selected_pollutants:
             st.subheader(f"Analysis for {pollutant}")
             pollutant_data = filtered_data[filtered_data['air_pollutant'] == pollutant]
-            # Assume 'unit_air_poll_lvl' and 'air_pollutant_level' are the columns with units and levels
+            # Check if there is data for the selected pollutant
             if not pollutant_data.empty:
-                st.pyplot(plot_individual_pollutant_with_levels(pollutant_data, pollutant, 'unit_air_poll_lvl', 'air_pollutant_level'))
+                fig = plot_individual_pollutant_with_levels(pollutant_data, pollutant, 'unit_air_poll_lvl', 'air_pollutant_level')
+                st.pyplot(fig)
             else:
                 st.error(f'No data available for pollutant: {pollutant}')
 
         # Call the plotting function for individual pollutants if selected
         fig = plot_emissions(filtered_data, selected_pollutants)
-        st.pyplot(fig)
+        if fig:  # Check if the figure was successfully created
+            st.pyplot(fig)
 else:
     st.error('Filtered data is empty. Please adjust the filters.')
+
 
         
 st.info("The guidelines and reference levels from WHO are designed to keep air quality at a level that's safe for public health. When pollution levels go above these numbers, it can lead to health concerns for the population, especially vulnerable groups like children and the elderly.")
