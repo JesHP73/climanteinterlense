@@ -56,22 +56,30 @@ filtered_data.sort_values(by='year', inplace=True)
 
 # Function for plotting AQI Index and GNI per Capita over time as lines
 def plot_aqi_and_gni_over_time(data):
+    # Debugging: print out the data types and lengths of the series being plotted
+    print("Year data type:", data['year'].dtype, "Length:", len(data['year']))
+    print("AQI Index data type:", data['AQI_Index'].dtype, "Length:", len(data['AQI_Index']))
+    print("GNI per Capita data type:", data['GNI_per_capita'].dtype, "Length:", len(data['GNI_per_capita']))
+    
+    # Ensure data is sorted by year
+    data = data.sort_values('year')
+    
     fig, ax1 = plt.subplots()
 
-    color = 'tab:red'
+    # Plot AQI_Index
+    ax1.plot(data['year'], data['AQI_Index'], 'r-')
     ax1.set_xlabel('Year')
-    ax1.set_ylabel('AQI Index', color=color)
-    ax1.plot(data['year'], data['AQI_Index'], color=color)
-    ax1.tick_params(axis='y', labelcolor=color)
+    ax1.set_ylabel('AQI Index', color='r')
+    
+    # Create a second y-axis for GNI per capita
+    ax2 = ax1.twinx()
+    ax2.plot(data['year'], data['GNI_per_capita'], 'b-')
+    ax2.set_ylabel('GNI per Capita', color='b')
 
-    ax2 = ax1.twinx()  # instantiate a second axes that shares the same x-axis
-    color = 'tab:blue'
-    ax2.set_ylabel('GNI per Capita', color=color)  # we already handled the x-label with ax1
-    ax2.plot(data['year'], data['GNI_per_capita'], color=color)
-    ax2.tick_params(axis='y', labelcolor=color)
-
-    fig.tight_layout()  # otherwise the right y-label is slightly clipped
+    # Make the layout tight to handle the second y-axis
+    fig.tight_layout()
     return fig
+
 
 # Function for plotting individual pollutants with emissions levels and units
 def plot_individual_pollutant_with_levels(data, pollutant, unit_column, level_column):
