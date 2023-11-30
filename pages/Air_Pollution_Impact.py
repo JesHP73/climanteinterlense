@@ -85,12 +85,12 @@ def display_statistics(filtered_data):
 
         col1, col2 = st.columns(2)
         with col1:
-            st.header("Rate Per 100 Thousand Total Population")
+            st.header("Rate Per 100 Thousand")
             st.metric(label=f"Avg Deaths in {latest_year}", value=f"{latest_avg_death_percentage:.2f}%")
         with col2:
             st.header("Equivalent to")
             if people_affected is not None:
-                st.metric(label="Number of People", value=f"{people_affected:.2f}", delta="Delta Value")
+                st.metric(label="Number of People", value=f"{people_affected:.2f}")
             else:
                 st.write("People affected data is not available.")
     else:
@@ -137,11 +137,13 @@ def main():
 
     # Additional explanations about AQGs and RLs
     st.markdown("### Understanding What You See")
-    st.info("The IHME, Global Burden of Disease Dataset studied, provides the Death by Risk factors since 1990 until 2019; I have filtered these risk factors by the following causes: High temperature, Low temperature, Ambient particulate matter pollution, Household air pollution from solid fuels across Europe.")
+    
     st.caption('Here the term **contributes**, meaning it was one of the attributed risk factors for a given disease or cause of death. There can be multiple risk factors for a given disease which corroborate or amplify one another when both are present. This means that in some cases, air pollution was not the only risk factor but one of several.')
     
     # Plotting
     plot_data(filtered_data)
+
+    st.info("The IHME, Global Burden of Disease Dataset studied, provides the Death by Risk factors since 1990 until 2019; I have filtered these risk factors by the following causes: High temperature, Low temperature, Ambient particulate matter pollution, Household air pollution from solid fuels across Europe.")
     
     # Display statistics
     display_statistics(filtered_data)
