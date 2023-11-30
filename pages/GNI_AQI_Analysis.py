@@ -40,7 +40,7 @@ st.sidebar.header("Filters")
 selected_region = st.sidebar.selectbox('Select Region', ['All'] + sorted(df['region'].unique()))
 selected_country = st.sidebar.selectbox('Select Country', ['All'] + sorted(df['country'].unique()))
 selected_pollutants = st.sidebar.multiselect('Select Pollutant', ['All'] + sorted(df['air_pollutant'].unique()))
-selected_year = st.sidebar.selectbox('Select Year', ['All'] + sorted(df['year'].unique().astype(str)))
+
 
 # Filtering the data based on user selections
 filtered_data = df.copy()
@@ -50,41 +50,9 @@ if selected_country != 'All':
     filtered_data = filtered_data[filtered_data['country'] == selected_country]
 if selected_pollutants != ['All']:
     filtered_data = filtered_data[filtered_data['air_pollutant'].isin(selected_pollutants)]
-if selected_year != 'All':
-    filtered_data = filtered_data[filtered_data['year'] == int(selected_year)]
-
-def plot_emissions(df, selected_pollutants):
-    if df.empty:
-        st.error('No data available for the selected filters.')
-        return
-    
-    fig, ax = plt.subplots()
-
-    # Verify that the 'air_pollutant_level' column exists
-    if 'air_pollutant_level' not in df.columns:
-        st.error("Column 'air_pollutant_level' does not exist in the dataset.")
-        return
-    
-    # Check each pollutant for plotting
-    for pollutant in WHO_STANDARDS.keys():
-        pollutant_df = df[df['air_pollutant'] == pollutant]
-        if not pollutant_df.empty:
-            sns.lineplot(x='year', y='air_pollutant_level', data=pollutant_df, ax=ax, label=pollutant)
-            ax.axhline(y=WHO_STANDARDS[pollutant]['AQG'], color='red', linestyle='--', label=f"{pollutant} WHO AQG")
-        else:
-            st.warning(f"No data available for pollutant: {pollutant}")
-    
-    ax.set_title('Pollutant Levels Over Time Compared to WHO Standards')
-    ax.set_xlabel('Year')
-    ax.set_ylabel('Pollutant Level')
-    ax.legend()
-    return fig
 
 
-
-# Function for plotting AQI Index and GNI per Capita over time as lines
 def plot_aqi_and_gni_over_time(data):
-    # Check if data is empty
     if data.empty:
         st.error('No data available for plotting.')
         return
@@ -96,33 +64,79 @@ def plot_aqi_and_gni_over_time(data):
     # Drop rows where 'year' or 'AQI_Index' is NaN
     data = data.dropna(subset=['year', 'AQI_Index'])
 
-    fig, ax1 = plt.subplots()
+    if data.empty:
+        st.error('No data available for plotting after cleaning.')
+        return
 
-    ax1.plot(data['year'], data['AQI_Index'], 'r-')
+    fig, ax1 = plt.subplots(figsize=(10, 6))
+
+    # Convert DataFrame columns to NumPy arrays
+    years = data['year'].to_numpy()
+    aqi_index = data['AQI_Index'].to_numpy()
+
+    try:
+        ax1.plot(years, aqi_index, 'r-', label='AQI Index')
+    except Exception as e:
+        st.error(f'Error plotting AQI Index: {e}')
+        return
+
     ax1.set_xlabel('Year')
     ax1.set_ylabel('AQI Index', color='r')
-    
-    # Ensure GNI_per_capita is available for plotting
+    ax1.set_title("AQI Index and GNI per Capita Over Time")
+
     if 'GNI_per_capita' in data.columns:
-        ax2 = ax1.twinx()
-        ax2.plot(data['year'], data['GNI_per_capita'], 'b-')
-        ax2.set_ylabel('GNI per Capita', color='b')
+        try:
+            gni_per_capita = data['GNI_per_capita'].to_numpy()
+            ax2 = ax1.twinx()
+            ax2.plot(years, gni_per_capita, 'b-', label='GNI per Capita')
+            ax2.set_ylabel('GNI per Capita ($)', color='b')
+        except Exception as e:
+            st.error(f'Error plotting GNI per Capita: {e}')
+            return
     else:
         st.warning("GNI_per_capita data not available for plotting.")
 
-    fig.tight_layout()
-    return fig
+    ax1.legend(loc='upper left')
+    ax2.legend(loc='upper right')
 
+    fig.tight_layout()
+    st.pyplot(fig)
 
 
 # Function for plotting individual pollutants with emissions levels and units
 def plot_individual_pollutant_with_levels(data, pollutant, unit_column, level_column):
+    # Check if columns exist
+    if unit_column not in data.columns or level_column not in data.columns:
+        st.error(f"Column names {unit_column} or {level_column} not found in data.")
+        return
+
+    # Drop missing values
+    data = data.dropna(subset=['year', level_column])
+
+    # Ensure data types are correct
+    data['year'] = pd.to_numeric(data['year'], errors='coerce')
+    data[level_column] = pd.to_numeric(data[level_column], errors='coerce')
+
+    # Check if data is empty after processing
+    if data.empty:
+        st.error("No data available for plotting after processing.")
+        return
+
     fig, ax = plt.subplots()
-    sns.lineplot(x='year', y=level_column, data=data, ax=ax, label=pollutant)
+    try:
+        sns.lineplot(x='year', y=level_column, data=data, ax=ax, label=pollutant)
+    except Exception as e:
+        st.error(f"Error plotting data: {e}")
+        return
+
     ax.set_ylabel(f"{pollutant} ({data[unit_column].iloc[0]})")
     ax.set_xlabel('Year')
     ax.set_title(f"Yearly Trend of {pollutant}")
-    return fig
+
+    # Pass the figure object to st.pyplot()
+    st.pyplot(fig)
+
+
 
 
 # Visualization Header
@@ -145,13 +159,6 @@ if not filtered_data.empty:
                 st.pyplot(fig)
             else:
                 st.error(f'No data available for pollutant: {pollutant}')
-
-        # Call the plotting function for individual pollutants if selected
-        fig = plot_emissions(filtered_data, selected_pollutants)
-        if fig:  # Check if the figure was successfully created
-            st.pyplot(fig)
-else:
-    st.error('Filtered data is empty. Please adjust the filters.')
 
 
         
