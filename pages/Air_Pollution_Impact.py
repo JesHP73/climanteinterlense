@@ -40,7 +40,7 @@ def plot_data(filtered_data):
     # Show the figure
     st.plotly_chart(fig)
 
-    st.plotly_chart(fig)
+   
   
 
 def display_statistics(filtered_data):
