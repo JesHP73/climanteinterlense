@@ -19,7 +19,27 @@ def load_data():
         st.error(f"Error loading data: {e}")
         return pd.DataFrame()  # Return an empty DataFrame in case of error
 
+def plot_data(filtered_data):
+    fig = px.line(filtered_data, x='year', y='total_death_attributed_sex_standarized',
+                  color='ig_label', title='Line Chart')
+    st.plotly_chart(fig)  
 
+def display_statistics(filtered_data):
+    # Calculate the average percentage of deaths and the correlation
+    avg_death_percentage = filtered_data['total_death_attributed_sex_standarized'].mean()
+    correlation = filtered_data['GNI_per_capita_wb_Atlas_USD_EUR'].corr(filtered_data['total_death_attributed_sex_standarized'])
+
+    # Using columns to display the statistics
+    col1, col2 = st.columns(2)
+
+    with col1:
+        st.header("Key Fact")
+        st.metric(label="Average Deaths Attributed to Air Pollution", value=f"{avg_death_percentage:.2f}%")
+
+    with col2:
+        st.header("Correlation Analysis")
+        correlation_label = "Positive" if correlation > 0 else "Negative"
+        st.metric(label="Income vs. Death Correlation", value=f"{correlation:.2f}", delta=correlation_label)
 
 def main():
      # Load data
@@ -72,27 +92,6 @@ def main():
 if __name__ == "__main__":
     main()
 
-def plot_data(filtered_data):
-    fig = px.line(filtered_data, x='year', y='total_death_attributed_sex_standarized',
-                  color='ig_label', title='Line Chart')
-    st.plotly_chart(fig)  
-
-def display_statistics(filtered_data):
-    # Calculate the average percentage of deaths and the correlation
-    avg_death_percentage = filtered_data['total_death_attributed_sex_standarized'].mean()
-    correlation = filtered_data['GNI_per_capita_wb_Atlas_USD_EUR'].corr(filtered_data['total_death_attributed_sex_standarized'])
-
-    # Using columns to display the statistics
-    col1, col2 = st.columns(2)
-
-    with col1:
-        st.header("Key Fact")
-        st.metric(label="Average Deaths Attributed to Air Pollution", value=f"{avg_death_percentage:.2f}%")
-
-    with col2:
-        st.header("Correlation Analysis")
-        correlation_label = "Positive" if correlation > 0 else "Negative"
-        st.metric(label="Income vs. Death Correlation", value=f"{correlation:.2f}", delta=correlation_label)
 
 
 
