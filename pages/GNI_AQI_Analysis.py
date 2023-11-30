@@ -52,35 +52,6 @@ if selected_pollutants != ['All']:
     filtered_data = filtered_data[filtered_data['air_pollutant'].isin(selected_pollutants)]
 
 
-def plot_emissions(df, selected_pollutants):
-    if df.empty:
-        st.error('No data available for the selected filters.')
-        return
-    
-    fig, ax = plt.subplots()
-
-    # Verify that the 'air_pollutant_level' column exists
-    if 'air_pollutant_level' not in df.columns:
-        st.error("Column 'air_pollutant_level' does not exist in the dataset.")
-        return
-    
-    # Check each pollutant for plotting
-    for pollutant in WHO_STANDARDS.keys():
-        pollutant_df = df[df['air_pollutant'] == pollutant]
-        if not pollutant_df.empty:
-            sns.lineplot(x='year', y='air_pollutant_level', data=pollutant_df, ax=ax, label=pollutant)
-            ax.axhline(y=WHO_STANDARDS[pollutant]['AQG'], color='red', linestyle='--', label=f"{pollutant} WHO AQG")
-        else:
-            st.warning(f"No data available for pollutant: {pollutant}")
-    
-    ax.set_title('Pollutant Levels Over Time Compared to WHO Standards')
-    ax.set_xlabel('Year')
-    ax.set_ylabel('Pollutant Level')
-    ax.legend()
-    return fig
-
-
-
 def plot_aqi_and_gni_over_time(data):
     # Check if data is empty
     if data.empty:
@@ -164,13 +135,6 @@ if not filtered_data.empty:
                 st.pyplot(fig)
             else:
                 st.error(f'No data available for pollutant: {pollutant}')
-
-        # Call the plotting function for individual pollutants if selected
-        fig = plot_emissions(filtered_data, selected_pollutants)
-        if fig:  # Check if the figure was successfully created
-            st.pyplot(fig)
-else:
-    st.error('Filtered data is empty. Please adjust the filters.')
 
 
         
