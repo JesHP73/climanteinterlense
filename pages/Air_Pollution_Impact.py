@@ -23,7 +23,7 @@ def load_data():
 def plot_data(filtered_data):
     
     # Calculate the percentage of deaths
-    filtered_data['death_percentage'] = (filtered_data['num_deaths'] / filtered_data['population']) * 100
+    filtered_data['death_percentage'] = (filtered_data['num_deaths'] / filtered_data['population'])
     
     # Group by 'year' and 'ig_label', then calculate the mean percentage
     aggregated_data = filtered_data.groupby(['year', 'ig_label'], as_index=False)['death_percentage'].mean()
