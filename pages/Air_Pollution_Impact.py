@@ -22,7 +22,7 @@ def get_standard(pollutant, standard_type):
     return WHO_STANDARDS.get(pollutant, {}).get(standard_type, None)
 
 # Function to load data
-@st.cache_data  # 👈 Add the caching decorator
+@st.cache  # 👈 Add the caching decorator
 def load_data():
      try:
         URL = 'https://raw.githubusercontent.com/JesHP73/climanteinterlense/main/dataset/socio_economical_agg_dataset.csv'
@@ -43,7 +43,7 @@ def display_geographical_focus(regions, countries):
     elif 'All' not in countries:
         return ', '.join(countries)
 
-def plot_emissions(df, selected_region, selected_country, selected_pollutant): # ⚠️
+def plot_emissions(df, selected_region, selected_country, selected_pollutants): # ⚠️
     try:
         if df.empty:
             st.error('No data available for the selected filters')
@@ -174,7 +174,7 @@ def main():
         
 
     # Call the plotting function and show the plot
-    plot_emissions(df, selected_region, selected_country, selected_pollutant) 
+    plot_emissions(df, selected_region, selected_country, selected_pollutants) 
         
     # Additional explanations about AQGs and RLs
     st.markdown("### Understanding the Numbers")
