@@ -48,7 +48,7 @@ def display_statistics(filtered_data):
     if not filtered_data.empty:
         # Displaying max and min values for more meaningful insights
         max_death_percentage = filtered_data['total_death_attributed_sex_standarized'].max()
-        min_death_percentage = filtered_data['total_death_attributed_sex_standarized'].min()
+        #min_death_percentage = filtered_data['total_death_attributed_sex_standarized'].min()
         
         # Correlation calculation remains the same
         correlation = filtered_data['GNI_per_capita_wb_Atlas_USD_EUR'].corr(filtered_data['total_death_attributed_sex_standarized'])
@@ -59,7 +59,7 @@ def display_statistics(filtered_data):
         with col1:
             st.header("Key Fact")
             st.metric(label="Max Deaths Attributed to Air Pollution", value=f"{max_death_percentage:.2f}%")
-            st.metric(label="Min Deaths Attributed to Air Pollution", value=f"{min_death_percentage:.2f}%")
+            #st.metric(label="Min Deaths Attributed to Air Pollution", value=f"{min_death_percentage:.2f}%")
 
         with col2:
             st.header("Correlation Analysis")
