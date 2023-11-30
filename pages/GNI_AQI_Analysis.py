@@ -107,7 +107,7 @@ def plot_aqi_and_gni_over_time(filtered_data):
             y=1.02,
             xanchor="right",
             x=1
-            bgcolor='rgba(255,255,255,0.5)'  #This makes the legend slightly transparent
+            
         )
     )
     
