@@ -55,7 +55,7 @@ def plot_aqi_and_gni_over_time(filtered_data):
         return
 
     # Convert 'year' to numeric
-    if not pd.api.types.is_numeric_dtype(data['year']):
+    if not pd.api.types.is_numeric_dtype(filtered_data['year']):
         filtered_data['year'] = pd.to_numeric(filtered_data['year'], errors='coerce')
 
     # Drop rows where 'year' or 'AQI_Index' is NaN
