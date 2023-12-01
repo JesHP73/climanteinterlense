@@ -43,17 +43,36 @@ data = [
 # Create a DataFrame
 df = pd.DataFrame(data)
 
-# Create a choropleth map with Plotly using the correct DataFrame
 fig = px.choropleth(df, 
                     locations="country", 
                     locationmode="country names",
                     color="avg_air_pollutant_level",
                     hover_name="country",
                     color_continuous_scale=px.colors.sequential.Plasma,
-                    title="Average Air Pollution Levels by Country")
+                    title="Average Air Pollution Levels by Country",
+                    scope="europe",  # Set the scope to 'europe'
+                    projection="natural earth")  # Choose a projection that fits 
+
+# Improve map aesthetics
+fig.update_layout(
+    geo=dict(
+        showframe=False,  # Removes the frame around the map
+        showcoastlines=True,  # Shows coastline
+        projection_type='equirectangular'  # Change the projection type if needed
+    ),
+    paper_bgcolor='rgba(0,0,0,0)',  # Sets the background color of the paper
+    plot_bgcolor='rgba(0,0,0,0)'  # Sets the background color of the plot
+)
+
+# Update the color scale to be more distinctive
+fig.update_traces(marker_line_width=0, selector=dict(type='choropleth'))
+
+# Show the figure
+fig.show()
 
 # Inside your Streamlit app script
 st.plotly_chart(fig, use_container_width=True)
+
 
 
 
