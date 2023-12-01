@@ -151,5 +151,6 @@ def main():
 
 if __name__ == "__main__":
     main()
-
+    
+st.divider()
 st.link_button("Learn More!", "https://vizhub.healthdata.org/gbd-results/")
