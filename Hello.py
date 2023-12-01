@@ -26,14 +26,14 @@ st.markdown("Hello, *World!* :earth_americas:", unsafe_allow_html=True)
 
 st.divider()
 
-with st.expander("<strong>👋 Hey!, Thanks for stopping by</strong>", unsafe_allow_html=True):
+with st.expander("👋 Hey! Thanks for Stopping By"):
     st.write("I'm here to communicate a really complicated topic as simply as I can, so bear with me.")
     st.write("Let’s get to know each other with a few fun definitions.")
 
-with st.expander("<strong>What is air pollution? :face_exhaling:</strong>", unsafe_allow_html=True):
+with st.expander("🌬️ What is Air Pollution?"):
     st.write("Imagine you're playing outside, and the air is filled with tiny, invisible specks that you can't see—kind of like during Covid times. These specks can make you feel sick :sneezing_face: if you breathe too much of them. This is what air pollution is like. It's like having tiny bits of dirt and smoke in the air that can hurt our lungs and hearts.")
 
-with st.expander("<strong>What is Intersectionality?</strong>", unsafe_allow_html=True):
+with st.expander("🧩 What is Intersectionality?"):
     st.write("Well, now imagine everyone is different, like pieces in a puzzle. I believe that some people get sicker from air pollution than others because of where they live :house_buildings: or how much money :euro: they have. This is what we adults call 'intersectionality.' It means that many things about a person, like where they live or what they look like, can change how something, like air pollution, affects them.")
     
 st.divider()
