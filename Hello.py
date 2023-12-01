@@ -21,7 +21,7 @@ def load_data():
 # Load data
 df = load_data()
 
-st.markdown("Welcome to the Intersectional :green[Climate] Learning and Action Helper")
+st.markdown("""Welcome to the Intersectional :green[Climate] Learning and Action Helper""")
 st.markdown("Hello, *World!* :earth_americas:", unsafe_allow_html=True)
 
 st.divider()
