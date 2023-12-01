@@ -46,15 +46,17 @@ df = pd.DataFrame(data)
 # Rename columns for compatibility with st.map()
 df.rename(columns={'latitude': 'lat', 'longitude': 'lon'}, inplace=True)
 
-# Display the DataFrame on a map using Streamlit
-# Create a scatter_geo plot
-fig = px.scatter_geo(df, 
-                     lat='lat', 
-                     lon='lon', 
-                     size='avg_air_pollutant_level',
-                     hover_name='country',  # Shows country name when hovering over the point
-                     title='Top 30 EU Most Polluted Countries')
+# Create a choropleth map
+fig = px.choropleth(country_avg_pollution, 
+                    locations="country", 
+                    locationmode="country names",
+                    color="avg_air_pollutant_level",
+                    hover_name="country",
+                    color_continuous_scale=px.colors.sequential.Plasma,
+                    title="Average Air Pollution Levels by Country")
 
-# Display the plot in Streamlit
-st.plotly_chart(fig)
+fig.show()
+
+
+
 
