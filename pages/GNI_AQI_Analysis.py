@@ -23,7 +23,7 @@ def load_data():
         return pd.DataFrame()  # Return an empty DataFrame in case of error
 
 
-df_original = load_data()
+#df_original = load_data()
 
 # Create a copy of the DataFrame for manipulation
 df = df_original.copy()
