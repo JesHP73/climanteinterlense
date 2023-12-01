@@ -41,7 +41,7 @@ with st.expander("🌬️ What is Air Pollution?"):
     st.write("Imagine you're playing outside, and the air is filled with tiny, invisible specks that you can't see—kind of like during Covid times. These specks can make you feel sick :sneezing_face: if you breathe too much of them. This is what air pollution is like. It's like having tiny bits of dirt and smoke in the air that can hurt our lungs and hearts.")
 
 with st.expander("🧩 What is Intersectionality?"):
-    st.write("Well, now imagine everyone is different, like pieces in a puzzle. I believe that some people get sicker from air pollution than others because of where they live :house_buildings: or how much money :euro: they have. This is what we adults call 'intersectionality.' It means that many things about a person, like where they live or what they look like, can change how something, like air pollution, affects them.")
+    st.write("Well, now imagine everyone is different, like pieces in a puzzle. I believe that some people get sicker from air pollution than others because of where they live :house_buildings: or how much money :euro: they have. Intersectionality, in the context of Climate and socio-economic data, refers to the recognition that individuals and communities are shaped by multiple intersecting social identities and factors. It emphasises that people's experiences and vulnerabilities are not determined by a single characteristic or variable but are the result of the interplay between various dimensions of identity and social context. These dimensions can include gender, race, ethnicity, socioeconomic status, age, and more.")
     
 st.divider()
 
