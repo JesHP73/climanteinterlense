@@ -22,14 +22,9 @@ def load_data():
 df = load_data()
 
 st.markdown("<h1 style='color:green;text-align:center;'>Welcome to the Intersectional Climate Learning and Action Helper</h1>", unsafe_allow_html=True)
-#st.markdown("Hello, *World!* :earth_americas:", unsafe_allow_html=True)
+st.divider()
 
-# Dynamic "Hello World" Message
-hello_container = st.empty()
-hello_text = "Hello, *World!* :earth_americas:"
-for i in range(len(hello_text) + 1):
-    hello_container.markdown(hello_text[:i], unsafe_allow_html=True)
-    time.sleep(0.1)
+st.markdown("Hello, *World!* :earth_americas:", unsafe_allow_html=True)
 
 st.divider()
 
