@@ -144,6 +144,7 @@ def main():
     plot_data(filtered_data)
 
     st.info("The IHME, Global Burden of Disease Dataset studied, provides the Death by Risk factors since 1990 until 2019; I have filtered these risk factors by the following causes: High temperature, Low temperature, Ambient particulate matter pollution, Household air pollution from solid fuels across Europe.")
+    st.link_button("Learn More!", "https://vizhub.healthdata.org/gbd-results/")
     
     # Display statistics
     display_statistics(filtered_data)
