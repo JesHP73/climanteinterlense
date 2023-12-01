@@ -21,14 +21,46 @@ def load_data():
 # Load data
 df = load_data()
 
-st.write("# Welcome to the Intersectional Climate Trends App 🌎")
+st.markdown("<h1 style='color:blue;text-align:center;'>Welcome to the Intersectional Climate Learning and Action Helper</h1>", unsafe_allow_html=True)
+st.markdown("Hello, *World!* :earth_americas:", unsafe_allow_html=True)
+
+st.divider()
+
+with st.expander("👋 Hey!, Thanks for stopping by"):
+    st.write("I'm here to communicate a really complicated topic as simply as I can, so bear with me.")
+    st.write('Let’s get to know each other with a few fun definitions.')
+
+with st.expander("What is air pollution? :face_exhaling:"):
+    st.write('Imagine you're playing outside and the air is filled with tiny invisible specks that you can't see, (sort of like in Covid times, but they can make you feel sick :sneezing_face: if you breathe too much of them. This is what air pollution is like. It's like having tiny bits of dirt and smoke in the air that can hurt our lungs and hearts.')
+
+with st.expander("What is Intersectionality?"):
+    st.write('well, Now, imagine everyone is different, like having different pieces in a puzzle. **My theory is that Some people get sicker from air pollution than others** because of where they live :house_buildings:  or how much money :euro: they have. This is what us adults call "intersectionality." It means that many things about a person, like where they live or what they look like, can change how something, like air pollution, affects them.')
+    
+st.divider()
+
+st.write('I wish you a good snooping! 👋, I'll be around, with **Learn More buttons**, and simplying this hot topic for you.')
 
 st.sidebar.success("Select a page above.")
+st.sidebar.header("Quick Guide")
+st.sidebar.write("Explore the tabs to dive into the impacts of air pollution through an intersectional lens.")
 
-st.markdown(
-    """
-    This app examines the intersection of climate data with socio-economic factors.
+st.markdown("""
+    This site examines the intersection of climate data with socio-economic factors.
     **👈 Select a page from the sidebar** to begin exploring the visualizations and insights.
     ### Want to learn more?  
-    """
-)
+""")
+
+# Educational Links
+st.markdown("### Educational Resources")
+st.markdown("[Learn more about Air Pollution](https://example.com/airpollution)")
+st.markdown("[Understanding Intersectionality](https://example.com/intersectionality)")
+
+# Disclaimer
+st.markdown("## Disclaimer")
+st.write("The information provided here is for educational purposes only...")
+
+# Credits and Data Sources
+st.markdown("## Credits and Data Sources")
+st.write("The data used in this application is sourced from ...")
+st.markdown("[Data Source 1](https://example.com/source1)")
+st.markdown("[Data Source 2](https://example.com/source2)")
