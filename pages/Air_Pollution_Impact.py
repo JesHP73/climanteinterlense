@@ -85,7 +85,7 @@ def display_statistics(filtered_data):
 
         col1, col2 = st.columns(2)
         with col1:
-            st.header("Rate Per 100 Thousand")
+            st.header("Share Rate")
             st.metric(label=f"Avg Deaths in {latest_year}", value=f"{latest_avg_death_percentage:.2f}%")
         with col2:
             st.header("Equivalent to")
