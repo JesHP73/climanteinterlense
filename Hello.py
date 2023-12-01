@@ -40,9 +40,6 @@ st.divider()
 
 st.write("I wish you a good snooping! 👋, I'll be around, with **Learn More buttons**, and simplifying this hot topic for you.")
 
-st.sidebar.success("Select a page above.")
-st.sidebar.header("Quick Guide")
-st.sidebar.write("Explore the tabs to dive into the impacts of air pollution through an intersectional lens.")
 
 st.markdown("""
     This site examines the intersection of climate data with socio-economic factors.
@@ -50,17 +47,9 @@ st.markdown("""
     ### Want to learn more?  
 """)
 
-st.write("I wish you a good snooping! 👋, I'll be around, with **Learn More buttons**, and simplifying this hot topic for you.")
-
 st.sidebar.success("Select a page above.")
 st.sidebar.header("Quick Guide")
 st.sidebar.write("Explore the tabs to dive into the impacts of air pollution through an intersectional lens.")
-
-st.markdown("""
-    This site examines the intersection of climate data with socio-economic factors.
-    **👈 Select a page from the sidebar** to begin exploring the visualizations and insights.
-    ### Want to learn more?  
-""")
 
 st.divider()
 
