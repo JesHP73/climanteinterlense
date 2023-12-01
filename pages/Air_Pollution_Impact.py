@@ -107,7 +107,7 @@ def main():
         st.error("No data available to display.")
         return
 
-    st.title('Percentage of Deaths Attributed to Air Pollution by Income Group')
+    st.title('Percentage of Deaths Attributed to :green[Air Pollution] by Income Group')
 
     # Sidebar for filters
     st.sidebar.header('Filters')
