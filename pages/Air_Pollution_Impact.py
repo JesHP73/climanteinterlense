@@ -138,7 +138,7 @@ def main():
     # Additional explanations about AQGs and RLs
     st.markdown("### Understanding What You See")
     
-    st.caption('Here the term **Atributes**, meaning it was one of the attributed risk factors for a given disease or cause of death. There can be multiple risk factors for a given disease which corroborate or amplify one another when both are present. This means that in some cases, air pollution was not the only risk factor but one of several.')
+    st.caption("Here the term **Atributes**, meaning it was one of the attributed risk factors for a given disease or cause of death. There can be multiple risk factors for a given disease which corroborate or amplify one another when both are present. This means that in some cases, air pollution was not the only risk factor but one of several.")
     
     # Plotting
     plot_data(filtered_data)
@@ -157,6 +157,6 @@ st.divider()
 with st.expander("👋 Hey! WHAT YOU SHOULD KNOW ABOUT THIS DATA"):
     st.write("This data comes from the most recent publication of the Global Burden of Disease study by the Institute for Health Metrics and Evaluation (IHME) in 2019 and the Global Terrorism Database.")
     st.write("These estimates assign each death a single cause, based on data on the ‘underlying cause of death’ listed on death certificates, verbal autopsies, and statistical modeling. This is a simplification, as people often have multiple diseases or injuries that contribute to their death, which may also be listed on death certificates.")
-    st.write('This chart shows data on causes of death globally Filtered by Rei Name related to Air pollution and only Europe, from 1990 until 2019, the year before the Covid-19 pandemic started.
+    st.write("This chart shows data on causes of death globally Filtered by Rei Name related to Air pollution and only Europe, from 1990 until 2019, the year before the Covid-19 pandemic started.")
     st.link_button("Data source: IHME, Global Burden of Disease (2019)🔗!", "https://vizhub.healthdata.org/gbd-results/")
 
