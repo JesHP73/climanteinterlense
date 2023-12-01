@@ -103,9 +103,9 @@ def plot_aqi_and_gni_over_time(filtered_data):
         legend_title_text='Metric',
         legend=dict(
             orientation="h",
-            yanchor="auto",
+            yanchor="right",
             y=1,
-            xanchor="auto",
+            xanchor="left",
             x=1
             
         )
