@@ -54,7 +54,7 @@ def plot_data(filtered_data):
         color='ig_label',
         color_discrete_map=color_discrete_map,
         labels={'total_death_attributed_sex_standarized': 'Percentage of Deaths', 'ig_label': 'Income Group'},
-        title='Deaths Attributed to Air Pollution by Income Group'
+        #title='Deaths Attributed to Air Pollution by Income Group'
     )
 
     # Improve layout for better readability
@@ -107,7 +107,7 @@ def main():
         st.error("No data available to display.")
         return
 
-    st.title('Percentage of Deaths Attributed to Air Pollution')
+    st.title('Percentage of Deaths Attributed to Air Pollution by Income Group')
 
     # Sidebar for filters
     st.sidebar.header('Filters')
