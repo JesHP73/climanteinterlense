@@ -3,7 +3,7 @@
 
 import streamlit as st
 import pandas as pd
-from annotated_text import annotated_text
+#from annotated_text import annotated_text
 
 # This should be the first Streamlit command
 st.set_page_config(
