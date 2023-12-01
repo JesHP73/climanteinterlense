@@ -51,50 +51,64 @@ else:
 
 # Function for plotting AQI Index vs GNI per Capita
 
-def plot_aqi_and_gni_over_time(aggregated_data):
-    if aggregated_data.empty:
+def plot_aqi_and_gni_over_time(merged_data):
+    if merged_data.empty:
         st.error('No data available for plotting.')
         return
     
+    # Further aggregate by year and income group for clarity
+    summary_data = merged_data.groupby(['year', 'ig_label']).agg({
+        'GNI_per_capita': 'mean',  # check tomorow
+        'AQI_Index': 'mean'  # check tomorow
+    }).reset_index()
+
     # Define the color mapping for income groups with long names
     color_mapping = {
-        'LM': ('Low Income', 'blue'),
+        'LM': ('Low Income', 'darkblue'),
         'UM': ('Middle Income', 'grey'),
-        'H': ('High Income', 'grey'),  
+        'H': ('High Income', 'green'),
     }
     
     # Create the subplots
     fig = make_subplots(specs=[[{"secondary_y": True}]])
 
-    # Assuming 'AQI_Index' and 'GNI_per_capita' are already averaged in your data,
-    # Add AQI Index trace with its own legend group
+    # Plot the average AQI Index for all countries
     fig.add_trace(
-        go.Scatter(x=aggregated_data['year'], y=aggregated_data['AQI_Index'], name='AQI Index',
-                   mode='lines+markers', line=dict(color='orange')),
+        go.Scatter(
+            x=summary_data['year'], 
+            y=summary_data.groupby('year')['AQI_Index'].transform('mean'),  # This gets the mean AQI for each year across all income groups
+            name='Average AQI Index',
+            mode='lines+markers',
+            line=dict(color='orange')
+        ),
         secondary_y=False,
     )
-    
-    # Add GNI per Capita traces for each income group with their own legend group
-    for ig_label, (label_name, color) in color_mapping.items():
-        
-        # Filter the data for the current income group
-        income_group_data = aggregated_data[aggregated_data['ig_label'] == ig_label]
+
+    # Plot the mean GNI per Capita for each income group
+    for ig_label, (name, color) in color_mapping.items():
+        income_group_data = summary_data[summary_data['ig_label'] == ig_label]
         fig.add_trace(
-            go.Scatter(x=income_group_data['year'], y=income_group_data['GNI_per_capita'],
-                       name=label_name, mode='lines+markers', line=dict(color=color)),
+            go.Scatter(
+                x=income_group_data['year'], 
+                y=income_group_data['GNI_per_capita'],
+                name=name,
+                mode='lines+markers',
+                line=dict(color=color)
+            ),
             secondary_y=True,
         )
-    
+
     # Set x-axis title
     fig.update_xaxes(title_text="Year")
-    
+
     # Set y-axes titles
     fig.update_yaxes(title_text="AQI Index", secondary_y=False)
     fig.update_yaxes(title_text="GNI per Capita (EUR)", secondary_y=True)
     
-    # Set figure title and adjust layout for the legend
+    # Set figure title and legend
     fig.update_layout(
         title_text="AQI Index and World Bank GNI per Capita over Time",
+        legend_title_text='Metric',
         legend=dict(
             orientation="h",
             yanchor="bottom",
@@ -106,6 +120,7 @@ def plot_aqi_and_gni_over_time(aggregated_data):
     
     # Show the plot
     st.plotly_chart(fig)
+
 
 
 # Call the function to plot data
