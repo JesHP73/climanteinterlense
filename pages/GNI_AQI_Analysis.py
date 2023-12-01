@@ -61,7 +61,7 @@ def plot_aqi_and_gni_over_time(filtered_data):
 
        # Define the color mapping for income groups with long names
     color_mapping = {
-        'LM': ('Low Income', 'orange'),
+        'LM': ('Low Income', 'blue'),
         'UM': ('Middle Income', 'grey'),
         'H': ('High Income', 'grey'),
     }
@@ -78,7 +78,7 @@ def plot_aqi_and_gni_over_time(filtered_data):
     
     # Add GNI per Capita traces for each income group with their own legend group
     legend_groups = {'LM': 'Low Income', 'UM': 'Middle Income', 'H': 'High Income'}
-    colors = {'LM': 'orange', 'UM': 'grey', 'H': 'grey'}
+    colors = {'LM': 'blue', 'UM': 'grey', 'H': 'grey'}
     
     for ig_label, name in legend_groups.items():
         # Filter the data for the current income group
@@ -103,9 +103,9 @@ def plot_aqi_and_gni_over_time(filtered_data):
         legend_title_text='Metric',
         legend=dict(
             orientation="h",
-            yanchor="bottom",
-            y=1.02,
-            xanchor="right",
+            yanchor="auto",
+            y=1,
+            xanchor="auto",
             x=1
             
         )
