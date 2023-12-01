@@ -153,4 +153,7 @@ if __name__ == "__main__":
     main()
     
 st.divider()
-st.link_button("Learn More!", "https://vizhub.healthdata.org/gbd-results/")
+st.markdown('##WHAT YOU SHOULD KNOW ABOUT THIS DATA')
+st.Markdown('place holder')
+st.link_button("Data source: IHME, Global Burden of Disease (2019)🔗!", "https://vizhub.healthdata.org/gbd-results/")
+
