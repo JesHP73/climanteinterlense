@@ -136,7 +136,7 @@ def main():
         return
 
     # Additional explanations about AQGs and RLs
-    with st.expander("### ❗️ Understanding What You See"):
+    with st.expander("### ⬇️ Understanding What You See"):
         st.write("Here the term :green[Atributes], means it was one of the attributed risk factors for a given disease or cause of death. There can be multiple risk factors for a given disease which corroborate or amplify one another when both are present. This means that in some cases, air pollution was not the only risk factor but one of several.")
     
     # Plotting
