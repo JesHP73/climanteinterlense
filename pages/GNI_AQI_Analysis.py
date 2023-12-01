@@ -22,7 +22,7 @@ def load_data():
         st.error(f"Error loading data: {e}")
         return pd.DataFrame()  # Return an empty DataFrame in case of error
 
-# Assuming load_data() is defined elsewhere
+
 df_original = load_data()
 
 # Create a copy of the DataFrame for manipulation
