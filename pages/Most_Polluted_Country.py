@@ -43,31 +43,30 @@ data = [
 # DataFrame
 df = pd.DataFrame(data)
 
-
-
 # choropleth map with Plotly
 fig = px.choropleth(df,
                     locations="country",
                     locationmode="country names",
                     color="avg_air_pollutant_level",
                     hover_name="country",
-                    hover_data={"avg_air_pollutant_level": ":.2f"},  # Format the pollution level to two decimal places
+                    hover_data={"avg_air_pollutant_level": True},  # Shows the pollution level on hover
                     color_continuous_scale=px.colors.diverging.RdYlGn_r,  # Red to Green, reversed
                     title="Average Air Pollution Levels by Country",
-                    scope="world",  # Adjust to 'world' or another region as needed
-                    projection="mercator")  # A simple projection type
+                    scope="europe")  # Focus the map on Europe
 
-# Updated version
+# Set the size of the figure
 fig.update_layout(
+    width=800,  # Width of the figure in pixels
+    height=600,  # Height of the figure in pixels
     geo=dict(
         showframe=False,  # Removes the frame around the map
         showcoastlines=True,  # Shows coastline
-        countrycolor="RebeccaPurple"  # Adds a border color for each country
+        countrycolor="Black"  # Adds a border color for each country
     ),
-    legend_title_text='AQI Level'  # Add a title for the legend
+    legend_title_text='AQI Level'  # title for the legend
 )
 
-# Update the color scale to be more intuitive
+# more intuitive?
 fig.update_traces(marker_line_width=0.5, marker_line_color='gray', selector=dict(type='choropleth'))
 
 # Show the figure
@@ -75,6 +74,7 @@ fig.show()
 
 
 st.plotly_chart(fig, use_container_width=True)
+
 
 
 
