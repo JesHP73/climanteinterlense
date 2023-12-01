@@ -86,11 +86,11 @@ def display_statistics(filtered_data):
         col1, col2 = st.columns(2)
         with col1:
             st.header("Share Rate")
-            st.metric(label=f"Avg Deaths in {latest_year}", value=f"{latest_avg_death_percentage:.2f}%")
+            st.metric(label=f"Avg. deaths rate in {latest_year}", value=f"{latest_avg_death_percentage:.2f}%")
         with col2:
             st.header("Equivalent to")
             if people_affected is not None:
-                st.metric(label="Number of People", value=f"{people_affected:.2f}")
+                st.metric(label="Number of People affected", value=f"{people_affected:.2f}")
             else:
                 st.write("People affected data is not available.")
     else:
