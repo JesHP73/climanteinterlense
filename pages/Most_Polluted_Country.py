@@ -43,19 +43,14 @@ data = [
 # Create a DataFrame
 df = pd.DataFrame(data)
 
-# Rename columns for compatibility with st.map()
-df.rename(columns={'latitude': 'lat', 'longitude': 'lon'}, inplace=True)
-
-# Create a choropleth map with Plotly
-fig = px.choropleth(country_avg_pollution, 
+# Create a choropleth map with Plotly using the correct DataFrame
+fig = px.choropleth(df, 
                     locations="country", 
                     locationmode="country names",
                     color="avg_air_pollutant_level",
                     hover_name="country",
                     color_continuous_scale=px.colors.sequential.Plasma,
                     title="Average Air Pollution Levels by Country")
-
-fig.show()
 
 # Inside your Streamlit app script
 st.plotly_chart(fig, use_container_width=True)
