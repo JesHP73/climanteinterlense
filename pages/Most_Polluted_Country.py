@@ -46,7 +46,7 @@ df = pd.DataFrame(data)
 # Rename columns for compatibility with st.map()
 df.rename(columns={'latitude': 'lat', 'longitude': 'lon'}, inplace=True)
 
-# Create a choropleth map
+# Create a choropleth map with Plotly
 fig = px.choropleth(country_avg_pollution, 
                     locations="country", 
                     locationmode="country names",
