@@ -57,6 +57,9 @@ fig = px.choropleth(country_avg_pollution,
 
 fig.show()
 
+# Inside your Streamlit app script
+st.plotly_chart(fig, use_container_width=True)
+
 
 
 
