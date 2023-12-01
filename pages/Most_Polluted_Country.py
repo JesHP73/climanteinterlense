@@ -43,35 +43,40 @@ data = [
 # Create a DataFrame
 df = pd.DataFrame(data)
 
-fig = px.choropleth(df, 
-                    locations="country", 
+# Assuming df is your DataFrame with the country names and average pollution levels
+
+# Create a choropleth map with Plotly
+fig = px.choropleth(df,
+                    locations="country",
                     locationmode="country names",
                     color="avg_air_pollutant_level",
                     hover_name="country",
-                    color_continuous_scale=px.colors.sequential.Plasma,
+                    hover_data={"avg_air_pollutant_level": ":.2f"},  # Format the pollution level to two decimal places
+                    color_continuous_scale=px.colors.diverging.RdYlGn_r,  # Red to Green, reversed
                     title="Average Air Pollution Levels by Country",
-                    scope="europe",  # Set the scope to 'europe'
-                    projection="natural earth")  # Choose a projection that fits 
+                    scope="world",  # Adjust to 'world' or another region as needed
+                    projection="mercator")  # A simple projection type
 
-# Improve map aesthetics
+# Update map aesthetics for better clarity
 fig.update_layout(
     geo=dict(
         showframe=False,  # Removes the frame around the map
         showcoastlines=True,  # Shows coastline
-        projection_type='equirectangular'  # Change the projection type if needed
+        countrycolor="RebeccaPurple"  # Adds a border color for each country
     ),
-    paper_bgcolor='rgba(0,0,0,0)',  # Sets the background color of the paper
-    plot_bgcolor='rgba(0,0,0,0)'  # Sets the background color of the plot
+    legend_title_text='AQI Level'  # Add a title for the legend
 )
 
-# Update the color scale to be more distinctive
-fig.update_traces(marker_line_width=0, selector=dict(type='choropleth'))
+# Update the color scale to be more intuitive
+fig.update_traces(marker_line_width=0.5, marker_line_color='gray', selector=dict(type='choropleth'))
 
 # Show the figure
 fig.show()
 
 # Inside your Streamlit app script
 st.plotly_chart(fig, use_container_width=True)
+
+
 
 
 
