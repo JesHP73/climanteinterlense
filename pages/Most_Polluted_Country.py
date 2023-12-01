@@ -40,12 +40,12 @@ data = [
 ]
 
 
-# Create a DataFrame
+# DataFrame
 df = pd.DataFrame(data)
 
 
 
-# Create a choropleth map with Plotly
+# choropleth map with Plotly
 fig = px.choropleth(df,
                     locations="country",
                     locationmode="country names",
@@ -57,7 +57,7 @@ fig = px.choropleth(df,
                     scope="world",  # Adjust to 'world' or another region as needed
                     projection="mercator")  # A simple projection type
 
-# Update map aesthetics for better clarity
+# Updated version
 fig.update_layout(
     geo=dict(
         showframe=False,  # Removes the frame around the map
