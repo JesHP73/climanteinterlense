@@ -49,8 +49,9 @@ st.write("I wish you a good snooping! 👋, I'll be around, with **Learn More bu
 st.markdown("""
     This site examines the intersection of climate data with socio-economic factors.
     **👈 Select a page from the sidebar** to begin exploring the visualizations and insights.
-    ### Want to learn more?  
 """)
+
+st.button(":green[Learn More]", type="primary")
 
 st.sidebar.success("Select a page above.")
 st.sidebar.header("Quick Guide")
