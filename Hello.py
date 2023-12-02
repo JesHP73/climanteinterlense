@@ -5,7 +5,6 @@ import streamlit as st
 import pandas as pd
 #from annotated_text import annotated_text
 
-# This should be the first Streamlit command
 st.set_page_config(
     page_title="Intersectional Climate Trends",
     page_icon="🌎"
@@ -71,5 +70,5 @@ st.write("The information provided here is for educational purposes only...")
 # Credits and Data Sources
 st.markdown("## Credits and Data Sources")
 st.write("The data used in this application is sourced from ...")
-st.markdown("[Data Source 1](https://example.com/source1)")
-st.markdown("[Data Source 2](https://example.com/source2)")
+st.markdown("[World Bank - Global Economic Monitor](https://datahelpdesk.worldbank.org/knowledgebase/articles/906519-world-bank-country-and-lending-groups)")
+st.markdown("[Eurostat - Statistical Office of the European Union.](https://ec.europa.eu/eurostat/databrowser/explore/all/all_themes?lang=en&display=list&sort=category)")
