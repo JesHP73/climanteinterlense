@@ -51,7 +51,7 @@ st.markdown("""
     **👈 Select a page from the sidebar** to begin exploring the visualizations and insights.
 """)
 
-st.button(":green[Learn More]", type="primary")
+st.link_button(":green[Learn More]", type="primary")
 
 st.sidebar.success("Select a page above.")
 st.sidebar.header("Quick Guide")
