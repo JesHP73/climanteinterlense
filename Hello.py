@@ -51,7 +51,7 @@ st.markdown("""
     **👈 Select a page from the sidebar** to begin exploring the visualizations and insights.
     """)
     
-st.link_button(":green[Learn More!], type="primary", use_container_width=False)
+st.link_button(":green[Learn More!]", type="secondary", use_container_width=False)
 
 
 
