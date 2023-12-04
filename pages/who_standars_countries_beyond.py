@@ -73,7 +73,7 @@ def plot_data(df_mean_levels, who_standards, selected_pollutant):
         legend=dict(
             yanchor="top",
             y=0.99,
-            xanchor="left",
+            xanchor="right",
             x=0.01
         )
     )
@@ -82,7 +82,7 @@ def plot_data(df_mean_levels, who_standards, selected_pollutant):
    
     fig.add_annotation(
         text=f"WHO {selected_pollutant} Annual Standard (μg/m³)",
-        x=34, y=standard,  # You might need to adjust these values
+        x=34, y=15,
         xanchor='left', yanchor='middle',
         showarrow=False,
         font=dict(
