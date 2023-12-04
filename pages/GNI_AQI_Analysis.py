@@ -43,7 +43,7 @@ who_standards = {
 df_filtered = df[df['air_pollutant'].isin(['PM10', 'PM2.5', 'NO2'])]
 
 # Further filtering for the year 2023 only
-df_filtered = df_filtered[df_filtered['year'] == 2022]
+df_filtered = df_filtered[df_filtered['year'] == 2023]
 
 # User input areas for filtering
 region_options = ['All'] + sorted(df_filtered['region'].unique().tolist())
@@ -57,9 +57,13 @@ selected_pollutant = st.sidebar.selectbox('Select Pollutant', options=pollutants
 if 'All' not in selected_region:
     df_filtered = df_filtered[df_filtered['region'].isin(selected_region)]
 
-# (no need to check for 'All' since it's not an option)
+# Apply the selected pollutant filter
 df_filtered = df_filtered[df_filtered['air_pollutant'] == selected_pollutant]
 
+# Now df_filtered should have the data filtered by the year, pollutant, and region (if not 'All')
+# Check if the DataFrame is empty
+if df_filtered.empty:
+    st.error('No data available for the selected filters.')
 
 # Plotting Function
 
