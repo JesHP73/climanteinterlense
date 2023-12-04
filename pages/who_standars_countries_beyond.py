@@ -48,16 +48,22 @@ def plot_data(df_filtered, who_standards, selected_pollutant):
         st.error(f"Selected pollutant {selected_pollutant} does not have a WHO standard defined.")
         return
 
-    # Create a figure with Plotly
+     # Calculate the difference from the WHO standard and sort
+    standard = who_standards[selected_pollutant]['annual']
+    df_filtered = df_filtered.assign(difference=lambda x: x['air_pollutant_level'] - standard)
+    df_filtered = df_filtered.sort_values('difference', ascending=False)
+
+    # Update the Plotly figure to use the sorted data
     fig = px.bar(df_filtered, x='country', y='air_pollutant_level', color='region',
                  title=f'Average {selected_pollutant} Emissions by Country in 2023',
                  labels={'country': 'Country', 'air_pollutant_level': f'Average {selected_pollutant} Level (μg/m³)'})
+
 
     # Rotate the x-axis labels
     fig.update_layout(xaxis_tickangle=-45)
 
     # Set the y-axis type to linear (default)
-    fig.update_yaxes(type='linear', autorange=False, range=[0, 300]) 
+    #fig.update_yaxes(type='linear', autorange=False, range=[0, 400]) 
 
     # Add a line for the WHO standard
     standard = who_standards[selected_pollutant]['annual']
