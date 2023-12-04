@@ -39,57 +39,41 @@ who_standards = {
  
 # O3 and CO are excluded as their standards are not based on annual averages
 
-# User input areas
+# User input areas for filtering
 region_options = ['All'] + sorted(df['region'].unique().tolist())
-pollutans_options = ['All'] + sorted(df['air_pollutant'].unique().tolist())
+pollutants_options = ['All'] + sorted(df['air_pollutant'].unique().tolist())
 
 # Sidebar for user input
-selected_region = st.sidebar.multiselect('Select Region', options=['All'] + sorted(df['region'].unique().tolist()), default=['All'])
-selected_pollutants = st.sidebar.multiselect('Select Pollutant', options=['All'] + sorted(df['air_pollutant'].unique().tolist()), default=['All'])
+selected_region = st.sidebar.multiselect('Select Region', options=region_options, default=['All'])
+selected_pollutant = st.sidebar.selectbox('Select Pollutant', options=pollutants_options)
 
 # Data Filtering
 if 'All' not in selected_region:
     df = df[df['region'].isin(selected_region)]
-if 'All' not in selected_pollutants:
-    df = df[df['air_pollutant'].isin(selected_pollutants)]
+if selected_pollutant and selected_pollutant != 'All':
+    df = df[df['air_pollutant'] == selected_pollutant]
 
 # Plotting Function
-def plot_data(df, selected_pollutants):
-    # Filter for PM10, PM2.5, and NO2 pollutants only
-    df = df[df['air_pollutant'].isin(['PM10', 'PM2.5', 'NO2'])]
-
-    # Decide which column to use based on pollutant selection
-    value_col = 'AQI_Index' if 'All' in selected_pollutants else 'air_pollutant_level'
-    
-    # Plotting only the selected pollutants
-    if 'All' not in selected_pollutants:
-        df = df[df['air_pollutant'].isin(selected_pollutants)]
-
+def plot_data(df, who_standards):
     # Create a figure with Plotly
-    fig = px.bar(df, x='country', y=value_col, color='region', 
-                 title='Air Pollutant Emissions by Country')
-
-    # Update y-axis title based on the selected pollutants
-    pollutants_string = ", ".join(selected_pollutants) if 'All' not in selected_pollutants else 'All Pollutants'
-    fig.update_layout(
-        yaxis_title=f'Average Level of {pollutants_string} (μg/m³)',
-        xaxis_title='Country'
-    )
-
+    fig = px.bar(df, x='country', y='air_pollutant_level', color='region', 
+                 title='Air Pollutant Emissions by Country',
+                 labels={'country': 'Country', 'air_pollutant_level': 'Average Level (μg/m³)'})
+    
     # Rotate the x-axis labels
     fig.update_layout(xaxis_tickangle=-45)
 
-    # Set the y-axis range if needed
-    fig.update_yaxes(range=[0, 500])
-
-    # Add lines for WHO standards
-    for pollutant, standards in who_standards.items():
-        if 'All' in selected_pollutants or pollutant in selected_pollutants:
-            fig.add_hline(y=standards['annual'], line_dash="dash", line_color='red',
-                          annotation_text=f'WHO {pollutant} Standard', annotation_position="bottom right")
+    # Add lines for WHO standards if a specific pollutant is selected
+    if selected_pollutant and selected_pollutant != 'All':
+        standard = who_standards[selected_pollutant]['annual']
+        fig.add_hline(y=standard, line_dash="dash", line_color='red',
+                      annotation_text=f'WHO {selected_pollutant} Standard', annotation_position="bottom right")
+    
+    # Set dynamic y-axis range based on the data
+    max_value = df['air_pollutant_level'].max()
+    fig.update_yaxes(range=[0, max(max_value, standard) * 1.1])  # Scale to the higher of max value or standard
 
     st.plotly_chart(fig)
 
 # Execute Plotting
-plot_data(df, selected_pollutants)
-
+plot_data(df, who_standards)
