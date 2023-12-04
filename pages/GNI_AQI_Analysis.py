@@ -39,20 +39,17 @@ who_standards = {
  
 # O3 and CO are excluded as their standards are not based on annual averages
 
-# Filter for PM10, PM2.5, and NO2 pollutants only
-df = df[df['air_pollutant'].isin(['PM10', 'PM2.5', 'NO2'])]
+# Filtering for PM10, PM2.5, and NO2 pollutants only
+df_filtered = df[df['air_pollutant'].isin(['PM10', 'PM2.5', 'NO2'])]
 
-import streamlit as st
-import pandas as pd
-import plotly.express as px
-
-# Load data, define WHO standards, and other necessary setup...
+# filtering for the year 2023 only
+df_filtered = df_filtered[df_filtered['year'] == 2023]
 
 # User input areas for filtering
-region_options = ['All'] + sorted(df['region'].unique().tolist())
+region_options = ['All'] + sorted(df_filtered['region'].unique().tolist())
 
 # 'All' option removed from pollutants_options
-pollutants_options = sorted(df['air_pollutant'].unique().tolist())
+pollutants_options = sorted(df_filtered['air_pollutant'].unique().tolist())
 
 # Sidebar for user input
 selected_region = st.sidebar.multiselect('Select Region', options=region_options, default=['All'])
@@ -60,11 +57,11 @@ selected_pollutant = st.sidebar.selectbox('Select Pollutant', options=pollutants
 
 # Apply filters based on user input
 if 'All' not in selected_region:
-    df_filtered = df[df['region'].isin(selected_region)]
+    df_filtered = df_filtered[df_filtered['region'].isin(selected_region)]
 else:
     df_filtered = df.copy()
 
-# Since 'All' option is removed for pollutants, we can filter directly
+# filtering directly
 df_filtered = df_filtered[df_filtered['air_pollutant'] == selected_pollutant]
 
 
@@ -73,7 +70,7 @@ df_filtered = df_filtered[df_filtered['air_pollutant'] == selected_pollutant]
 def plot_data(df_filtered, who_standards, selected_pollutant):
     # Create a figure with Plotly
     fig = px.bar(df_filtered, x='country', y='air_pollutant_level', color='region', 
-                 title=f'Average {selected_pollutant} Emissions by Country (WHO Standard in red)',
+                 title=f'Average {selected_pollutant} Emissions by Country in 2023',
                  labels={'country': 'Country', 'air_pollutant_level': f'Average {selected_pollutant} Level (μg/m³)'})
     
     # Rotate the x-axis labels
