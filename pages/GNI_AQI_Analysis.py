@@ -42,26 +42,22 @@ who_standards = {
 # Filtering for PM10, PM2.5, and NO2 pollutants only
 df_filtered = df[df['air_pollutant'].isin(['PM10', 'PM2.5', 'NO2'])]
 
-# filtering for the year 2023 only
+# Further filtering for the year 2023 only
 df_filtered = df_filtered[df_filtered['year'] == 2023]
 
 # User input areas for filtering
 region_options = ['All'] + sorted(df_filtered['region'].unique().tolist())
-
-# 'All' option removed from pollutants_options
 pollutants_options = sorted(df_filtered['air_pollutant'].unique().tolist())
 
 # Sidebar for user input
 selected_region = st.sidebar.multiselect('Select Region', options=region_options, default=['All'])
 selected_pollutant = st.sidebar.selectbox('Select Pollutant', options=pollutants_options)
 
-# Apply filters based on user input
+# Apply the selected region filter
 if 'All' not in selected_region:
     df_filtered = df_filtered[df_filtered['region'].isin(selected_region)]
-else:
-    df_filtered = df.copy()
 
-# filtering directly
+# (no need to check for 'All' since it's not an option)
 df_filtered = df_filtered[df_filtered['air_pollutant'] == selected_pollutant]
 
 
