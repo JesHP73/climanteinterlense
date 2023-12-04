@@ -39,31 +39,6 @@ who_standards = {
  
 # O3 and CO are excluded as their standards are not based on annual averages
 
-# Filtering for PM10, PM2.5, and NO2 pollutants only
-df_filtered = df[df['air_pollutant'].isin(['PM10', 'PM2.5', 'NO2'])]
-
-# Further filtering for the year 2023 only
-df_filtered = df_filtered[df_filtered['year'] == 2023]
-
-# User input areas for filtering
-region_options = ['All'] + sorted(df_filtered['region'].unique().tolist())
-pollutants_options = sorted(df_filtered['air_pollutant'].unique().tolist())
-
-# Sidebar for user input
-selected_region = st.sidebar.multiselect('Select Region', options=region_options, default=['All'])
-selected_pollutant = st.sidebar.selectbox('Select Pollutant', options=pollutants_options)
-
-# Apply the selected region filter
-if 'All' not in selected_region:
-    df_filtered = df_filtered[df_filtered['region'].isin(selected_region)]
-
-# Apply the selected pollutant filter
-df_filtered = df_filtered[df_filtered['air_pollutant'] == selected_pollutant]
-
-# Now df_filtered should have the data filtered by the year, pollutant, and region (if not 'All')
-# Check if the DataFrame is empty
-if df_filtered.empty:
-    st.error('No data available for the selected filters.')
 
 # Plotting Function
 
@@ -101,6 +76,36 @@ def plot_data(df_filtered, who_standards, selected_pollutant):
     #fig.update_yaxes(range=[0, max_value * 1.1])  # Scales to max value with some padding
 
     st.plotly_chart(fig)
+
+# Filtering for PM10, PM2.5, and NO2 pollutants only
+df_filtered = df[df['air_pollutant'].isin(['PM10', 'PM2.5', 'NO2'])]
+
+# Further filtering for the year 2023 only
+df_filtered = df_filtered[df_filtered['year'] == 2023]
+
+# User input areas for filtering
+region_options = ['All'] + sorted(df_filtered['region'].unique().tolist())
+pollutants_options = sorted(df_filtered['air_pollutant'].unique().tolist())
+
+# Sidebar for user input
+selected_region = st.sidebar.multiselect('Select Region', options=region_options, default=['All'])
+selected_pollutant = st.sidebar.selectbox('Select Pollutant', options=pollutants_options)
+
+# Apply the selected region filter
+if 'All' not in selected_region:
+    df_filtered = df_filtered[df_filtered['region'].isin(selected_region)]
+
+# Apply the selected pollutant filter
+df_filtered = df_filtered[df_filtered['air_pollutant'] == selected_pollutant]
+
+# Check if the DataFrame is empty after all filters have been applied
+if df_filtered.empty:
+    st.error('No data available for the selected filters.')
+    # If there is no data, we should not attempt to plot
+else:
+    # If data is present, call the plotting function
+    plot_data(df_filtered, who_standards, selected_pollutant)
+
 
 # Execute Plotting with the correct parameters
 plot_data(df_filtered, who_standards, selected_pollutant)
