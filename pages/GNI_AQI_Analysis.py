@@ -82,7 +82,8 @@ def plot_data(df_filtered, who_standards, selected_pollutant):
     # Add a line for the WHO standard
     standard = who_standards[selected_pollutant]['annual']
     fig.add_hline(y=standard, line_dash="dash", line_color='red')
-    # Move the annotation next to the plot
+    
+    # Moving the annotation next to the plot
     fig.add_annotation(
         xref='paper', x=1.05, y=standard, 
         text=f'WHO {selected_pollutant} Standard', showarrow=False,
@@ -94,8 +95,8 @@ def plot_data(df_filtered, who_standards, selected_pollutant):
     )
 
     # Set dynamic y-axis range based on the data
-    max_value = df_filtered['air_pollutant_level'].max()
-    fig.update_yaxes(range=[0, max_value * 1.1])  # Scales to max value with some padding
+    #max_value = df_filtered['air_pollutant_level'].max()
+    #fig.update_yaxes(range=[0, max_value * 1.1])  # Scales to max value with some padding
 
     st.plotly_chart(fig)
 
