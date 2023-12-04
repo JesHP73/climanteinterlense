@@ -42,55 +42,30 @@ who_standards = {
 
 # Plotting Function
 
-def plot_data(df_filtered, who_standards, selected_pollutant):
-    # Making sure the selected pollutant is in the WHO standards dictionary
-    if selected_pollutant not in who_standards:
-        st.error(f"Selected pollutant {selected_pollutant} does not have a WHO standard defined.")
-        return
+# Plotting Function Simplified
 
-    # Create a figure with Plotly
-    fig = px.bar(df_filtered, x='country', y='air_pollutant_level', color='region',
-                 title=f'Average {selected_pollutant} Emissions by Country in 2023',
-                 labels={'country': 'Country', 'air_pollutant_level': f'Average {selected_pollutant} Level (μg/m³)'})
-
-    # Rotate the x-axis labels
-    fig.update_layout(xaxis_tickangle=-45)
-
-    # Set the y-axis type to linear (default)
-    fig.update_yaxes(type='linear', autorange=False, range=[0, 300]) 
-
-    # Add a line for the WHO standard
-    standard = who_standards[selected_pollutant]['annual']
-    fig.add_hline(y=standard, line_dash='solid', line_color='red')
-
-    # Update the layout to move the legend to the right side
-    fig.update_layout(legend=dict(
-        yanchor='top',
-        y=0.99,
-        xanchor="left",
-        x=1.01
-    ))
-
-    # Moving the annotation out of the plot area to the right side
-    fig.add_annotation(
-        text=f'WHO {selected_pollutant} Standard',
-        xref="paper", yref="paper",
-        x=1, y=1.05,  # positions to the right of the plot area
-        showarrow=False,
-        align='left',
-        bgcolor='white',
-        bordercolor='red',
-        borderwidth=1
-    )
-
-    # Update the layout to add space for the annotation
-    fig.update_layout(
-        margin=dict(r=160, t=50)  
-    )
+def plot_data_simple(df_filtered, selected_pollutant):
+    # Create a simple figure with Plotly
+    fig = px.bar(df_filtered, x='country', y='air_pollutant_level', title=f'Average {selected_pollutant} Emissions by Country in 2023')
+    
+    # Setting a fixed y-axis range
+    fig.update_yaxes(autorange=False, range=[0, 500])  # Assuming 500 is above your max value
 
     # Display the figure in Streamlit
     st.plotly_chart(fig)
 
+# Simplified data filtering and plotting
+selected_pollutant = 'NO2'  # As an example
+df_simple_filtered = df_original[df_original['air_pollutant'] == selected_pollutant]
+
+# Convert to numeric explicitly right after filtering
+df_simple_filtered['air_pollutant_level'] = pd.to_numeric(df_simple_filtered['air_pollutant_level'], errors='coerce')
+
+# Call the simplified plotting function
+if not df_simple_filtered.empty:
+    plot_data_simple(df_simple_filtered, selected_pollutant)
+else:
+    st.error('No data available for the selected filters.')
 
 # Filtering for PM10, PM2.5, and NO2 pollutants only, and for the year 2023
 df_filtered = df[df['air_pollutant'].isin(['PM10', 'PM2.5', 'NO2'])]
@@ -120,8 +95,11 @@ else:
     # If data is present, call the plotting function
     plot_data(df_filtered, who_standards, selected_pollutant)
 
-st.write(df_filtered['air_pollutant_level'].describe())
-st.dataframe(df_filtered.head())
+# Debugging: Print descriptive statistics of the filtered data
+st.write(df_simple_filtered['air_pollutant_level'].describe())
+
+# Debugging: Display the first few rows of the filtered DataFrame to check values
+st.dataframe(df_simple_filtered.head())
 
 
 
