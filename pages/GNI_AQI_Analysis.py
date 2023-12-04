@@ -81,4 +81,4 @@ def plot_data(df, selected_pollutants):
     st.plotly_chart(fig)
 
 # Execute Plotting
-plot_data(df, selected_pollutants)
+plot_data(df, selected_pollutants) 
