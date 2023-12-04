@@ -56,22 +56,36 @@ def plot_data(df_filtered, who_standards, selected_pollutant):
     # Rotate the x-axis labels
     fig.update_layout(xaxis_tickangle=-45)
 
+    # Set the y-axis type to linear (default)
     fig.update_yaxes(type='linear')
 
     # Add a line for the WHO standard
     standard = who_standards[selected_pollutant]['annual']
     fig.add_hline(y=standard, line_dash="dash", line_color='red')
 
-    # Moving the annotation next to the plot
+    # Moving the annotation to the right side of the plot
     fig.add_annotation(
-        text=f'WHO {selected_pollutant} Standard', showarrow=False,
-        align='right',
+        text=f'WHO {selected_pollutant} Standard', 
+        showarrow=False,
+        x=0.95,  # x position (95% of the way to the right)
+        y=standard,  # y position (at the level of the WHO standard line)
+        xref='paper',  # relative to the edges of the paper (figure)
+        yref='y',  # relative to the y-axis value
+        align='right',  # align text to the right
         bgcolor='white',
         bordercolor='red',
-        borderwidth=1
+        borderwidth=1,
+        xanchor='right'  # anchor the text box to its right edge
     )
 
+    # Update the layout to add space for the annotation
+    fig.update_layout(
+        margin=dict(r=100)  
+    )
+
+    # Display the figure in Streamlit
     st.plotly_chart(fig)
+
 
 # Filtering for PM10, PM2.5, and NO2 pollutants only, and for the year 2023
 df_filtered = df[df['air_pollutant'].isin(['PM10', 'PM2.5', 'NO2'])]
