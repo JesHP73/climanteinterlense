@@ -48,6 +48,9 @@ def plot_data(df_filtered, who_standards, selected_pollutant):
         st.error(f"Selected pollutant {selected_pollutant} does not have a WHO standard defined.")
         return
 
+    # Get the maximum value in 'air_pollutant_level' column
+    max_level = df_filtered['air_pollutant_level'].max()
+
     # Create a figure with Plotly
     fig = px.bar(df_filtered, x='country', y='air_pollutant_level', color='region',
                  title=f'Average {selected_pollutant} Emissions by Country in 2023',
@@ -55,7 +58,10 @@ def plot_data(df_filtered, who_standards, selected_pollutant):
 
     # Rotate the x-axis labels
     fig.update_layout(xaxis_tickangle=-45)
-
+    
+    # Set a custom Y-axis range based on the maximum value
+    fig.update_yaxes(range=[0, max_level + 200])  
+  
     # Add a line for the WHO standard
     standard = who_standards[selected_pollutant]['annual']
     fig.add_hline(y=standard, line_dash="dash", line_color='red')
