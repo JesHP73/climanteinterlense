@@ -42,9 +42,17 @@ who_standards = {
 # Filter for PM10, PM2.5, and NO2 pollutants only
 df = df[df['air_pollutant'].isin(['PM10', 'PM2.5', 'NO2'])]
 
+import streamlit as st
+import pandas as pd
+import plotly.express as px
+
+# Load data, define WHO standards, and other necessary setup...
+
 # User input areas for filtering
 region_options = ['All'] + sorted(df['region'].unique().tolist())
-pollutants_options = ['All'] + sorted(df['air_pollutant'].unique().tolist())
+
+# 'All' option removed from pollutants_options
+pollutants_options = sorted(df['air_pollutant'].unique().tolist())
 
 # Sidebar for user input
 selected_region = st.sidebar.multiselect('Select Region', options=region_options, default=['All'])
@@ -56,48 +64,42 @@ if 'All' not in selected_region:
 else:
     df_filtered = df.copy()
 
-if selected_pollutant and selected_pollutant != 'All':
-    df_filtered = df_filtered[df_filtered['air_pollutant'] == selected_pollutant]
+# Since 'All' option is removed for pollutants, we can filter directly
+df_filtered = df_filtered[df_filtered['air_pollutant'] == selected_pollutant]
 
-# Calculate the difference from the WHO standard for sorting if a specific pollutant is selected
-if selected_pollutant in who_standards:
-    standard = who_standards[selected_pollutant]['annual']
-    df['difference'] = df['air_pollutant_level'] - standard
-    df = df.sort_values('difference', ascending=False)
 
 # Plotting Function
-def plot_data(df, who_standards, selected_pollutant):
+
+def plot_data(df_filtered, who_standards, selected_pollutant):
     # Create a figure with Plotly
-    fig = px.bar(df, x='country', y='air_pollutant_level', color='region', 
+    fig = px.bar(df_filtered, x='country', y='air_pollutant_level', color='region', 
                  title=f'Average {selected_pollutant} Emissions by Country (WHO Standard in red)',
                  labels={'country': 'Country', 'air_pollutant_level': f'Average {selected_pollutant} Level (μg/m³)'})
-    # The closing parenthesis was missing here
     
     # Rotate the x-axis labels
     fig.update_layout(xaxis_tickangle=-45)
 
-    # Add lines for WHO standards if a specific pollutant is selected
-    if selected_pollutant in who_standards:
-        standard = who_standards[selected_pollutant]['annual']
-        fig.add_hline(y=standard, line_dash="dash", line_color='red')
-        # Move the annotation next to the plot
-        fig.add_annotation(
-            xref='paper', x=1.05, y=standard, 
-            text=f'WHO {selected_pollutant} Standard', showarrow=False,
-            yref='y', 
-            align='left',
-            bgcolor='white',
-            bordercolor='red',
-            borderwidth=2
-        )
+    # Add a line for the WHO standard
+    standard = who_standards[selected_pollutant]['annual']
+    fig.add_hline(y=standard, line_dash="dash", line_color='red')
+    # Move the annotation next to the plot
+    fig.add_annotation(
+        xref='paper', x=1.05, y=standard, 
+        text=f'WHO {selected_pollutant} Standard', showarrow=False,
+        yref='y', 
+        align='left',
+        bgcolor='white',
+        bordercolor='red',
+        borderwidth=2
+    )
 
     # Set dynamic y-axis range based on the data
-    max_value = df['air_pollutant_level'].max()
-    y_axis_max = max(max_value, standard) if selected_pollutant in who_standards else max_value
-    fig.update_yaxes(range=[0, y_axis_max * 1.1])  # Scale to the higher of max value or standard
+    max_value = df_filtered['air_pollutant_level'].max()
+    fig.update_yaxes(range=[0, max_value * 1.1])  # Scales to max value with some padding
 
     st.plotly_chart(fig)
 
 # Execute Plotting with the correct parameters
-plot_data(df, who_standards, selected_pollutant)
+plot_data(df_filtered, who_standards, selected_pollutant)
+
 
