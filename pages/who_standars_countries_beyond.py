@@ -61,11 +61,11 @@ def plot_data(df_filtered, who_standards, selected_pollutant):
 
     # Add a line for the WHO standard
     standard = who_standards[selected_pollutant]['annual']
-    fig.add_hline(y=standard, line_dash="dash", line_color='red')
+    fig.add_hline(y=standard, line_dash="line", line_color='yellow')
 
     # Update the layout to move the legend to the right side
     fig.update_layout(legend=dict(
-        yanchor='bottom',
+        yanchor='top',
         y=0.99,
         xanchor="left",
         x=1.01
