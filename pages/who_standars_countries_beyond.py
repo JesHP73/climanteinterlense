@@ -62,7 +62,7 @@ def plot_data(df_mean_levels, who_standards, selected_pollutant):
     fig.update_layout(xaxis_tickangle=-45)
     
     # Setting a fixed y-axis range
-    fig.update_yaxes(autorange=False, range=[0, 500]) 
+    fig.update_yaxes(autorange=False, range=[0, 150]) 
 
     # Add a line for the WHO standard
     standard = who_standards[selected_pollutant]['annual']
