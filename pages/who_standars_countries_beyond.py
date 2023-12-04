@@ -101,14 +101,16 @@ def plot_data(df_mean_levels, who_standards, selected_pollutant):
 df_filtered = df[df['air_pollutant'].isin(['PM10', 'PM2.5', 'NO2'])]
 df_filtered['air_pollutant_level'] = pd.to_numeric(df_filtered['air_pollutant_level'], errors='coerce')
 
-
 # User input areas for filtering
-region_options = ['All'] + sorted(df_filtered['region'].unique().tolist())
-pollutants_options = sorted(df_filtered['air_pollutant'].unique().tolist())
+region_options = ['All'] + sorted(df['region'].unique().tolist())
+pollutants_options = sorted(df['air_pollutant'].unique().tolist())
 
 # Sidebar for user input
 selected_region = st.sidebar.multiselect('Select Region', options=region_options, default=['All'])
 selected_pollutant = st.sidebar.selectbox('Select Pollutant', options=pollutants_options)
+
+# Filtering for PM10, PM2.5, and NO2 pollutants only, and for the year 2023
+df_filtered = df[df['air_pollutant'].isin(['PM10', 'PM2.5', 'NO2'])]
 
 # Apply the selected region filter
 if 'All' not in selected_region:
@@ -117,8 +119,18 @@ if 'All' not in selected_region:
 # Apply the selected pollutant filter
 df_filtered = df_filtered[df_filtered['air_pollutant'] == selected_pollutant]
 
+# Ensure the air pollutant level is a numeric type
+df_filtered['air_pollutant_level'] = pd.to_numeric(df_filtered['air_pollutant_level'], errors='coerce')
+
 # Calculate the mean air pollution level for each country
 df_mean_levels = df_filtered.groupby('country')['air_pollutant_level'].mean().reset_index()
+
+# Add a 'difference' column to df_mean_levels
+standard = who_standards[selected_pollutant]['annual']
+df_mean_levels['difference'] = df_mean_levels['air_pollutant_level'] - standard
+
+# Now sorting by 'difference'
+df_mean_levels = df_mean_levels.sort_values('difference', ascending=False)
 
 # Check if the DataFrame is empty after all filters have been applied
 if df_mean_levels.empty:
