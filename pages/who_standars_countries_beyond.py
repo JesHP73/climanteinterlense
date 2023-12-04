@@ -65,7 +65,7 @@ def plot_data(df_filtered, who_standards, selected_pollutant):
 
     # Update the layout to move the legend to the right side
     fig.update_layout(legend=dict(
-        yanchor="top",
+        yanchor='bottom',
         y=0.99,
         xanchor="left",
         x=1.01
