@@ -63,16 +63,18 @@ def plot_data(df_mean_levels, who_standards, selected_pollutant):
     # Setting a fixed y-axis range
     fig.update_yaxes(autorange=False, range=[0, 120]) 
     
-      # Setting the figure size and fix the legend position to the top right
+    # Setting the figure size and moving the legend position outside to the right
     fig.update_layout(
         height=600,  # Adjust the height as needed
         width=800,   # Adjust the width as needed
         legend=dict(
-            yanchor="top",
-            y=0.99,
-            xanchor="right",
-            x=0.99
-        )
+            yanchor="middle",
+            y=0.5,
+            xanchor="left",
+            x=1.05  # This places the legend outside the plot to the right
+        ),
+        # Adjust the right margin to ensure there is enough space for the legend
+        margin=dict(r=200) 
     )
     
     # Adding a dummy trace for the WHO standard to appear in the legend
