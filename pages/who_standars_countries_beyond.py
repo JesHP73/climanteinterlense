@@ -61,6 +61,10 @@ def plot_data(df_filtered, who_standards, selected_pollutant):
 
     # Rotate the x-axis labels
     fig.update_layout(xaxis_tickangle=-45)
+    
+    # Setting a fixed y-axis range
+    fig.update_yaxes(autorange=False, range=[0, 500]) 
+
 
     # Add a line for the WHO standard
     standard = who_standards[selected_pollutant]['annual']
