@@ -66,35 +66,17 @@ def plot_data(df_mean_levels, who_standards, selected_pollutant):
     # Add a line for the WHO standard
     fig.add_hline(y=standard, line_dash='solid', line_color='red')
 
-    # Moving the annotation for the WHO standard line to the right side of the plot
+    # Add an annotation for the WHO standard line next to the line
     fig.add_annotation(
         text=f"WHO {selected_pollutant} Standard",
-        xref="paper", yref="paper",
-        x=1.05, y=0.95,  # Adjust 'y' to match the level of the WHO standard line
+        x=0.95, y=standard,
+        xanchor='left', yanchor='middle',
         showarrow=False,
-        align='left',
-        bgcolor='white',
-        bordercolor='red',
-        borderwidth=2
-    )
-
-    # Update the layout to add space for the annotation
-    fig.update_layout(
-        margin=dict(r=200, t=50, b=40, l=40),  # Adjust the right margin if needed
-        annotations=[
-            dict(
-                text=f"WHO {selected_pollutant} Standard",
-                showarrow=False,
-                xref="paper", yref="paper",
-                x=1.12, y=0.5,  
-                xanchor='left', yanchor='bottom',
-                font=dict(
-                    family="Arial",
-                    size=12,
-                    color="red"
-                ),
-            )
-        ]
+        font=dict(
+            family="Arial",
+            size=9,
+            color="red"
+        ),
     )
 
     # Display the figure in Streamlit
