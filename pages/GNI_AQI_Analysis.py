@@ -68,6 +68,11 @@ df_filtered = df_filtered[df_filtered['air_pollutant'] == selected_pollutant]
 # Plotting Function
 
 def plot_data(df_filtered, who_standards, selected_pollutant):
+     # Making sure the selected pollutant is in the WHO standards dictionary
+    if selected_pollutant not in who_standards:
+        st.error(f"Selected pollutant {selected_pollutant} does not have a WHO standard defined.")
+        return
+        
     # Create a figure with Plotly
     fig = px.bar(df_filtered, x='country', y='air_pollutant_level', color='region', 
                  title=f'Average {selected_pollutant} Emissions by Country in 2023',
