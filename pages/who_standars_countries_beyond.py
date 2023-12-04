@@ -63,24 +63,29 @@ def plot_data(df_filtered, who_standards, selected_pollutant):
     standard = who_standards[selected_pollutant]['annual']
     fig.add_hline(y=standard, line_dash="dash", line_color='red')
 
-    # Moving the annotation to the right side of the plot
+    # Update the layout to move the legend to the right side
+    fig.update_layout(legend=dict(
+        yanchor="top",
+        y=0.99,
+        xanchor="left",
+        x=1.01
+    ))
+
+    # Moving the annotation out of the plot area to the right side
     fig.add_annotation(
-        text=f'WHO {selected_pollutant} Standard', 
+        text=f'WHO {selected_pollutant} Standard',
+        xref="paper", yref="paper",
+        x=1, y=1.05,  # positions to the right of the plot area
         showarrow=False,
-        x=0.95,  # x position (95% of the way to the right)
-        y=standard,  # y position (at the level of the WHO standard line)
-        xref='paper',  # relative to the edges of the paper (figure)
-        yref='y',  # relative to the y-axis value
-        align='right',  # align text to the right
+        align='left',
         bgcolor='white',
         bordercolor='red',
-        borderwidth=1,
-        xanchor='right'  # anchor the text box to its right edge
+        borderwidth=1
     )
 
     # Update the layout to add space for the annotation
     fig.update_layout(
-        margin=dict(r=90)  
+        margin=dict(r=160, t=50)  
     )
 
     # Display the figure in Streamlit
