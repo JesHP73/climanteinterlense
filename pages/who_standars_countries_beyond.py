@@ -68,13 +68,13 @@ def plot_data(df_mean_levels, who_standards, selected_pollutant):
 
     # Add an annotation for the WHO standard line next to the line
     fig.add_annotation(
-        text=f"WHO {selected_pollutant} Standard",
-        x=0.95, y=standard,
-        xanchor='left', yanchor='middle',
+        text=f"WHO {selected_pollutant} Annual Standard (μg/m³) ",
+        x=0.5, y=-0.1,
+        xanchor='left', yanchor='bottom',
         showarrow=False,
         font=dict(
             family="Arial",
-            size=9,
+            size=12,
             color="red"
         ),
     )
