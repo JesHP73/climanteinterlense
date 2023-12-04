@@ -71,17 +71,10 @@ def plot_data(df_filtered, who_standards, selected_pollutant):
         borderwidth=2
     )
 
-    # Set dynamic y-axis range based on the data
-    #max_value = df_filtered['air_pollutant_level'].max()
-    #fig.update_yaxes(range=[0, max_value * 1.1])  # Scales to max value with some padding
-
     st.plotly_chart(fig)
 
 # Filtering for PM10, PM2.5, and NO2 pollutants only, and for the year 2023
-df_filtered = df[
-    (df['air_pollutant'].isin(['PM10', 'PM2.5', 'NO2'])) &
-    (df['year'] == 2023)
-]
+df_filtered = df[df['air_pollutant'].isin(['PM10', 'PM2.5', 'NO2'])
 
 # User input areas for filtering
 region_options = ['All'] + sorted(df_filtered['region'].unique().tolist())
