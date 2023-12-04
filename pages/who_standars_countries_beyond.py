@@ -118,5 +118,11 @@ else:
     # If data is present, call the plotting function
     plot_data(df_filtered, who_standards, selected_pollutant)
 
+# Debugging: Print descriptive statistics of the filtered data
+st.write(df_filtered['air_pollutant_level'].describe())
+
+# Debugging: Display the first few rows of the filtered DataFrame to check values
+st.dataframe(df_filtered.head())
+
 
 
