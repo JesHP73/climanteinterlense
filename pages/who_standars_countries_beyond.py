@@ -96,11 +96,6 @@ def plot_data(df_mean_levels, who_standards, selected_pollutant):
     # Display the figure in Streamlit
     st.plotly_chart(fig)
 
-
-# Filtering for PM10, PM2.5, and NO2 pollutants only, and for the year 2023
-df_filtered = df[df['air_pollutant'].isin(['PM10', 'PM2.5', 'NO2'])]
-df_filtered['air_pollutant_level'] = pd.to_numeric(df_filtered['air_pollutant_level'], errors='coerce')
-
 # User input areas for filtering
 region_options = ['All'] + sorted(df['region'].unique().tolist())
 pollutants_options = sorted(df['air_pollutant'].unique().tolist())
@@ -109,21 +104,18 @@ pollutants_options = sorted(df['air_pollutant'].unique().tolist())
 selected_region = st.sidebar.multiselect('Select Region', options=region_options, default=['All'])
 selected_pollutant = st.sidebar.selectbox('Select Pollutant', options=pollutants_options)
 
-# Filtering for PM10, PM2.5, and NO2 pollutants only, and for the year 2023
-df_filtered = df[df['air_pollutant'].isin(['PM10', 'PM2.5', 'NO2'])]
+# Filtering for the selected pollutant and the year 2023
+df_filtered = df[(df['air_pollutant'] == selected_pollutant) & (df['year'] == 2023)]
 
-# Apply the selected region filter
+# Apply the selected region filter if not 'All'
 if 'All' not in selected_region:
     df_filtered = df_filtered[df_filtered['region'].isin(selected_region)]
-
-# Apply the selected pollutant filter
-df_filtered = df_filtered[df_filtered['air_pollutant'] == selected_pollutant]
 
 # Ensure the air pollutant level is a numeric type
 df_filtered['air_pollutant_level'] = pd.to_numeric(df_filtered['air_pollutant_level'], errors='coerce')
 
-# Calculate the mean air pollution level for each country
-df_mean_levels = df_filtered.groupby('country')['air_pollutant_level'].mean().reset_index()
+# Group by both country and region, then calculate the mean air pollution level
+df_mean_levels = df_filtered.groupby(['country', 'region'])['air_pollutant_level'].mean().reset_index()
 
 # Add a 'difference' column to df_mean_levels
 standard = who_standards[selected_pollutant]['annual']
