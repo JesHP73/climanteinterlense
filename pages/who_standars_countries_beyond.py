@@ -39,10 +39,9 @@ who_standards = {
  
 # O3 and CO are excluded as their standards are not based on annual averages
 
-
 # Plotting Function
 
-def plot_data(df_filtered, who_standards, selected_pollutant):
+def plot_data(df_mean_levels, who_standards, selected_pollutant):
     # Making sure the selected pollutant is in the WHO standards dictionary
     if selected_pollutant not in who_standards:
         st.error(f"Selected pollutant {selected_pollutant} does not have a WHO standard defined.")
@@ -50,11 +49,11 @@ def plot_data(df_filtered, who_standards, selected_pollutant):
 
      # Calculate the difference from the WHO standard and sort
     standard = who_standards[selected_pollutant]['annual']
-    df_filtered = df_filtered.assign(difference=lambda x: x['air_pollutant_level'] - standard)
-    df_filtered = df_filtered.sort_values('difference', ascending=False)
+    df_filtered = df_mean_levels.assign(difference=lambda x: x['air_pollutant_level'] - standard)
+    df_filtered = df_mean_levels.sort_values('difference', ascending=False)
 
     # Update the Plotly figure to use the sorted data
-    fig = px.bar(df_filtered, x='country', y='air_pollutant_level', color='region',
+    fig = px.bar(df_mean_levels, x='country', y='air_pollutant_level', color='region',
                  title=f'Average {selected_pollutant} Emissions by Country in 2023',
                  labels={'country': 'Country', 'air_pollutant_level': f'Average {selected_pollutant} Level (μg/m³)'})
 
@@ -64,7 +63,6 @@ def plot_data(df_filtered, who_standards, selected_pollutant):
     
     # Setting a fixed y-axis range
     fig.update_yaxes(autorange=False, range=[0, 500]) 
-
 
     # Add a line for the WHO standard
     standard = who_standards[selected_pollutant]['annual']
@@ -119,16 +117,19 @@ if 'All' not in selected_region:
 # Apply the selected pollutant filter
 df_filtered = df_filtered[df_filtered['air_pollutant'] == selected_pollutant]
 
-# Check if the DataFrame is empty after all filters have been applied
-if df_filtered.empty:
-    st.error('No data available for the selected filters.')
-    # If there is no data, we should not attempt to plot
-else:
-    # If data is present, call the plotting function
-    plot_data(df_filtered, who_standards, selected_pollutant)
+# Calculate the mean air pollution level for each country
+df_mean_levels = df_filtered.groupby('country')['air_pollutant_level'].mean().reset_index()
 
-st.write(df_filtered['air_pollutant_level'].describe())
-st.dataframe(df_filtered.head())
+# Check if the DataFrame is empty after all filters have been applied
+if df_mean_levels.empty:
+    st.error('No data available for the selected filters.')
+else:
+    # If data is present, call the plotting function with the mean levels
+    plot_data(df_mean_levels, who_standards, selected_pollutant)
+
+# Show the mean air pollution level for each country
+st.write(df_mean_levels['air_pollutant_level'].describe())
+st.dataframe(df_mean_levels)
 
 
 
