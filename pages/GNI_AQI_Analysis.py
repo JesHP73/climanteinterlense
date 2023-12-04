@@ -68,10 +68,9 @@ def plot_data(df_filtered, who_standards, selected_pollutant):
 
     # Moving the annotation next to the plot
     fig.add_annotation(
-        x=standard, x=1.05, 
-        text=f'WHO {selected_pollutant} Standard', showarrow=False,
-        xreft= 'x',
+        xreft= y=standard, x=1.05,
         yreft= 'paper',
+        text=f'WHO {selected_pollutant} Standard', showarrow=False,
         align='left',
         bgcolor='white',
         bordercolor='red',
