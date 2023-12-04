@@ -47,30 +47,43 @@ def plot_data(df_mean_levels, who_standards, selected_pollutant):
         st.error(f"Selected pollutant {selected_pollutant} does not have a WHO standard defined.")
         return
 
-    # Calculate the difference from the WHO standard and sort
+    # Calculating the difference from the WHO standard and sort
     standard = who_standards[selected_pollutant]['annual']
     df_filtered = df_mean_levels.assign(difference=lambda x: x['air_pollutant_level'] - standard)
     df_filtered = df_mean_levels.sort_values('difference', ascending=False)
 
-    # Update the Plotly figure to use the sorted data
+    # Updating the Plotly figure to use the sorted data
     fig = px.bar(df_filtered, x='country', y='air_pollutant_level', color='region',
                  title=f'Average {selected_pollutant} Emissions by Country in 2023',
                  labels={'country': 'Country', 'air_pollutant_level': f'Average {selected_pollutant} Level (μg/m³)'})
-
-    # Rotate the x-axis labels
+    
+    # Rotating the x-axis labels
     fig.update_layout(xaxis_tickangle=-45)
     
     # Setting a fixed y-axis range
     fig.update_yaxes(autorange=False, range=[0, 120]) 
-
-    # Add a line for the WHO standard
+    
+    # Adding a line for the WHO standard
     fig.add_hline(y=standard, line_dash='solid', line_color='red')
-
+    
+    # Setting the figure size and fix the legend position
+    fig.update_layout(
+        height=600,  # Adjust the height as needed
+        width=800,   # Adjust the width as needed
+        legend=dict(
+            yanchor="top",
+            y=0.99,
+            xanchor="left",
+            x=0.01
+        )
+    )
+    
     # Add an annotation for the WHO standard line next to the line
+   
     fig.add_annotation(
         text=f"WHO {selected_pollutant} Annual Standard (μg/m³)",
-        x=34, y=10,
-        xanchor='left', yanchor='bottom',
+        x=34, y=standard,  # You might need to adjust these values
+        xanchor='left', yanchor='middle',
         showarrow=False,
         font=dict(
             family="Arial",
@@ -78,9 +91,9 @@ def plot_data(df_mean_levels, who_standards, selected_pollutant):
             color="red"
         ),
     )
-
+    
     # Display the figure in Streamlit
-    st.plotly_chart(fig)
+    st.plotly_chart(fig, use_container_width=True)  
 
 
 # User input areas for filtering
