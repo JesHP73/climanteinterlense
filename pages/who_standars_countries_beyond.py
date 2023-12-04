@@ -15,7 +15,7 @@ import numpy as np
 @st.cache
 def load_data():
     try:
-        DATA_URL = 'https://raw.githubusercontent.com/JesHP73/climanteinterlense/main/dataset/air_quality_vs_gni_agg.csv'
+        DATA_URL = 'https://raw.githubusercontent.com/JesHP73/climanteinterlense/main/dataset/who_standars_air_quality_countries.csv'
         data = pd.read_csv(DATA_URL)
         return data
     except Exception as e:
