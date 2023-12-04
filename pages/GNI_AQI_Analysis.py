@@ -55,6 +55,10 @@ if selected_pollutant and selected_pollutant != 'All':
 
 # Plotting Function
 def plot_data(df, who_standards):
+
+    # Filter for PM10, PM2.5, and NO2 pollutants only
+    df = df[df['air_pollutant'].isin(['PM10', 'PM2.5', 'NO2'])]
+    
     # Create a figure with Plotly
     fig = px.bar(df, x='country', y='air_pollutant_level', color='region', 
                  title='Air Pollutant Emissions by Country',
