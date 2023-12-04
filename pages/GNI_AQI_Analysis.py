@@ -56,18 +56,6 @@ def plot_data(df_filtered, who_standards, selected_pollutant):
     # Rotate the x-axis labels
     fig.update_layout(xaxis_tickangle=-45)
 
-    # Calculate the Y-axis range based on the data
-    y_mins = []
-    y_maxs = []
-    for trace_data in fig.data:
-        y_mins.append(min(trace_data.y))
-        y_maxs.append(max(trace_data.y))
-    y_min = min(y_mins)
-    y_max = max(y_maxs)
-
-    # Set the Y-axis range based on the calculated values
-    fig.update_yaxes(range=[y_min, y_max])
-
     # Add a line for the WHO standard
     standard = who_standards[selected_pollutant]['annual']
     fig.add_hline(y=standard, line_dash="dash", line_color='red')
