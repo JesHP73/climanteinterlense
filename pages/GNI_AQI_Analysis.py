@@ -54,7 +54,7 @@ if 'All' not in selected_pollutants:
     df = df[df['air_pollutant'].isin(selected_pollutants)]
 
 # Plotting Function
-def plot_data(df):
+def plot_data(df, selected_pollutants):
     # Filter for PM10, PM2.5, and NO2 pollutants only
     df = df[df['air_pollutant'].isin(['PM10', 'PM2.5', 'NO2'])]
 
@@ -66,19 +66,30 @@ def plot_data(df):
         df = df[df['air_pollutant'].isin(selected_pollutants)]
 
     # Create a figure with Plotly
-    fig = px.bar(df, x='country', y=value_col, color='region', title='Air Pollutant Emissions by Country',
-                 labels={'country': 'Country', value_col: 'Average Level (μg/m³)'})
-    
+    fig = px.bar(df, x='country', y=value_col, color='region', 
+                 title='Air Pollutant Emissions by Country')
+
+    # Update y-axis title based on the selected pollutants
+    pollutants_string = ", ".join(selected_pollutants) if 'All' not in selected_pollutants else 'All Pollutants'
+    fig.update_layout(
+        yaxis_title=f'Average Level of {pollutants_string} (μg/m³)',
+        xaxis_title='Country'
+    )
+
     # Rotate the x-axis labels
     fig.update_layout(xaxis_tickangle=-45)
-    
+
+    # Set the y-axis range if needed
+    fig.update_yaxes(range=[0, 500])
+
     # Add lines for WHO standards
     for pollutant, standards in who_standards.items():
         if 'All' in selected_pollutants or pollutant in selected_pollutants:
             fig.add_hline(y=standards['annual'], line_dash="dash", line_color='red',
                           annotation_text=f'WHO {pollutant} Standard', annotation_position="bottom right")
-    
+
     st.plotly_chart(fig)
 
 # Execute Plotting
-plot_data(df) 
+plot_data(df, selected_pollutants)
+
