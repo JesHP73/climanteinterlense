@@ -23,112 +23,50 @@ def load_data():
         return pd.DataFrame()  # Return an empty DataFrame in case of error
 
 
-#df_original = load_data()
+df_original = load_data()
 
 # Create a copy of the DataFrame for manipulation
 df = df_original.copy()
 
+# WHO Standards with correct averaging periods
+who_standards = {
+    'PM10': {'annual': 15},  # Annual mean: 15 μg/m3
+    'PM2.5': {'annual': 5},  # Annual mean: 5 μg/m3
+    #'O3': {'8_hour_max': 100000},  # Max daily 8-hour mean: 100 μg/m3
+    'NO2': {'annual': 10},  # Annual mean: 10 μg/m3
+    #'CO': {'8_hour_max': 4000}  # Max daily 8-hour mean: 4000 μg/m3 (4 mg/m3)
+}
+ 
+# O3 and CO are excluded as their standards are not based on annual averages
+
 # User input areas
 region_options = ['All'] + sorted(df['region'].unique().tolist())
-country_options = ['All'] + sorted(df['country'].unique().tolist())
+pollutans_options = ['All'] + sorted(df['air_pollutant'].unique().tolist())
 
-# Sidebar filters
-selected_region = st.sidebar.multiselect('Select Region', options=region_options, default=['All'])
-selected_country = st.sidebar.multiselect('Select Country', options=country_options, default=['All'])
+# Sidebar for user input
+selected_region = st.sidebar.multiselect('Select Region', options=['All'] + sorted(df['region'].unique().tolist()), default=['All'])
+selected_pollutants = st.sidebar.multiselect('Select Pollutant', options=['All'] + sorted(df['air_pollutant'].unique().tolist()), default=['All'])
 
-# Efficient combined filtering
-conditions = []
+# Data Filtering
 if 'All' not in selected_region:
-    conditions.append(df['region'].isin(selected_region))
-if 'All' not in selected_country:
-    conditions.append(df['country'].isin(selected_country))
+    df = df[df['region'].isin(selected_region)]
+if 'All' not in selected_pollutants:
+    df = df[df['air_pollutant'].isin(selected_pollutants)]
 
-if conditions:
-    filtered_data = df[np.logical_and.reduce(conditions)]
-else:
-    filtered_data = df.copy()
+# Plotting Function
+def plot_data(df):
+    # Decide which column to use based on pollutant selection
+    value_col = 'AQI_Index' if 'All' in selected_pollutants else 'air_pollutant_level'
 
-
-# Function for plotting AQI Index vs GNI per Capita
-
-def plot_aqi_and_gni_over_time(merged_data):
-    if merged_data.empty:
-        st.error('No data available for plotting.')
-        return
+    # Create a figure with Plotly
+    fig = px.bar(df, x='country', y=value_col, color='region', title='Air Pollutant Emissions by Country')
     
-    # Further aggregate by year and income group for clarity
-    summary_data = merged_data.groupby(['year', 'ig_label']).agg({
-        'GNI_per_capita': 'mean',  # check tomorow
-        'AQI_Index': 'mean'  # check tomorow
-    }).reset_index()
-
-    # Define the color mapping for income groups with long names
-    color_mapping = {
-        'LM': ('Low Income', 'darkblue'),
-        'UM': ('Middle Income', 'grey'),
-        'H': ('High Income', 'green'),
-    }
+    # Add a line for WHO standard if a single pollutant is selected
+    if len(selected_pollutants) == 1 and selected_pollutants[0] in who_standards:
+        fig.add_hline(y=who_standards[selected_pollutants[0]], line_color='red', annotation_text='WHO Standard')
     
-    # Create the subplots
-    fig = make_subplots(specs=[[{"secondary_y": True}]])
-
-    # Plot the average AQI Index for all countries
-    fig.add_trace(
-        go.Scatter(
-            x=summary_data['year'], 
-            y=summary_data.groupby('year')['AQI_Index'].transform('mean'),  # This gets the mean AQI for each year across all income groups
-            name='Average AQI Index',
-            mode='lines+markers',
-            line=dict(color='orange')
-        ),
-        secondary_y=False,
-    )
-
-    # Plot the mean GNI per Capita for each income group
-    for ig_label, (name, color) in color_mapping.items():
-        income_group_data = summary_data[summary_data['ig_label'] == ig_label]
-        fig.add_trace(
-            go.Scatter(
-                x=income_group_data['year'], 
-                y=income_group_data['GNI_per_capita'],
-                name=name,
-                mode='lines+markers',
-                line=dict(color=color)
-            ),
-            secondary_y=True,
-        )
-
-    # Set x-axis title
-    fig.update_xaxes(title_text="Year")
-
-    # Set y-axes titles
-    fig.update_yaxes(title_text="AQI Index", secondary_y=False)
-    fig.update_yaxes(title_text="GNI per Capita (EUR)", secondary_y=True)
-    
-    # Set figure title and legend
-    fig.update_layout(
-        title_text="AQI Index and World Bank GNI per Capita over Time",
-        legend_title_text='Metric',
-        legend=dict(
-            orientation="h",
-            yanchor="bottom",
-            y=1.02,
-            xanchor="right",
-            x=1
-        )
-    )
-    
-    # Show the plot
     st.plotly_chart(fig)
 
-
-
-# Call the function to plot data
-if not filtered_data.empty:
-    plot_aqi_and_gni_over_time(filtered_data)
-else:
-    st.error("No data available for the selected filters.")
-
-# Additional insights or summaries based on the filtered data
-st.write("Additional insights or data summaries can go here.")
+# Execute Plotting
+plot_data(df)
 
