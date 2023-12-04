@@ -62,8 +62,13 @@ def plot_data(df_filtered, who_standards, selected_pollutant):
     # Rotate the x-axis labels
     fig.update_layout(xaxis_tickangle=-45)
 
-   # Set the y-axis type to linear (default)
-    fig.update_yaxes(type='linear', autorange=False, range=[0, 300]) 
+     # Calculate the maximum expected value for the y-axis range
+    max_pollutant_level = df_filtered['air_pollutant_level'].max()
+    buffer = max_pollutant_level * 0.1  # Add 10% buffer
+    max_value = max_pollutant_level + buffer
+
+    # Set the y-axis range to include all data points
+    fig.update_yaxes(type='linear', autorange=False, range=[0, max_value])
 
     # Add a line for the WHO standard
     standard = who_standards[selected_pollutant]['annual']
