@@ -87,7 +87,7 @@ def plot_data(df_mean_levels, who_standards, selected_pollutant):
                 showarrow=False,
                 xref="paper", yref="paper",
                 x=1.12, y=0.5,  
-                xanchor='left', yanchor='middle',
+                xanchor='left', yanchor='bottom',
                 font=dict(
                     family="Arial",
                     size=12,
