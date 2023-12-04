@@ -57,7 +57,7 @@ def plot_data(df_filtered, who_standards, selected_pollutant):
     fig.update_layout(xaxis_tickangle=-45)
 
     # Explicitly set Y-axis type to 'linear'
-    fig.update_yaxes(type='linear')
+    fig.update_yaxes(type='enumerated')
 
     # Add a line for the WHO standard
     standard = who_standards[selected_pollutant]['annual']
