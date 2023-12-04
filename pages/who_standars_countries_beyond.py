@@ -65,10 +65,10 @@ def plot_data(df_filtered, who_standards, selected_pollutant):
     # Moving the annotation next to the plot
     fig.add_annotation(
         text=f'WHO {selected_pollutant} Standard', showarrow=False,
-        align='left',
+        align='right',
         bgcolor='white',
         bordercolor='red',
-        borderwidth=2
+        borderwidth=1
     )
 
     st.plotly_chart(fig)
