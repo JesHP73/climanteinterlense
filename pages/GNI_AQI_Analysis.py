@@ -65,8 +65,9 @@ if selected_pollutant in who_standards:
 def plot_data(df, who_standards, selected_pollutant):
     # Create a figure with Plotly
     fig = px.bar(df, x='country', y='air_pollutant_level', color='region', 
-                title=f'Average {selected_pollutant} Emissions by Country (WHO Standard in red)',
-                labels={'country': 'Country', 'air_pollutant_level': f'Average {selected_pollutant} Level (μg/m³)'}
+                 title=f'Average {selected_pollutant} Emissions by Country (WHO Standard in red)',
+                 labels={'country': 'Country', 'air_pollutant_level': f'Average {selected_pollutant} Level (μg/m³)'})
+    # The closing parenthesis was missing here
     
     # Rotate the x-axis labels
     fig.update_layout(xaxis_tickangle=-45)
