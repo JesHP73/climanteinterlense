@@ -43,7 +43,7 @@ who_standards = {
 df_filtered = df[df['air_pollutant'].isin(['PM10', 'PM2.5', 'NO2'])]
 
 # Further filtering for the year 2023 only
-df_filtered = df_filtered[df_filtered['year'] == 2023]
+df_filtered = df_filtered[df_filtered['year'] == 2022]
 
 # User input areas for filtering
 region_options = ['All'] + sorted(df_filtered['region'].unique().tolist())
