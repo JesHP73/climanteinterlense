@@ -61,7 +61,7 @@ def plot_data(df_mean_levels, who_standards, selected_pollutant):
     fig.update_layout(xaxis_tickangle=-45)
     
     # Setting a fixed y-axis range
-    fig.update_yaxes(autorange=False, range=[0, 120]) 
+    fig.update_yaxes(autorange=True) 
     
     # Setting the figure size and moving the legend position outside to the right
     fig.update_layout(
