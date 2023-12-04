@@ -43,28 +43,28 @@ who_standards = {
 # Plotting Function
 
 def plot_data(df_filtered, who_standards, selected_pollutant):
-     # Making sure the selected pollutant is in the WHO standards dictionary
+    # Making sure the selected pollutant is in the WHO standards dictionary
     if selected_pollutant not in who_standards:
         st.error(f"Selected pollutant {selected_pollutant} does not have a WHO standard defined.")
         return
-        
+
     # Create a figure with Plotly
-    fig = px.bar(df_filtered, x='country', y='air_pollutant_level', color='region', 
+    fig = px.bar(df_filtered, x='country', y='air_pollutant_level', color='region',
                  title=f'Average {selected_pollutant} Emissions by Country in 2023',
                  labels={'country': 'Country', 'air_pollutant_level': f'Average {selected_pollutant} Level (μg/m³)'})
-    
+
     # Rotate the x-axis labels
     fig.update_layout(xaxis_tickangle=-45)
 
     # Add a line for the WHO standard
     standard = who_standards[selected_pollutant]['annual']
     fig.add_hline(y=standard, line_dash="dash", line_color='red')
-    
+
     # Moving the annotation next to the plot
     fig.add_annotation(
-        xref='paper', x=1.05, y=standard, 
+        xref='paper', x=1.05, y=standard,
         text=f'WHO {selected_pollutant} Standard', showarrow=False,
-        yref='y', 
+        yref='y',
         align='left',
         bgcolor='white',
         bordercolor='red',
