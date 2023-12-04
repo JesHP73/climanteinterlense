@@ -47,16 +47,15 @@ def plot_data(df_mean_levels, who_standards, selected_pollutant):
         st.error(f"Selected pollutant {selected_pollutant} does not have a WHO standard defined.")
         return
 
-     # Calculate the difference from the WHO standard and sort
+    # Calculate the difference from the WHO standard and sort
     standard = who_standards[selected_pollutant]['annual']
     df_filtered = df_mean_levels.assign(difference=lambda x: x['air_pollutant_level'] - standard)
     df_filtered = df_mean_levels.sort_values('difference', ascending=False)
 
     # Update the Plotly figure to use the sorted data
-    fig = px.bar(df_mean_levels, x='country', y='air_pollutant_level', color='region',
+    fig = px.bar(df_filtered, x='country', y='air_pollutant_level', color='region',
                  title=f'Average {selected_pollutant} Emissions by Country in 2023',
                  labels={'country': 'Country', 'air_pollutant_level': f'Average {selected_pollutant} Level (μg/m³)'})
-
 
     # Rotate the x-axis labels
     fig.update_layout(xaxis_tickangle=-45)
@@ -65,36 +64,42 @@ def plot_data(df_mean_levels, who_standards, selected_pollutant):
     fig.update_yaxes(autorange=False, range=[0, 120]) 
 
     # Add a line for the WHO standard
-    standard = who_standards[selected_pollutant]['annual']
     fig.add_hline(y=standard, line_dash='solid', line_color='red')
 
-    # Update the layout to move the legend to the right side
-    fig.update_layout(legend=dict(
-        yanchor='top',
-        y=0.99,
-        xanchor="left",
-        x=1.01
-    ))
-
-    # Moving the annotation out of the plot area to the right side
+    # Moving the annotation for the WHO standard line to the right side of the plot
     fig.add_annotation(
-        text=f'WHO {selected_pollutant} Standard',
+        text=f"WHO {selected_pollutant} Standard",
         xref="paper", yref="paper",
-        x=1, y=1.05,  # positions to the right of the plot area
+        x=1.05, y=0.95,  # Adjust 'y' to match the level of the WHO standard line
         showarrow=False,
         align='left',
         bgcolor='white',
         bordercolor='red',
-        borderwidth=1
+        borderwidth=2
     )
 
     # Update the layout to add space for the annotation
     fig.update_layout(
-        margin=dict(r=160, t=50)  
+        margin=dict(r=200, t=50, b=40, l=40),  # Adjust the right margin if needed
+        annotations=[
+            dict(
+                text=f"WHO {selected_pollutant} Standard",
+                showarrow=False,
+                xref="paper", yref="paper",
+                x=1.12, y=0.5,  
+                xanchor='left', yanchor='middle',
+                font=dict(
+                    family="Arial",
+                    size=12,
+                    color="red"
+                ),
+            )
+        ]
     )
 
     # Display the figure in Streamlit
     st.plotly_chart(fig)
+
 
 # User input areas for filtering
 region_options = ['All'] + sorted(df['region'].unique().tolist())
