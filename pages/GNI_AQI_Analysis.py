@@ -54,19 +54,31 @@ if 'All' not in selected_pollutants:
     df = df[df['air_pollutant'].isin(selected_pollutants)]
 
 # Plotting Function
-def plot_data(df):
+def plot_data(df, selected_pollutants):
     # Decide which column to use based on pollutant selection
     value_col = 'AQI_Index' if 'All' in selected_pollutants else 'air_pollutant_level'
 
     # Create a figure with Plotly
-    fig = px.bar(df, x='country', y=value_col, color='region', title='Air Pollutant Emissions by Country')
+    fig = px.bar(df, x='country', y=value_col, color='region', title='Air Pollutant Emissions by Country',
+                 category_orders={"region": sorted(df['region'].unique().tolist())})  # Sort regions
     
-    # Add a line for WHO standard if a single pollutant is selected
-    if len(selected_pollutants) == 1 and selected_pollutants[0] in who_standards:
-        fig.add_hline(y=who_standards[selected_pollutants[0]], line_color='red', annotation_text='WHO Standard')
+    # Rotate the x-axis labels
+    fig.update_layout(xaxis_tickangle=-45)
+    
+    # Add lines for WHO standards
+    for pollutant in selected_pollutants:
+        if pollutant in who_standards:
+            standard_value = who_standards[pollutant]['annual']
+            fig.add_hline(y=standard_value, line_dash="dash", line_color='red',
+                          annotation_text=f'WHO {pollutant} Standard', annotation_position="bottom right")
+    
+    # If 'All' pollutants are selected, add all standard lines
+    if 'All' in selected_pollutants:
+        for pollutant, standard in who_standards.items():
+            fig.add_hline(y=standard['annual'], line_dash="dash", line_color='red',
+                          annotation_text=f'WHO {pollutant} Standard', annotation_position="bottom right")
     
     st.plotly_chart(fig)
 
 # Execute Plotting
-plot_data(df)
-
+plot_data(df, selected_pollutants)
