@@ -49,7 +49,7 @@ def plot_data(df_filtered, who_standards, selected_pollutant):
         return
 
     # Get the maximum value in 'air_pollutant_level' column
-    max_level = df_filtered['air_pollutant_level'].max()
+    #max_level = df_filtered['air_pollutant_level'].max()
 
     # Create a figure with Plotly
     fig = px.bar(df_filtered, x='country', y='air_pollutant_level', color='region',
@@ -60,7 +60,7 @@ def plot_data(df_filtered, who_standards, selected_pollutant):
     fig.update_layout(xaxis_tickangle=-45)
     
     # Set a custom Y-axis range based on the maximum value
-    fig.update_yaxes(range=[0, max_level + 200])  
+    #fig.update_yaxes(range=[0, max_level + 200])  
   
     # Add a line for the WHO standard
     standard = who_standards[selected_pollutant]['annual']
