@@ -63,10 +63,7 @@ def plot_data(df_mean_levels, who_standards, selected_pollutant):
     # Setting a fixed y-axis range
     fig.update_yaxes(autorange=False, range=[0, 120]) 
     
-    # Adding a line for the WHO standard
-    fig.add_hline(y=standard, line_dash='solid', line_color='red')
-    
-       # Setting the figure size and fix the legend position to the top right
+      # Setting the figure size and fix the legend position to the top right
     fig.update_layout(
         height=600,  # Adjust the height as needed
         width=800,   # Adjust the width as needed
@@ -78,20 +75,20 @@ def plot_data(df_mean_levels, who_standards, selected_pollutant):
         )
     )
     
-    # Add an annotation for the WHO standard line next to the line
-   
-    fig.add_annotation(
-        text=f"WHO {selected_pollutant} Annual Standard (μg/m³)",
-        x=34, y=14,
-        xanchor='left', yanchor='middle',
-        showarrow=False,
-        font=dict(
-            family="Arial",
-            size=12,
-            color="red"
-        ),
+    # Adding a dummy trace for the WHO standard to appear in the legend
+    fig.add_trace(
+        go.Scatter(
+            x=[None],
+            y=[None],
+            mode='lines',
+            name=f"WHO {selected_pollutant} Annual Standard (μg/m³)",
+            line=dict(color='red', width=2)
+        )
     )
-    
+
+    # Add the actual WHO standard line (without a name parameter)
+    fig.add_hline(y=standard, line_dash='solid', line_color='red')
+
     # Display the figure in Streamlit
     st.plotly_chart(fig, use_container_width=True)  
 
