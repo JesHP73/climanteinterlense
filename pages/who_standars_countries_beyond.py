@@ -53,7 +53,7 @@ def plot_data(df_mean_levels, who_standards, selected_pollutant):
     df_filtered = df_mean_levels.sort_values('difference', ascending=False)
 
     # Define a custom color sequence for the regions
-    custom_colors = ['brown', 'green', 'orange', 'purple', 'yellow', 'blue', 'pink']
+    custom_colors = ['brown', 'olive', 'orange', 'crimson', 'goldenrod', 'royalblue', 'plum']
 
     # Updating the Plotly figure to use the sorted data with custom colors
     fig = px.bar(df_filtered, x='country', y='air_pollutant_level', color='region',
