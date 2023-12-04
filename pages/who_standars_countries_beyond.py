@@ -80,7 +80,7 @@ def plot_data(df_filtered, who_standards, selected_pollutant):
 
     # Update the layout to add space for the annotation
     fig.update_layout(
-        margin=dict(r=100)  
+        margin=dict(r=200)  
     )
 
     # Display the figure in Streamlit
