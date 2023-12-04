@@ -56,8 +56,9 @@ def plot_data(df_filtered, who_standards, selected_pollutant):
     # Rotate the x-axis labels
     fig.update_layout(xaxis_tickangle=-45)
 
-    # Explicitly set Y-axis type to 'linear'
-    fig.update_yaxes(autorangeoptions_clipmax=<200>)
+    # Explicitly set the Y-axis range
+    y_axis_range = [0, max_allowed]
+    fig.update_yaxes(range=y_axis_range)
 
     # Add a line for the WHO standard
     standard = who_standards[selected_pollutant]['annual']
@@ -74,6 +75,7 @@ def plot_data(df_filtered, who_standards, selected_pollutant):
 
     st.plotly_chart(fig)
 
+max_allowed = 200 
 
 # Filtering for PM10, PM2.5, and NO2 pollutants only, and for the year 2023
 df_filtered = df[df['air_pollutant'].isin(['PM10', 'PM2.5', 'NO2'])]
