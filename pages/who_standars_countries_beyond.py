@@ -94,6 +94,8 @@ def plot_data(df_filtered, who_standards, selected_pollutant):
 
 # Filtering for PM10, PM2.5, and NO2 pollutants only, and for the year 2023
 df_filtered = df[df['air_pollutant'].isin(['PM10', 'PM2.5', 'NO2'])]
+df_filtered['air_pollutant_level'] = pd.to_numeric(df_filtered['air_pollutant_level'], errors='coerce')
+
 
 # User input areas for filtering
 region_options = ['All'] + sorted(df_filtered['region'].unique().tolist())
