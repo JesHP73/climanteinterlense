@@ -66,15 +66,15 @@ def plot_data(df_mean_levels, who_standards, selected_pollutant):
     # Adding a line for the WHO standard
     fig.add_hline(y=standard, line_dash='solid', line_color='red')
     
-    # Setting the figure size and fix the legend position
+       # Setting the figure size and fix the legend position to the top right
     fig.update_layout(
         height=600,  # Adjust the height as needed
         width=800,   # Adjust the width as needed
         legend=dict(
             yanchor="top",
             y=0.99,
-            xanchor="left",
-            x=0.01
+            xanchor="right",
+            x=0.99
         )
     )
     
