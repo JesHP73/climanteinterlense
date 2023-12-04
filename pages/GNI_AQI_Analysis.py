@@ -100,7 +100,4 @@ else:
     plot_data(df_filtered, who_standards, selected_pollutant)
 
 
-# Execute Plotting with the correct parameters
-plot_data(df_filtered, who_standards, selected_pollutant)
-
 
