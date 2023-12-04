@@ -39,6 +39,9 @@ who_standards = {
  
 # O3 and CO are excluded as their standards are not based on annual averages
 
+# Filter for PM10, PM2.5, and NO2 pollutants only
+df = df[df['air_pollutant'].isin(['PM10', 'PM2.5', 'NO2'])]
+
 # User input areas for filtering
 region_options = ['All'] + sorted(df['region'].unique().tolist())
 pollutants_options = ['All'] + sorted(df['air_pollutant'].unique().tolist())
@@ -47,13 +50,14 @@ pollutants_options = ['All'] + sorted(df['air_pollutant'].unique().tolist())
 selected_region = st.sidebar.multiselect('Select Region', options=region_options, default=['All'])
 selected_pollutant = st.sidebar.selectbox('Select Pollutant', options=pollutants_options)
 
-# Filter by region if not 'All'
+# Apply filters based on user input
 if 'All' not in selected_region:
-    df = df[df['region'].isin(selected_region)]
+    df_filtered = df[df['region'].isin(selected_region)]
+else:
+    df_filtered = df.copy()
 
-# Filter by pollutant if not 'All'
 if selected_pollutant and selected_pollutant != 'All':
-    df = df[df['air_pollutant'] == selected_pollutant]
+    df_filtered = df_filtered[df_filtered['air_pollutant'] == selected_pollutant]
 
 # Calculate the difference from the WHO standard for sorting if a specific pollutant is selected
 if selected_pollutant in who_standards:
