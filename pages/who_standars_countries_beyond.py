@@ -118,9 +118,8 @@ else:
     # If data is present, call the plotting function with the mean levels
     plot_data(df_mean_levels, who_standards, selected_pollutant)
 
-# Show the mean air pollution level for each country
-st.write(df_mean_levels['air_pollutant_level'].describe())
-st.dataframe(df_mean_levels)
+
+#st.dataframe(df_mean_levels)
 
 
 
