@@ -144,16 +144,14 @@ def load_data2():
         return data
     except Exception as e:
         st.error(f"Error loading data: {e}")
-        return pd.DataFrame()  # Return an empty DataFrame in case of error
-
+        return pd.DataFrame()  # Return an empty DataFrame in case of an error
 
 df_pie = load_data2()
 
 # Create a copy of the DataFrame for manipulation
 pie = df_pie.copy()
 
-
-# Function to filter data and plot the pie chart
+# Function to filter data and create the pie chart
 def plot_pollution_pie_chart(pie):
     # Filter the DataFrame for entries from the year 2023
     data_2023 = pie[pie['year'] == 2023]
@@ -162,14 +160,17 @@ def plot_pollution_pie_chart(pie):
     pollution_by_industry_2023 = data_2023.groupby('air_qual_stat_type')['air_pollutant_level'].mean()
 
     # Plot a pie chart
-    plt.figure(figsize=(10, 8))
-    plt.pie(pollution_by_industry_2023.values, labels=pollution_by_industry_2023.index, autopct='%1.1f%%', startangle=140)
-    plt.title('Percentage of Pollution Responsibility by Industry for 2023')
-    plt.show()  
+    fig, ax = plt.subplots(figsize=(10, 8))
+    ax.pie(pollution_by_industry_2023.values, labels=pollution_by_industry_2023.index, autopct='%1.1f%%', startangle=140)
+    ax.set_title('Percentage of Pollution Responsibility by Industry for 2023')
+
+    # Display the plot using Streamlit
+    st.pyplot(fig)
 
 # Plotting the pie chart
 st.subheader("Pollution Responsibility by Industry for 2023")
 plot_pollution_pie_chart(pie)
+
 
 
 
