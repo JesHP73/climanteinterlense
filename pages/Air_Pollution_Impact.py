@@ -202,7 +202,7 @@ def plot_page1():
 def show_page2():
     # create and return the page 2 Image
     
-    st.title("Unveiling the 2021 Death :green[Statistics in Europe]")
+    st.title(":green[Unveiling] 2021 Death Statistics in Europe")
     
     st.divider()
     
