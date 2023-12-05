@@ -60,16 +60,18 @@ custom_css = """
 # Define highlighted text with markdown
 highlighted_text = custom_css + """
 <div class="markdown-style">
-This site examines the intersection of climate data with socio-economic factors.
-**👈🏽 Select a page from the sidebar** to begin exploring the visualizations and insights.
+While the climate crisis affects us all, <strong>marginalised communities</strong> feel its effects the most. The struggles for <strong>climate, racial, social, and economic justice</strong> are inherently interconnected, yet much of Europe's climate work has yet to embrace an intersectional approach. 
+<strong>👈🏽Embark on an enlightening exploration</strong> of how climate intertwines with <strong>socio-economic dynamics</strong>. <strong>Begin your journey</strong> by selecting a page from the sidebar.
 </div>
 <div class="markdown-style">
-I wish you a good snooping! 👋🏾, I'll be around, with Learn More buttons, and simplifying this hot topic for you.
+<strong>Dive in and explore</strong> with interactive <strong>"Learn More" buttons</strong>, designed to unravel the complexities of this crucial topic and inspire action towards a more equitable and sustainable future.
 </div>
 """
 
+
 # Display the combined content with the styling
 st.markdown(highlighted_text, unsafe_allow_html=True)
+
 
 
 
