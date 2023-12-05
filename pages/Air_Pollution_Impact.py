@@ -146,7 +146,9 @@ def main():
     
     # Plotting
     plot_data(filtered_data)
-     
+
+    st.link_button(":blue[🔗 Data source: IHME, Global Burden of Disease (2019)]", "https://vizhub.healthdata.org/gbd-results/")
+    
     # Display statistics
     display_statistics(filtered_data)
 
@@ -165,7 +167,7 @@ def plot_page1():
         st.write("This data comes from the most recent publication of the Global Burden of Disease study by the Institute for Health Metrics and Evaluation (IHME) in 2019 and the Global Terrorism Database.")
         st.write("These estimates assign each death a single cause, based on data on the ‘underlying cause of death’ listed on death certificates, verbal autopsies, and statistical modeling. This is a simplification, as people often have multiple diseases or injuries that contribute to their death, which may also be listed on death certificates.")
         st.write("This chart shows data on causes of death globally Filtered by Rei Name related to Air pollution and only Europe, from 1990 until 2019, the year before the Covid-19 pandemic started.")
-    st.link_button(":blue[🔗 Data source: IHME, Global Burden of Disease (2019)]", "https://vizhub.healthdata.org/gbd-results/")
+    
         
 
 
