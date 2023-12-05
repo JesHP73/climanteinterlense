@@ -165,13 +165,12 @@ def plot_pollution_pie_chart(pie):
     plt.figure(figsize=(10, 8))
     plt.pie(pollution_by_industry_2023, labels=pollution_by_industry_2023.index, autopct='%1.1f%%', startangle=140)
     plt.title('Percentage of Pollution Responsibility by Industry for 2023')
-    return plt
+    st.pyplot(chart)
 
  
 # Plotting the pie chart
 st.subheader("Pollution Responsibility by Industry for 2023")
 plot_pollution_pie_chart(pie)
-st.pyplot(chart)
 
 
 
