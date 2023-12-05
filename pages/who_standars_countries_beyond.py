@@ -38,45 +38,73 @@ who_standards = {
 # EU Standards
 eu_standards = {
     'PM10': {'annual': 40, '24_hours': 50},
-    'PM2.5': {'annual': 25, 'stage2_annual': 20},
+    'PM2.5': {'annual': 20, 'stage2_annual': 20},
     'NO2': {'annual': 40, '1_hour': 200}
 }
 
 # Plotting Function
 def plot_data(df_mean_levels, who_standards, eu_standards, selected_pollutant):
+    # Making sure the selected pollutant is in the WHO standards dictionary
     if selected_pollutant not in who_standards:
         st.error(f"Selected pollutant {selected_pollutant} does not have a WHO standard defined.")
         return
 
+    # Calculating the difference from the WHO standard and sort
     standard_who = who_standards[selected_pollutant]['annual']
     df_filtered = df_mean_levels.assign(difference=lambda x: x['air_pollutant_level'] - standard_who)
     df_filtered = df_mean_levels.sort_values('difference', ascending=False)
 
+    # Define a custom color sequence for the regions
     custom_colors = ['teal', 'crimson', 'forestgreen', 'darkorange', 'goldenrod', 'darkslateblue', 'plum']
 
+    # Updating the Plotly figure to use the sorted data with custom colors
     fig = px.bar(df_filtered, x='country', y='air_pollutant_level', color='region',
                  title=f'Average {selected_pollutant} Emissions by Country in 2023',
                  labels={'country': 'Country', 'air_pollutant_level': f'Average {selected_pollutant} Level (μg/m³)'},
                  color_discrete_sequence=custom_colors)
+    
+    # Rotating the x-axis labels
     fig.update_layout(xaxis_tickangle=-45)
-    fig.update_yaxes(autorange=True)
+    
+    # Setting a fixed y-axis range
+    fig.update_yaxes(autorange=True) 
+    
+    # Setting the figure size and moving the legend position outside to the right
     fig.update_layout(
-        height=600, width=800,
-        legend=dict(yanchor="middle", y=0.5, xanchor="left", x=1.05),
-        margin=dict(r=150)
+        height=600,  # Adjust the height as needed
+        width=800,   # Adjust the width as needed
+        legend=dict(
+            yanchor="middle",
+            y=0.5,
+            xanchor="left",
+            x=1.05  # This places the legend outside the plot to the right
+        ),
+        # Adjust the right margin to ensure there is enough space for the legend
+        margin=dict(r=150) 
+    )
+    
+    # Adding a dummy trace for the WHO standard to appear in the legend
+    fig.add_trace(
+        go.Scatter(
+            x=[None],
+            y=[None],
+            mode='lines',
+            name=f"WHO {selected_pollutant} Annual Standard (μg/m³)",
+            line=dict(color='red', width=2)
+        )
     )
 
-    # WHO Standard Line
-    fig.add_hline(y=standard_who, line_dash='solid', line_color='red', 
-                  annotation_text="WHO Standard")
+    # Add the actual WHO standard line (without a name parameter)
+    fig.add_hline(y=standard_who, line_dash='solid', line_color='red')
 
-    # EU Standard Line
+    # Add the EU standard line if it exists for the selected pollutant
     eu_standard = eu_standards.get(selected_pollutant, {}).get('annual')
     if eu_standard is not None:
-        fig.add_hline(y=eu_standard, line_dash='dash', line_color='blue', 
-                      annotation_text="EU Standard")
+        fig.add_hline(y=eu_standard, line_dash='dash', line_color='blue', annotation_text="EU Standard 2011", annotation_position="bottom right")
 
+    # Display the figure in Streamlit
     st.plotly_chart(fig, use_container_width=True)
+
 
 # User input areas for filtering
 region_options = ['All'] + sorted(df['region'].unique().tolist())
