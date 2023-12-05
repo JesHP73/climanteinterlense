@@ -28,76 +28,55 @@ df_original = load_data()
 # Create a copy of the DataFrame for manipulation
 df = df_original.copy()
 
-# WHO Standards with correct averaging periods
+# WHO Standards
 who_standards = {
-    'PM10': {'annual': 15},  # Annual mean: 15 μg/m3
-    'PM2.5': {'annual': 5},  # Annual mean: 5 μg/m3
-    #'O3': {'8_hour_max': 100000},  # Max daily 8-hour mean: 100 μg/m3
-    'NO2': {'annual': 10},  # Annual mean: 10 μg/m3
-    #'CO': {'8_hour_max': 4000}  # Max daily 8-hour mean: 4000 μg/m3 (4 mg/m3)
+    'PM10': {'annual': 15},
+    'PM2.5': {'annual': 5},
+    'NO2': {'annual': 10}
 }
- 
-# O3 and CO are excluded as their standards are not based on annual averages
+
+# EU Standards
+eu_standards = {
+    'PM10': {'annual': 40, '24_hours': 50},
+    'PM2.5': {'annual': 25, 'stage2_annual': 20},
+    'NO2': {'annual': 40, '1_hour': 200}
+}
 
 # Plotting Function
-
-def plot_data(df_mean_levels, who_standards, selected_pollutant):
-    # Making sure the selected pollutant is in the WHO standards dictionary
+def plot_data(df_mean_levels, who_standards, eu_standards, selected_pollutant):
     if selected_pollutant not in who_standards:
         st.error(f"Selected pollutant {selected_pollutant} does not have a WHO standard defined.")
         return
 
-    # Calculating the difference from the WHO standard and sort
-    standard = who_standards[selected_pollutant]['annual']
-    df_filtered = df_mean_levels.assign(difference=lambda x: x['air_pollutant_level'] - standard)
+    standard_who = who_standards[selected_pollutant]['annual']
+    df_filtered = df_mean_levels.assign(difference=lambda x: x['air_pollutant_level'] - standard_who)
     df_filtered = df_mean_levels.sort_values('difference', ascending=False)
 
-    # Define a custom color sequence for the regions
     custom_colors = ['teal', 'crimson', 'forestgreen', 'darkorange', 'goldenrod', 'darkslateblue', 'plum']
 
-    # Updating the Plotly figure to use the sorted data with custom colors
     fig = px.bar(df_filtered, x='country', y='air_pollutant_level', color='region',
                  title=f'Average {selected_pollutant} Emissions by Country in 2023',
                  labels={'country': 'Country', 'air_pollutant_level': f'Average {selected_pollutant} Level (μg/m³)'},
                  color_discrete_sequence=custom_colors)
-    
-    # Rotating the x-axis labels
     fig.update_layout(xaxis_tickangle=-45)
-    
-    # Setting a fixed y-axis range
-    fig.update_yaxes(autorange=True) 
-    
-    # Setting the figure size and moving the legend position outside to the right
+    fig.update_yaxes(autorange=True)
     fig.update_layout(
-        height=600,  # Adjust the height as needed
-        width=800,   # Adjust the width as needed
-        legend=dict(
-            yanchor="middle",
-            y=0.5,
-            xanchor="left",
-            x=1.05  # This places the legend outside the plot to the right
-        ),
-        # Adjust the right margin to ensure there is enough space for the legend
-        margin=dict(r=150) 
-    )
-    
-    # Adding a dummy trace for the WHO standard to appear in the legend
-    fig.add_trace(
-        go.Scatter(
-            x=[None],
-            y=[None],
-            mode='lines',
-            name=f"WHO {selected_pollutant} Annual Standard (μg/m³)",
-            line=dict(color='red', width=2)
-        )
+        height=600, width=800,
+        legend=dict(yanchor="middle", y=0.5, xanchor="left", x=1.05),
+        margin=dict(r=150)
     )
 
-    # Add the actual WHO standard line (without a name parameter)
-    fig.add_hline(y=standard, line_dash='solid', line_color='red')
+    # WHO Standard Line
+    fig.add_hline(y=standard_who, line_dash='solid', line_color='red', 
+                  annotation_text="WHO Standard")
 
-    # Display the figure in Streamlit
-    st.plotly_chart(fig, use_container_width=True)  
+    # EU Standard Line
+    eu_standard = eu_standards.get(selected_pollutant, {}).get('annual')
+    if eu_standard is not None:
+        fig.add_hline(y=eu_standard, line_dash='dash', line_color='blue', 
+                      annotation_text="EU Standard")
 
+    st.plotly_chart(fig, use_container_width=True)
 
 # User input areas for filtering
 region_options = ['All'] + sorted(df['region'].unique().tolist())
@@ -114,26 +93,24 @@ df_filtered = df[(df['air_pollutant'] == selected_pollutant) & (df['year'] == 20
 if 'All' not in selected_region:
     df_filtered = df_filtered[df_filtered['region'].isin(selected_region)]
 
+# Exclude Türkiye from the dataset
+df_filtered = df_filtered[df_filtered['country'] != 'Turkiye']
+
 # Ensure the air pollutant level is a numeric type
 df_filtered['air_pollutant_level'] = pd.to_numeric(df_filtered['air_pollutant_level'], errors='coerce')
 
 # Group by both country and region, then calculate the mean air pollution level
 df_mean_levels = df_filtered.groupby(['country', 'region'])['air_pollutant_level'].mean().reset_index()
 
-# Add a 'difference' column to df_mean_levels
 standard = who_standards[selected_pollutant]['annual']
 df_mean_levels['difference'] = df_mean_levels['air_pollutant_level'] - standard
 
-# Now sorting by 'difference'
 df_mean_levels = df_mean_levels.sort_values('difference', ascending=False)
 
-# Check if the DataFrame is empty after all filters have been applied
 if df_mean_levels.empty:
     st.error('No data available for the selected filters.')
 else:
-    # If data is present, call the plotting function with the mean levels
-    plot_data(df_mean_levels, who_standards, selected_pollutant)
-
+    plot_data(df_mean_levels, who_standards, eu_standards, selected_pollutant)
 
 # Function to load data
 @st.cache
