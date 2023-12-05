@@ -148,7 +148,34 @@ def main():
     # Display statistics
     display_statistics(filtered_data)
 
-    st.info("The IHME, Global Burden of Disease Dataset studied, provides the Death by Risk factors since 1990 until 2019; I have filtered these risk factors by the following causes: High temperature, Low temperature, Ambient particulate matter pollution, Household air pollution from solid fuels across Europe.")
+    # Define custom styles with green highlights
+    custom_css = """
+    <style>
+    .markdown-style {
+        background-color: #e6f4ea;  /* Light green background */
+        border-left: 5px solid #34a853;  /* Darker green left border */
+        padding: 10px;  /* Padding inside the box */
+        font-size: 16px;  /* Text size */
+        color: #202124;  /* Text color - dark grey for readability */
+    }
+    </style>
+    """
+    
+    # Define highlighted text with markdown
+    highlighted_text = custom_css + """
+    <div class="markdown-style">
+    
+    The IHME, Global Burden of Disease Dataset studied, provides the Death by Risk factors since 1990 until 2019; 
+    I have filtered these risk factors by the following causes: 
+    - **High temperature**
+    - **Low temperature**
+    - **Ambient particulate matter pollution (PM10, PM2.5)**
+    - **Household air pollution from solid fuels** across Europe.
+    
+    </div>
+    """
+    
+    st.markdown(highlighted_text, unsafe_allow_html=True)
 
 
 #create and return the page 1 chart figure
