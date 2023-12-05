@@ -53,21 +53,22 @@ def plot_data(filtered_data):
         y='total_death_attributed_sex_standarized',
         color='ig_label',
         color_discrete_map=color_discrete_map,
-        labels={'total_death_attributed_sex_standarized': 'Percentage of Deaths', 'ig_label': 'Income Group'},
-        #title='Deaths Attributed to Air Pollution by Income Group'
+        labels={'total_death_attributed_sex_standarized': 'Percentage of Deaths', 'ig_label': 'Income Group'}
     )
 
     # Improve layout for better readability
     fig.update_layout(
         xaxis_title='Year',
         yaxis_title='Percentage of Deaths',
-        #yaxis_tickformat='.2%',
         showlegend=True,
         legend_title_text='Income Group'
     )
 
-    # Show the figure
-    st.plotly_chart(fig)
+    # Set x-axis tick marks to show each year
+    fig.update_xaxes(
+        tickvals=aggregated_data['year'].unique(),
+        tickangle=45
+    )
 
 
 def display_statistics(filtered_data):
