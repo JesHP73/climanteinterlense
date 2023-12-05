@@ -60,15 +60,17 @@ custom_css = """
 # Define highlighted text with markdown
 highlighted_text = custom_css + """
 <div class="markdown-style">
-I wish you a good snooping! 👋, I'll be around, with **Learn More buttons**, and simplifying this hot topic for you.
-</div>
 This site examines the intersection of climate data with socio-economic factors.
-**👈 Select a page from the sidebar** to begin exploring the visualizations and insights.
+**👈🏽 Select a page from the sidebar** to begin exploring the visualizations and insights.
+</div>
+<div class="markdown-style">
+I wish you a good snooping! 👋🏾, I'll be around, with Learn More buttons, and simplifying this hot topic for you.
 </div>
 """
 
 # Display the combined content with the styling
 st.markdown(highlighted_text, unsafe_allow_html=True)
+
 
 
 st.link_button(":blue[🔗 Learn More]", "https://systemicjustice.ngo/what-we-do/community-litigation/climate-justice/")    
