@@ -172,7 +172,7 @@ def plot_page1():
 def show_page2():
     # create and return the page 2 Image
 
-    st.image("images/attributed_deaths_for_different_causes.jpg", width=800)
+    st.image("images/attributed_deaths_for_different_causes.jpg", width=900)
     st.write("**Creator:** European Environment Agency (EEA)")
     st.link_button(":blue[Harm to human health from air pollution in Europe: burden of disease Nov, 2023 Report]", "https://www.eea.europa.eu/publications/harm-to-human-health-from-air-pollution")
 
