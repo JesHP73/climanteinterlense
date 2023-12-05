@@ -140,10 +140,6 @@ def main():
         st.error("No data available for the selected criteria.")
         return
 
-    # Additional explanations about AQGs and RLs
-    with st.expander("### ⬇️ Understanding What You See"):
-        st.write("Here the term :green[Atributes], means it was one of the attributed risk factors for a given disease or cause of death. There can be multiple risk factors for a given disease which corroborate or amplify one another when both are present. This means that in some cases, air pollution was not the only risk factor but one of several.")
-    
     # Plotting
     plot_data(filtered_data)
 
@@ -162,6 +158,9 @@ def plot_page1():
         main()
         
     st.divider()
+    
+    with st.expander("### ⬇️ Understanding What You See"):
+        st.write("Here the term :green[Atributes], means it was one of the attributed risk factors for a given disease or cause of death. There can be multiple risk factors for a given disease which corroborate or amplify one another when both are present. This means that in some cases, air pollution was not the only risk factor but one of several.")
     
     with st.expander("💡 WHAT YOU SHOULD KNOW ABOUT THIS DATA"):
         st.write("This data comes from the most recent publication of the Global Burden of Disease study by the Institute for Health Metrics and Evaluation (IHME) in 2019 and the Global Terrorism Database.")
