@@ -76,7 +76,6 @@ def plot_data(filtered_data):
 
 
 def display_statistics(filtered_data):
-    
     if not filtered_data.empty:
         latest_year = filtered_data['year'].max()
         latest_data = filtered_data[filtered_data['year'] == latest_year]
@@ -95,12 +94,13 @@ def display_statistics(filtered_data):
         with col2:
             st.header("Equivalent to")
             if people_affected is not None:
-                st.metric(label="Number of People affected", value=f"{people_affected:.2f}")
+                # Format the number with commas as thousand separators
+                formatted_people_affected = f"{people_affected:,.2f}"
+                st.metric(label="Number of People affected", value=formatted_people_affected)
             else:
                 st.write("People affected data is not available.")
     else:
         st.error("Insufficient data to calculate statistics.")
-
 
 
 def main():
