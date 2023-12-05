@@ -28,7 +28,7 @@ def plot_data(filtered_data):
     )
 
     # Group by 'year' and 'ig_label', then calculate the mean of the standardized death total
-    aggregated_data = filtered_data.groupby(['year', 'ig_label'], as_index=False)['total_death_attributed_sex_standarized'].median()
+    aggregated_data = filtered_data.groupby(['year', 'ig_label'], as_index=False)['total_death_attributed_sex_standarized'].mean()
 
     # Mapping from short labels to full names for income groups
     income_label_mapping = {
@@ -79,10 +79,10 @@ def display_statistics(filtered_data):
     if not filtered_data.empty:
         latest_year = filtered_data['year'].max()
         latest_data = filtered_data[filtered_data['year'] == latest_year]
-        latest_avg_death_percentage = latest_data['total_death_attributed_sex_standarized'].median()
+        latest_avg_death_percentage = latest_data['total_death_attributed_sex_standarized'].mean()
 
         if 'people_affected' in latest_data.columns:
-            people_affected = latest_data['people_affected'].median()
+            people_affected = latest_data['people_affected'].mean()
         else:
             st.warning("Column 'people_affected' not found in the data.")
             people_affected = None
