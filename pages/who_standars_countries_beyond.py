@@ -135,13 +135,31 @@ else:
     plot_data(df_mean_levels, who_standards, selected_pollutant)
 
 
+# Function to load data
+@st.cache
+def load_data2():
+    try:
+        DATA_URL = 'https://raw.githubusercontent.com/JesHP73/climanteinterlense/main/dataset/dataset/pollution_by_industry_2023.csv'
+        data = pd.read_csv(DATA_URL)
+        return data
+    except Exception as e:
+        st.error(f"Error loading data: {e}")
+        return pd.DataFrame()  # Return an empty DataFrame in case of error
+
+
+df_pie = load_data2()
+
+# Create a copy of the DataFrame for manipulation
+pie = df_pie.copy()
+
+
 # Function to filter data and plot the pie chart
-def plot_pollution_pie_chart(df):
+def plot_pollution_pie_chart(pie):
     # Filter the DataFrame for entries from the year 2023
-    data_2023 = df[df['year'] == 2023]
+    data_2023 = pie[pie['year'] == 2023]
 
     # Group by 'air_qual_stat_type' and sum up 'air_pollutant_level'
-    pollution_by_industry_2023 = data_2023.groupby('air_qual_stat_type')['air_pollutant_level'].sum()
+    pollution_by_industry_2023 = pie.groupby('air_qual_stat_type')['air_pollutant_level'].mean()
 
     # Plot a pie chart
     plt.figure(figsize=(10, 8))
@@ -149,11 +167,10 @@ def plot_pollution_pie_chart(df):
     plt.title('Percentage of Pollution Responsibility by Industry for 2023')
     return plt
 
-
-   
+ 
 # Plotting the pie chart
 st.subheader("Pollution Responsibility by Industry for 2023")
-plot_pollution_pie_chart(selected_columns_df)
+plot_pollution_pie_chart(pie)
 st.pyplot(chart)
 
 
