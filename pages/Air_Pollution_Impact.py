@@ -174,7 +174,7 @@ def show_page2():
 
     st.image("images/attributed_deaths_for_different_causes.jpg", width=900)
     st.write("**Creator:** European Environment Agency (EEA)")
-    st.link_button(":blue[Harm to human health from air pollution in Europe: burden of disease Nov, 2023 Report]", "https://www.eea.europa.eu/publications/harm-to-human-health-from-air-pollution")
+    st.link_button(":blue[ 🔗 Harm to human health from air pollution in Europe: burden of disease Nov, 2023 Report]", "https://www.eea.europa.eu/publications/harm-to-human-health-from-air-pollution")
 
     st.divider()
     
