@@ -199,7 +199,9 @@ def plot_page1():
 
 def show_page2():
     # create and return the page 2 Image
-
+    
+    st.title("Causes Of Mortality in 2021 by The European Environment Agency")
+    
     st.image("images/attributed_deaths_for_different_causes.jpg", width=900)
     st.write("**Creator:** European Environment Agency (EEA)")
     st.link_button(":blue[🔗 Data source: Harm to human health from air pollution in Europe: burden of disease Nov, 2023 Report]", "https://www.eea.europa.eu/publications/harm-to-human-health-from-air-pollution")
@@ -230,14 +232,14 @@ tab1, tab2 = st.tabs(["Analisys by Income Groups", "Causes Of Mortality"])
 
 # Populate tab1 with page 1 content
 with tab1:
-    tab1.subheader("Historical Analisys by Income Groups")
+    #tab1.subheader("Historical Analisys by Income Groups")
     page1_chart = plot_page1()  # Get the page 1 chart figure
     #st.plotly_chart(page1_chart)  # Display the chart using Plotly
 
 
 # Populate tab2 with page 2 content
 with tab2:
-    tab2.subheader("Causes Of Mortality 2021")
+    #tab2.subheader("Causes Of Mortality 2021")
     page2 = show_page2()  # Get the page 2 image
     
 
