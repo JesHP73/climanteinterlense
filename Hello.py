@@ -44,14 +44,39 @@ with st.expander("🧩 What is Intersectionality?"):
     
 st.divider()
 
-st.write("I wish you a good snooping! 👋, I'll be around, with **Learn More buttons**, and simplifying this hot topic for you.")
+# Define the custom CSS style
+custom_css = """
+<style>
+.markdown-style {
+    background-color: #e6f4ea;  /* Light green background */
+    border-left: 5px solid #34a853;  /* Darker green left border */
+    padding: 10px;  /* Padding inside the box */
+    font-size: 16px;  /* Text size */
+    color: #202124;  /* Text color - dark grey for readability */
+}
+</style>
+"""
 
-st.markdown("""
-    This site examines the intersection of climate data with socio-economic factors.
-    **👈 Select a page from the sidebar** to begin exploring the visualizations and insights.
-    """)
-    
-st.button("Learn More!", type="secondary", use_container_width=False)
+# Define highlighted text with markdown
+highlighted_text = custom_css + """
+<div class="markdown-style">
+
+I wish you a good snooping! 👋, I'll be around, with **Learn More buttons**, and simplifying this hot topic for you.
+
+</div>
+<div>
+
+This site examines the intersection of climate data with socio-economic factors.
+**👈 Select a page from the sidebar** to begin exploring the visualizations and insights.
+
+</div>
+"""
+
+# Display the combined content with the styling
+st.markdown(highlighted_text, unsafe_allow_html=True)
+
+st.link_button(":blue[🔗 Learn More]", "https://systemicjustice.ngo/what-we-do/community-litigation/climate-justice/")    
+
 
 
 
