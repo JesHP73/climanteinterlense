@@ -139,7 +139,7 @@ else:
 @st.cache
 def load_data2():
     try:
-        DATA_URL = 'https://raw.githubusercontent.com/JesHP73/climanteinterlense/main/dataset/dataset/pollution_by_industry_2023.csv'
+        DATA_URL = 'https://raw.githubusercontent.com/JesHP73/climanteinterlense/main/dataset/pollution_by_industry_2023.csv'
         data = pd.read_csv(DATA_URL)
         return data
     except Exception as e:
