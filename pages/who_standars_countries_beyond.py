@@ -152,7 +152,8 @@ if df_mean_levels.empty:
 else:
     plot_data(df_mean_levels, who_standards, eu_standards, selected_pollutant)
 
-import streamlit as st
+
+st.divider()
 
 # Custom CSS for styling
 custom_css = """
