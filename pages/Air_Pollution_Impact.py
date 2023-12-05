@@ -199,16 +199,4 @@ with tab2:
     page2_chart = plot_page2()  # Get the page 2 chart figure
     
 
-    
-    
-    
-
-
-
-
-
-
-
-    
-    return
 
