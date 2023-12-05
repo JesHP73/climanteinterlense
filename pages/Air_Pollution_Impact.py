@@ -113,7 +113,9 @@ def main():
         return
 
     st.title('Percentage of Deaths Attributed to :green[Air Pollution] by Income Group')
-
+    
+    st.divider()
+    
     # Sidebar for filters
     st.sidebar.header('Filters')
 
@@ -201,6 +203,8 @@ def show_page2():
     # create and return the page 2 Image
     
     st.title("Causes Of Mortality in 2021 by The European Environment Agency")
+    
+    st.divider()
     
     st.image("images/attributed_deaths_for_different_causes.jpg", width=900)
     st.write("**Creator:** European Environment Agency (EEA)")
