@@ -165,8 +165,8 @@ def main():
     highlighted_text = custom_css + """
     <div class="markdown-style">
     
-    The IHME, Global Burden of Disease Dataset studied, provides the Death by Risk factors since 1990 until 2019; 
-    I have filtered these risk factors by the following causes: 
+    **The IHME, Global Burden of Disease Dataset studied**, provides the Death by Risk factors since 1990 until 2019; 
+    This dataset has been filtered by the following causes: 
     - **High temperature**
     - **Low temperature**
     - **Ambient particulate matter pollution (PM10, PM2.5)**
