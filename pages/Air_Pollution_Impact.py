@@ -161,11 +161,11 @@ def plot_page1():
         
     st.divider()
     
-    with st.expander("👋 :green[HEY! WHAT YOU SHOULD KNOW ABOUT THIS DATA]"):
+    with st.expander("💡 WHAT YOU SHOULD KNOW ABOUT THIS DATA"):
         st.write("This data comes from the most recent publication of the Global Burden of Disease study by the Institute for Health Metrics and Evaluation (IHME) in 2019 and the Global Terrorism Database.")
         st.write("These estimates assign each death a single cause, based on data on the ‘underlying cause of death’ listed on death certificates, verbal autopsies, and statistical modeling. This is a simplification, as people often have multiple diseases or injuries that contribute to their death, which may also be listed on death certificates.")
         st.write("This chart shows data on causes of death globally Filtered by Rei Name related to Air pollution and only Europe, from 1990 until 2019, the year before the Covid-19 pandemic started.")
-        st.link_button(":blue[Data source: IHME, Global Burden of Disease (2019)🔗!]", "https://vizhub.healthdata.org/gbd-results/")
+    st.link_button(":blue[🔗 Data source: IHME, Global Burden of Disease (2019)]", "https://vizhub.healthdata.org/gbd-results/")
         
 
 
@@ -174,11 +174,11 @@ def show_page2():
 
     st.image("images/attributed_deaths_for_different_causes.jpg", width=900)
     st.write("**Creator:** European Environment Agency (EEA)")
-    st.link_button(":blue[ 🔗 Harm to human health from air pollution in Europe: burden of disease Nov, 2023 Report]", "https://www.eea.europa.eu/publications/harm-to-human-health-from-air-pollution")
+    st.link_button(":blue[🔗 Data source: Harm to human health from air pollution in Europe: burden of disease Nov, 2023 Report]", "https://www.eea.europa.eu/publications/harm-to-human-health-from-air-pollution")
 
     st.divider()
     
-    with st.expander("💡 Key points to understand from this Image"):
+    with st.expander("💡 WHAT YOU SHOULD KNOW ABOUT THIS IMAGE"):
         st.write("In 2021 in the (EU-27 Official countries):")
         st.markdown("-**A. 253,000 deaths** were attributable to exposure to PM2.5 concentrations above WHO’s guideline level of 5 µg/m3 (micrograms per cubic metre of air).")
         st.markdown("-**B. 52,000 deaths** were attributable to exposure to NO2 concentrations above WHO’s guideline level of 10 µg/m3.") 
