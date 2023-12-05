@@ -180,14 +180,14 @@ def show_page2():
     
     with st.expander("💡 Key points to understand from this Image"):
         st.write("In 2021 in the (EU-27 Official countries):")
-        st.markdown("-***A. 253,000 deaths** were attributable to exposure to PM2.5 concentrations above WHO’s guideline level of 5 µg/m3 (micrograms per cubic metre of air).")
+        st.markdown("-**A. 253,000 deaths** were attributable to exposure to PM2.5 concentrations above WHO’s guideline level of 5 µg/m3 (micrograms per cubic metre of air).")
         st.markdown("-**B. 52,000 deaths** were attributable to exposure to NO2 concentrations above WHO’s guideline level of 10 µg/m3.") 
         st.markdown("-**C. 22,000 deaths** were attributable to short-term exposure to O3 concentrations above 70 µg/m3.")
         
     st.markdown('''
     <style>
     [data-testid="stMarkdownContainer"] ul{
-        padding-left:40px;
+        list-style-position: inside;
     }
     </style>
     ''', unsafe_allow_html=True)
