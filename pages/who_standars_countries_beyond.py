@@ -78,7 +78,7 @@ def plot_data(df_mean_levels, who_standards, selected_pollutant):
             x=1.05  # This places the legend outside the plot to the right
         ),
         # Adjust the right margin to ensure there is enough space for the legend
-        margin=dict(r=70) 
+        margin=dict(r=100) 
     )
     
     # Adding a dummy trace for the WHO standard to appear in the legend
