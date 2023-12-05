@@ -135,7 +135,27 @@ else:
     plot_data(df_mean_levels, who_standards, selected_pollutant)
 
 
-#st.dataframe(df_mean_levels)
+# Function to filter data and plot the pie chart
+def plot_pollution_pie_chart(df):
+    # Filter the DataFrame for entries from the year 2023
+    data_2023 = df[df['year'] == 2023]
+
+    # Group by 'air_qual_stat_type' and sum up 'air_pollutant_level'
+    pollution_by_industry_2023 = data_2023.groupby('air_qual_stat_type')['air_pollutant_level'].sum()
+
+    # Plot a pie chart
+    plt.figure(figsize=(10, 8))
+    plt.pie(pollution_by_industry_2023, labels=pollution_by_industry_2023.index, autopct='%1.1f%%', startangle=140)
+    plt.title('Percentage of Pollution Responsibility by Industry for 2023')
+    return plt
+
+
+   
+# Plotting the pie chart
+st.subheader("Pollution Responsibility by Industry for 2023")
+plot_pollution_pie_chart(selected_columns_df)
+st.pyplot(chart)
+
 
 
 
