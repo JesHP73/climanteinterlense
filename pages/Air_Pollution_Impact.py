@@ -60,7 +60,7 @@ def plot_data(filtered_data):
     # Improve layout for better readability
     fig.update_layout(
         xaxis_title='Year',
-        yaxis_title='Percentage of population Deaths Attributed to Air Pollution',
+        yaxis_title='Percentage of population Deaths',
         showlegend=True,
         legend_title_text='Historical Income Group Clasification'
     )
