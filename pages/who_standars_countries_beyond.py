@@ -152,6 +152,60 @@ if df_mean_levels.empty:
 else:
     plot_data(df_mean_levels, who_standards, eu_standards, selected_pollutant)
 
+import streamlit as st
+
+# Custom CSS for styling
+custom_css = """
+<style>
+.markdown-style-teal {
+    background-color: #d8f3f0;  /* Light teal background */
+    padding: 10px;
+    border-radius: 10px;  /* Rounded corners */
+}
+.markdown-style-crimson {
+    background-color: #f2d8d8;  /* Light crimson background */
+    padding: 10px;
+    border-radius: 10px;
+}
+.markdown-style-forestgreen {
+    background-color: #d8f2df;  /* Light forest green background */
+    padding: 10px;
+    border-radius: 10px;
+}
+</style>
+"""
+
+# Define the explanations
+explanation_pm10 = custom_css + """
+<div class="markdown-style-teal">
+
+**PM10 (like tiny dust):** These are really small bits like dust that can get into our nose when we breathe. They can make it hard to breathe and cause coughs.
+
+</div>
+"""
+explanation_pm25 = custom_css + """
+<div class="markdown-style-crimson">
+
+**PM2.5 (even tinier than PM10):** These are super tiny particles, even smaller than PM10. They can go deep into our lungs causing problems like asthma.
+
+</div>
+"""
+explanation_no2 = custom_css + """
+<div class="markdown-style-forestgreen">
+
+**NO2 (comes from cars and factories):** This gas comes from cars and factories. It can make the air smelly and hard to breathe, and it's not good for our lungs.
+
+</div>
+"""
+
+# Display the explanations in columns
+col1, col2, col3 = st.columns(3)
+with col1:
+    st.markdown(explanation_pm10, unsafe_allow_html=True)
+with col2:
+    st.markdown(explanation_pm25, unsafe_allow_html=True)
+with col3:
+    st.markdown(explanation_no2, unsafe_allow_html=True)
 
 
 
