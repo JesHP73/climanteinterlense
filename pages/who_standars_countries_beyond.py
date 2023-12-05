@@ -73,7 +73,7 @@ def plot_data(df_mean_levels, who_standards, eu_standards, selected_pollutant):
 
     # Setting the figure size and moving the legend position outside to the right
     fig.update_layout(
-        height=600,
+        height=800,
         width=1000,
         legend=dict(
             yanchor="middle",
