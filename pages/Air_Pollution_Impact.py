@@ -28,7 +28,7 @@ def plot_data(filtered_data):
     )
 
     # Group by 'year' and 'ig_label', then calculate the mean of the standardized death total
-    aggregated_data = filtered_data.groupby(['year', 'ig_label'], as_index=False)['total_death_attributed_sex_standarized'].sum()
+    aggregated_data = filtered_data.groupby(['year', 'ig_label'], as_index=False)['total_death_attributed_sex_standarized'].mean()
 
     # Mapping from short labels to full names for income groups
     income_label_mapping = {
