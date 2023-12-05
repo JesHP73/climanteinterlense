@@ -66,6 +66,12 @@ def plot_data(df_mean_levels, who_standards, eu_standards, selected_pollutant):
 
     # Rotating the x-axis labels
     fig.update_layout(xaxis_tickangle=-45)
+      
+    # x-axis tick marks to show each country
+    fig.update_xaxes(
+        tickvals=aggregated_data['country'].unique(),
+        tickangle=45
+    )
 
     # Setting a fixed y-axis range
     fig.update_yaxes(autorange=True)
@@ -73,7 +79,7 @@ def plot_data(df_mean_levels, who_standards, eu_standards, selected_pollutant):
     # Setting the figure size and moving the legend position outside to the right
     fig.update_layout(
         height=600,
-        width=800,
+        width=900,
         legend=dict(
             yanchor="middle",
             y=0.5,
