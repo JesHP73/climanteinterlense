@@ -38,7 +38,7 @@ who_standards = {
 # EU Standards
 eu_standards = {
     'PM10': {'annual': 40, '24_hours': 50},
-    'PM2.5': {'annual': 20, 'stage2_annual': 20},
+    'PM2.5': {'annual': 25, 'stage2_annual': 20},
     'NO2': {'annual': 40, '1_hour': 200}
 }
 
