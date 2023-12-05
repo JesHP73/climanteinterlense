@@ -70,6 +70,9 @@ def plot_data(filtered_data):
         tickangle=45
     )
 
+     # Show the figure
+    st.plotly_chart(fig)
+
 
 def display_statistics(filtered_data):
     
