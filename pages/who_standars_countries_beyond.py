@@ -82,14 +82,22 @@ def plot_data(df_mean_levels, who_standards, eu_standards, selected_pollutant):
         # Adjust the right margin to ensure there is enough space for the legend
         margin=dict(r=150) 
     )
-    
+
+    # Add the EU standard line if it exists for the selected pollutant
+    eu_standard = eu_standards.get(selected_pollutant, {}).get('annual')
+    if eu_standard is not None:
+        fig.add_hline(y=eu_standard, line_dash='dash', line_color='blue', 
+                      annotation_text="EU Standard", 
+                      annotation_position="bottom right",
+                      name=f"EU {selected_pollutant} Annual Standard 2011 (μg/m³)") 
+        
     # Adding a dummy trace for the WHO standard to appear in the legend
     fig.add_trace(
         go.Scatter(
             x=[None],
             y=[None],
             mode='lines',
-            name=f"WHO {selected_pollutant} Annual Standard (μg/m³)",
+            name=f"WHO {selected_pollutant} Annual Standard 2021 (μg/m³)",
             line=dict(color='red', width=2)
         )
     )
@@ -100,7 +108,7 @@ def plot_data(df_mean_levels, who_standards, eu_standards, selected_pollutant):
     # Add the EU standard line if it exists for the selected pollutant
     eu_standard = eu_standards.get(selected_pollutant, {}).get('annual')
     if eu_standard is not None:
-        fig.add_hline(y=eu_standard, line_dash='dash', line_color='blue', annotation_text="EU Standard 2011", annotation_position="bottom right")
+        fig.add_hline(y=eu_standard, line_dash='dash', line_color='blue')
 
     # Display the figure in Streamlit
     st.plotly_chart(fig, use_container_width=True)
