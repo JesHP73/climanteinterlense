@@ -112,7 +112,7 @@ def main():
         st.error("No data available to display.")
         return
 
-    st.title('Percentage of Deaths Attributed to :green[Air Pollution] by Income Group')
+    st.title(':green[Unequal Impact:] Air Pollution-Related Deaths by Income Group')
     
     st.divider()
     
@@ -202,7 +202,7 @@ def plot_page1():
 def show_page2():
     # create and return the page 2 Image
     
-    st.title(":green[Causes] Of Mortality 2021")
+    st.title("Unveiling the 2021 Death :green[Statistics in Europe]")
     
     st.divider()
     
