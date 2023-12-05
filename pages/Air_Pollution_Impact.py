@@ -157,7 +157,7 @@ def main():
 def plot_page1():
     if __name__ == "__main__":
         
-    main()
+        main()
         
     st.divider()
     
