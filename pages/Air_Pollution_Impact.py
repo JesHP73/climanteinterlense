@@ -172,14 +172,25 @@ def plot_page1():
 def show_page2():
     # create and return the page 2 Image
 
-    st.image("images/attributed_deaths_for_different_causes.jpg", caption="Mortality due to different causes for PM₂.₅ and NO₂, 2021", width=800)
-    st.write("Creator: European Environment Agency (EEA)")
+    st.image("images/attributed_deaths_for_different_causes.jpg", width=1000)
+    st.write("**Creator:** European Environment Agency (EEA)")
     st.link_button(":blue[Harm to human health from air pollution in Europe: burden of disease Nov, 2023 Report]", "https://www.eea.europa.eu/publications/harm-to-human-health-from-air-pollution")
 
     st.divider()
     
     with st.expander("💡 Key points to understand from this Image"):
-        st.write("In 2021 in the (EU-27 Official countries): 1. **253,000 deaths** were attributable to exposure to PM2.5 concentrations above WHO’s guideline level of 5 µg/m3 (micrograms per cubic metre of air). 2. **52,000 deaths** were attributable to exposure to NO2 concentrations above WHO’s guideline level of 10 µg/m3. 3. **22,000 deaths** were attributable to short-term exposure to O3 concentrations above 70 µg/m3.")
+        st.write("In 2021 in the (EU-27 Official countries):")
+        st.markdown("-***A. 253,000 deaths** were attributable to exposure to PM2.5 concentrations above WHO’s guideline level of 5 µg/m3 (micrograms per cubic metre of air).")
+        st.markdown("-**B. 52,000 deaths** were attributable to exposure to NO2 concentrations above WHO’s guideline level of 10 µg/m3.") 
+        st.markdown("-**C. 22,000 deaths** were attributable to short-term exposure to O3 concentrations above 70 µg/m3.")
+        
+    st.markdown('''
+    <style>
+    [data-testid="stMarkdownContainer"] ul{
+        padding-left:40px;
+    }
+    </style>
+    ''', unsafe_allow_html=True)
 
     with st.expander("💡 EU Policy Context"):
         st.write("In 2021, The World Health Organization(WHO) updated its air quality guidelines for the first time since 2005, lowering the recommended levels for PM's, NO2 and O3. This update is based on systematic reviews of the latest scientific evidence outlining how air pollution affects human health. On 26 October 2022 the European Commission adopted a proposal for a revised Ambient Air Quality Directive, aiming, among others, to align air quality standards more closely with WHO’s updated recommendations.")
