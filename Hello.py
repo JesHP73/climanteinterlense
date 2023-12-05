@@ -62,7 +62,6 @@ highlighted_text = custom_css + """
 <div class="markdown-style">
 I wish you a good snooping! 👋, I'll be around, with **Learn More buttons**, and simplifying this hot topic for you.
 </div>
-<div>
 This site examines the intersection of climate data with socio-economic factors.
 **👈 Select a page from the sidebar** to begin exploring the visualizations and insights.
 </div>
