@@ -232,19 +232,19 @@ def show_page2():
 
 
 # Creating tabs
-tab1, tab2 = st.tabs(["Analisys by Income Groups", "Causes Of Mortality"])
+tab1, tab2 = st.tabs(["Causes Of Mortality", "Analisys by Income Groups"])
 
 # Populate tab1 with page 1 content
 with tab1:
-    #tab1.subheader("Historical Analisys by Income Groups")
-    page1_chart = plot_page1()  # Get the page 1 chart figure
-    #st.plotly_chart(page1_chart)  # Display the chart using Plotly
+    
+    page1_chart = show_page2() 
+    
 
 
 # Populate tab2 with page 2 content
 with tab2:
-    #tab2.subheader("Causes Of Mortality 2021")
-    page2 = show_page2()  # Get the page 2 image
+    
+    page2 = plot_page1() 
     
 
 
