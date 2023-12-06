@@ -33,7 +33,7 @@ def plot_data(filtered_data):
     # Mapping from short labels to full names for income groups
     income_label_mapping = {
         'LM': 'Low Income',
-        'UM': 'Upper Middle Income',
+        #'UM': 'Upper Middle Income',
         'H': 'High Income'
     }
 
@@ -44,7 +44,7 @@ def plot_data(filtered_data):
     color_discrete_map = {
         'Low Income': 'blue',
         'High Income': 'green',
-        'Upper Middle Income': 'grey'
+        #'Upper Middle Income': 'grey'
     }
 
     # Plot the line chart using the aggregated data
