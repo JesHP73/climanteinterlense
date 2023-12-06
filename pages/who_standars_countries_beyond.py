@@ -107,7 +107,7 @@ def plot_data(df_mean_levels, who_standards, eu_standards, selected_pollutant):
 
     # Updating the Plotly figure to use the sorted data with custom colors
     fig = px.bar(df_filtered, x='country', y='air_pollutant_level', color='region',
-                 title=f'Average {selected_pollutant} Emissions by Country in 2023',
+                 #title=f'Average {selected_pollutant} Emissions by Country in 2023'
                  labels={'country': 'Country', 'air_pollutant_level': f'Average {selected_pollutant} Level (μg/m³)'},
                  color_discrete_sequence=custom_colors)
 
