@@ -65,8 +65,8 @@ with col3:
 custom_css = """
 <style>
 .markdown-style-forestgreen {
-    color: forestgreen; /* Forest green text color */
-    background-color: #d8f2df;  /* Light forest green background */
+    color: black; /* Black text color */
+    background-color: #228B22;  /* Forest green background */
     padding: 10px;
     border-radius: 10px;
     font-style: italic; /* Cursive text */
@@ -215,7 +215,8 @@ custom_css = """
     border-radius: 10px;
 }
 .markdown-style-forestgreen {
-    background-color: #d8f2df;  /* Light forest green background */
+    color: black; /* Black text color */
+    background-color: #228B22;  /* Forest green background */
     padding: 10px;
     border-radius: 10px;
 }
