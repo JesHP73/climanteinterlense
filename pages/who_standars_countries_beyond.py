@@ -44,21 +44,21 @@ eu_standards = {
 
 
 # Title for the page
-st.title("European Population and Migration/Refuge Statistics")
+st.title("European Population and Migration/Refugees 2023")
 
 # Creating columns for key numbers
 col1, col2, col3 = st.columns(3)
 
 with col1:
-    st.header("Total Population")
+    st.write("Total Population")
     st.subheader("742,003,108")
 
 with col2:
-    st.header("Asylum/Refugees")
+    st.write("Asylum/Refugees")
     st.subheader("108,000")
 
 with col3:
-    st.header("Migrants")
+    st.write("Migrants")
     st.subheader("268,975")
 
 # Markdown note
@@ -72,6 +72,7 @@ st.divider()
 # Plotting Function
 
 def plot_data(df_mean_levels, who_standards, eu_standards, selected_pollutant):
+    st.title(f"EU {selected_pollutant} Annual Standard 2011 (μg/m³)")
     # Making sure the selected pollutant is in the WHO standards dictionary
     if selected_pollutant not in who_standards:
         st.error(f"Selected pollutant {selected_pollutant} does not have a WHO standard defined.")
@@ -120,7 +121,7 @@ def plot_data(df_mean_levels, who_standards, eu_standards, selected_pollutant):
                 x=[None], 
                 y=[None], 
                 mode='lines', 
-                name=f"EU {selected_pollutant} Annual Standard 2011 (μg/m³)", 
+                #name=f"EU {selected_pollutant} Annual Standard 2011 (μg/m³)", 
                 line=dict(color='blue', dash='dash')
             )
         )
