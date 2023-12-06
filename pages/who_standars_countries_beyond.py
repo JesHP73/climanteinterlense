@@ -42,6 +42,33 @@ eu_standards = {
     'NO2': {'annual': 40, '1_hour': 200}
 }
 
+
+# Title for the page
+st.title("European Population and Migration/Refuge Statistics")
+
+# Creating columns for key numbers
+col1, col2, col3 = st.columns(3)
+
+with col1:
+    st.header("Total Population")
+    st.subheader("742,003,108")
+
+with col2:
+    st.header("Asylum/Refugees")
+    st.subheader("108,000")
+
+with col3:
+    st.header("Migrants")
+    st.subheader("268,975")
+
+# Markdown note
+markdown_text = """
+> *It is estimated by the European agency of statistics that by 2025 an increase of population of 351,000,000 millions. I can't help but wonder, independently of the segregation by income groups, the health crisis that might come our way, if Europe and Europeans don't act now in reducing air pollution emissions.*
+"""
+st.markdown(markdown_text)
+
+st.divider()
+
 # Plotting Function
 
 def plot_data(df_mean_levels, who_standards, eu_standards, selected_pollutant):
