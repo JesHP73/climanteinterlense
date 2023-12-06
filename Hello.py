@@ -74,14 +74,6 @@ While the climate crisis affects us all, <strong>marginalised communities</stron
 # Display the combined content with the styling
 st.markdown(highlighted_text, unsafe_allow_html=True)
 
-
-
-
-st.link_button(":blue[🔗 Learn More]", "https://systemicjustice.ngo/what-we-do/community-litigation/climate-justice/")    
-
-
-
-
 st.sidebar.success("Select a page above.")
 st.sidebar.header("Quick Guide")
 st.sidebar.write("Explore the tabs to dive into the impacts of air pollution through an intersectional lens.")
@@ -89,16 +81,16 @@ st.sidebar.write("Explore the tabs to dive into the impacts of air pollution thr
 st.divider()
 
 # Educational Links
-st.markdown("### Educational Resources")
-st.markdown("[Learn more about Air Pollution](https://example.com/airpollution)")
-st.markdown("[Understanding Intersectionality](https://example.com/intersectionality)")
-
-# Disclaimer
-st.markdown("## Disclaimer")
-st.write("The information provided here is for educational purposes only...")
+st.markdown("### Educational Resources:")    
+st.markdown("[Climate Justice](https://systemicjustice.ngo/what-we-do/community-litigation/climate-justice/)")
+st.markdown("[Understanding Intersectionality](https://www.intersectionaljustice.org/who-we-are)")
 
 # Credits and Data Sources
 st.markdown("## Credits and Data Sources")
-st.write("The data used in this application is sourced from ...")
+st.write("The data used in this application is sourced from:")
 st.markdown("[World Bank - Global Economic Monitor](https://datahelpdesk.worldbank.org/knowledgebase/articles/906519-world-bank-country-and-lending-groups)")
 st.markdown("[Eurostat - Statistical Office of the European Union.](https://ec.europa.eu/eurostat/databrowser/explore/all/all_themes?lang=en&display=list&sort=category)")
+
+# Disclaimer
+st.markdown("## Disclaimer:")
+st.write("The information provided here is for educational purposes only")
