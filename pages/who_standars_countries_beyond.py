@@ -61,18 +61,36 @@ with col3:
     st.write("Migrants")
     st.subheader("268,975")
 
-# Markdown note
-markdown_text = """
-> *It is estimated by the European agency of statistics that by 2025 an increase of population of 351,000,000 millions. I can't help but wonder, independently of the segregation by income groups, the health crisis that might come our way, if Europe and Europeans don't act now in reducing air pollution emissions.*
+# Custom CSS for markdown
+custom_css = """
+<style>
+.markdown-style-forestgreen {
+    color: forestgreen; /* Forest green text color */
+    background-color: #d8f2df;  /* Light forest green background */
+    padding: 10px;
+    border-radius: 10px;
+    font-style: italic; /* Cursive text */
+}
+</style>
 """
-st.markdown(markdown_text)
+
+# Markdown note with custom style
+markdown_text = custom_css + """
+<div class="markdown-style-forestgreen">
+
+> It is estimated by the European agency of statistics that **by 2025 an increase of population of 351,000,000 millions**. I can't help but wonder, independently of the segregation by income groups, the health crisis that might come our way, if Europe and Europeans don't act now in reducing air pollution emissions.*
+
+</div>
+"""
+st.markdown(markdown_text, unsafe_allow_html=True)
 
 st.divider()
+
 
 # Plotting Function
 
 def plot_data(df_mean_levels, who_standards, eu_standards, selected_pollutant):
-    st.title(f"EU {selected_pollutant} Annual Standard 2011 (μg/m³)")
+    st.title(f"Average {selected_pollutant} Emissions By Country (μg/m³)")
     # Making sure the selected pollutant is in the WHO standards dictionary
     if selected_pollutant not in who_standards:
         st.error(f"Selected pollutant {selected_pollutant} does not have a WHO standard defined.")
@@ -121,7 +139,7 @@ def plot_data(df_mean_levels, who_standards, eu_standards, selected_pollutant):
                 x=[None], 
                 y=[None], 
                 mode='lines', 
-                #name=f"EU {selected_pollutant} Annual Standard 2011 (μg/m³)", 
+                name=f"EU {selected_pollutant} Annual Standard 2011 (μg/m³)", 
                 line=dict(color='blue', dash='dash')
             )
         )
