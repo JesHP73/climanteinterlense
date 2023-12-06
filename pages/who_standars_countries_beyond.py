@@ -85,6 +85,7 @@ markdown_text = custom_css + """
 """
 st.markdown(markdown_text, unsafe_allow_html=True)
 
+
 st.link_button(":blue[🔗 Data source: Eurostat, the statistical office of the European Union.]", "https://ec.europa.eu/eurostat/web/population-demography/demography-population-stock-balance/database")
 
 st.divider()
@@ -162,10 +163,12 @@ def plot_data(df_mean_levels, who_standards, eu_standards, selected_pollutant):
     # Add the actual WHO standard line (without a name parameter)
     fig.add_hline(y=standard_who, line_dash='solid', line_color='red')
 
+    st.link_button(":blue[🔗 Data source: EEA, European Enviroment Agency.]", "https://www.eea.europa.eu/en/datahub?size=n_10_n&filters%5B0%5D%5Bfield%5D=topic&filters%5B0%5D%5Bvalues%5D%5B0%5D=Air%20pollution&filters%5B0%5D%5Btype%5D=any&filters%5B1%5D%5Bfield%5D=issued.date&filters%5B1%5D%5Bvalues%5D%5B0%5D=All%20time&filters%5B1%5D%5Btype%5D=any&sort-field=issued.date&sort-direction=desc")
+    
     # Display the figure in Streamlit
     st.plotly_chart(fig, use_container_width=True)
 
-st.link_button(":blue[🔗 Data source: EEA, European Enviroment Agency.]", "https://www.eea.europa.eu/en/datahub?size=n_10_n&filters%5B0%5D%5Bfield%5D=topic&filters%5B0%5D%5Bvalues%5D%5B0%5D=Air%20pollution&filters%5B0%5D%5Btype%5D=any&filters%5B1%5D%5Bfield%5D=issued.date&filters%5B1%5D%5Bvalues%5D%5B0%5D=All%20time&filters%5B1%5D%5Btype%5D=any&sort-field=issued.date&sort-direction=desc")
+
 
 # User input areas for filtering
 region_options = ['All'] + sorted(df['region'].unique().tolist())
