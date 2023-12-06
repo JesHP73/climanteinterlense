@@ -47,7 +47,7 @@ eu_standards = {
 # Plotting Function
 
 def plot_data(df_mean_levels, who_standards, eu_standards, selected_pollutant):
-    st.title(f":green[Average] {selected_pollutant} Emissions By Country (μg/m³)")
+    st.title(f":green[Average] 2023 {selected_pollutant} Emissions By Country (μg/m³)")
     # Making sure the selected pollutant is in the WHO standards dictionary
     if selected_pollutant not in who_standards:
         st.error(f"Selected pollutant {selected_pollutant} does not have a WHO standard defined.")
