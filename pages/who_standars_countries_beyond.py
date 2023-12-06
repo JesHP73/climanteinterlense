@@ -65,11 +65,12 @@ with col3:
 custom_css = """
 <style>
 .markdown-style-forestgreen {
-    color: black; /* Black text color */
-    background-color: #228B22;  /* Forest green background */
+    background-color: #e6f4ea;  /* Light green background */
+    border-left: 5px solid #34a853;  /* Darker green left border */
     padding: 10px;
     border-radius: 10px;
     font-style: italic; /* Cursive text */
+    color: #202124;  /* Text color - dark grey for readability */
 }
 </style>
 """
@@ -206,19 +207,26 @@ custom_css = """
 <style>
 .markdown-style-teal {
     background-color: #d8f3f0;  /* Light teal background */
+    border-left: 5px solid #00796b;  /* Darker teal left border */
     padding: 10px;
     border-radius: 10px;  /* Rounded corners */
+    color: #202124;  /* Text color - dark grey for readability */
 }
+
 .markdown-style-crimson {
     background-color: #f2d8d8;  /* Light crimson background */
+    border-left: 5px solid #b71c1c;  /* Darker crimson left border */
     padding: 10px;
-    border-radius: 10px;
+    border-radius: 10px; /* Rounded corners */
+    color: #202124;  /* Text color - dark grey for readability */
 }
+
 .markdown-style-forestgreen {
-    color: black; /* Black text color */
-    background-color: #228B22;  /* Forest green background */
+    background-color: #e6f4ea;  /* Light green background */
+    border-left: 5px solid #34a853;  /* Darker green left border */
     padding: 10px;
     border-radius: 10px;
+    color: #202124;  /* Text color - dark grey for readability */
 }
 </style>
 """
