@@ -43,55 +43,6 @@ eu_standards = {
 }
 
 
-# Title for the page
-st.title("European :green[Population 2023]")
-
-# Creating columns for key numbers
-col1, col2, col3 = st.columns(3)
-
-with col1:
-    st.write("Total Population")
-    st.subheader("742,003,108")
-
-with col2:
-    st.write("Asylum/Refugees")
-    st.subheader("108,000")
-
-with col3:
-    st.write("Migrants")
-    st.subheader("268,975")
-
-# Custom CSS for markdown
-custom_css = """
-<style>
-.markdown-style-forestgreen {
-    background-color: #e6f4ea;  /* Light green background */
-    border-left: 5px solid #34a853;  /* Darker green left border */
-    padding: 10px;
-    border-radius: 10px;
-    font-style: italic; /* Cursive text */
-    color: #202124;  /* Text color - dark grey for readability */
-}
-</style>
-"""
-
-# Markdown note with custom style
-markdown_text = custom_css + """
-<div class="markdown-style-forestgreen">
-
-> It is estimated by the European agency of statistics that **by 2025 an increase of population of 351,000,000 millions**. I can't help but wonder, independently of the segregation by income groups, the health crisis that might come our way, if Europe and Europeans don't act now in reducing air pollution emissions.*
-
-</div>
-"""
-st.markdown(markdown_text, unsafe_allow_html=True)
-
-# Add space without a line
-st.markdown("<br>", unsafe_allow_html=True)
-
-st.link_button(":blue[🔗 Data source: Eurostat, the statistical office of the European Union.]", "https://ec.europa.eu/eurostat/web/population-demography/demography-population-stock-balance/database")
-
-st.divider()
-
 
 # Plotting Function
 
@@ -268,6 +219,56 @@ with col2:
     st.markdown(explanation_pm25, unsafe_allow_html=True)
 with col3:
     st.markdown(explanation_no2, unsafe_allow_html=True)
+
+
+st.divider()
+
+# Title for the page
+st.title("European :green[Population 2023]")
+
+# Creating columns for key numbers
+col1, col2, col3 = st.columns(3)
+
+with col1:
+    st.write("Total Population")
+    st.subheader("742,003,108")
+
+with col2:
+    st.write("Asylum/Refugees")
+    st.subheader("108,000")
+
+with col3:
+    st.write("Migrants")
+    st.subheader("268,975")
+
+# Custom CSS for markdown
+custom_css = """
+<style>
+.markdown-style-forestgreen {
+    background-color: #e6f4ea;  /* Light green background */
+    border-left: 5px solid #34a853;  /* Darker green left border */
+    padding: 10px;
+    border-radius: 10px;
+    font-style: italic; /* Cursive text */
+    color: #202124;  /* Text color - dark grey for readability */
+}
+</style>
+"""
+
+# Markdown note with custom style
+markdown_text = custom_css + """
+<div class="markdown-style-forestgreen">
+
+> It is estimated by the European agency of statistics that **by 2025 an increase of population of 351,000,000 millions**. I can't help but wonder, independently of the segregation by income groups, the health crisis that might come our way, if Europe and Europeans don't act now in reducing air pollution emissions.*
+
+</div>
+"""
+st.markdown(markdown_text, unsafe_allow_html=True)
+
+# Add space without a line
+st.markdown("<br>", unsafe_allow_html=True)
+
+st.link_button(":blue[🔗 Data source: Eurostat, the statistical office of the European Union.]", "https://ec.europa.eu/eurostat/web/population-demography/demography-population-stock-balance/database")
 
 
 
