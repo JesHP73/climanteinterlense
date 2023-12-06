@@ -44,7 +44,7 @@ eu_standards = {
 
 
 # Title for the page
-st.title("European Population and Migration/Refugees 2023")
+st.title("European :green[Population 2023]")
 
 # Creating columns for key numbers
 col1, col2, col3 = st.columns(3)
@@ -91,7 +91,7 @@ st.divider()
 # Plotting Function
 
 def plot_data(df_mean_levels, who_standards, eu_standards, selected_pollutant):
-    st.title(f"Average {selected_pollutant} Emissions By Country (μg/m³)")
+    st.title(f":green[Average] {selected_pollutant} Emissions By Country (μg/m³)")
     # Making sure the selected pollutant is in the WHO standards dictionary
     if selected_pollutant not in who_standards:
         st.error(f"Selected pollutant {selected_pollutant} does not have a WHO standard defined.")
